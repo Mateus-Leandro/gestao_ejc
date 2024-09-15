@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:gestao_ejc/screens/password_reset_modal.dart';
+import 'package:gestao_ejc/services/locator/service_locator.dart';
 import '../services/auth_service.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -9,7 +11,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  AuthService authService = AuthService();
+  final AuthService _authService = getIt<AuthService>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _senhaController = TextEditingController();
 
@@ -55,13 +57,18 @@ class _LoginScreenState extends State<LoginScreen> {
                           SizedBox(height: 30),
                           TextButton(
                             onPressed: () {
+                              showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return PasswordResetModal();
+                                  });
                             },
                             child: Text('Esqueci minha senha.'),
                           ),
                           SizedBox(height: 30),
                           ElevatedButton(
                             onPressed: () {
-                              authService
+                              _authService
                                   .entrarUsuario(
                                       email: _emailController.text,
                                       senha: _senhaController.text)
