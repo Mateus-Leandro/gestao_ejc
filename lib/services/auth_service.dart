@@ -22,6 +22,9 @@ class AuthService {
     try {
       UserCredential userCredential = await _firebaseAuth
           .createUserWithEmailAndPassword(email: email, password: senha);
+      User? newUser = userCredential.user;
+      await newUser?.updateDisplayName(nome);
+      await newUser?.reload();
     } on FirebaseAuthException catch (e) {
       return erroAuth(e);
     }
