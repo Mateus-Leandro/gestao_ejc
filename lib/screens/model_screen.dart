@@ -6,8 +6,14 @@ import 'package:gestao_ejc/services/locator/service_locator.dart';
 class ModelScreen extends StatefulWidget {
   final String title;
   final Widget body;
+  final int? indexMenuSelected;
 
-  const ModelScreen({super.key, required this.title, required this.body});
+  const ModelScreen({
+    super.key,
+    required this.title,
+    required this.body,
+    required this.indexMenuSelected,
+  });
 
   @override
   State<ModelScreen> createState() => _ModelScreenState();
@@ -19,14 +25,13 @@ class _ModelScreenState extends State<ModelScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: const MenuDrawer(),
+      drawer: MenuDrawer(indexMenuSelected: widget.indexMenuSelected),
       appBar: AppBar(
         foregroundColor: Colors.white,
         backgroundColor: Theme.of(context).primaryColor,
         title: Row(
           children: [
-            Text(widget.title),
-            Spacer(),
+            Expanded(child: Text(widget.title)),
             Text(dateString),
           ],
         ),

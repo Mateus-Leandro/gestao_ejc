@@ -13,7 +13,7 @@ class HomeScreen extends StatelessWidget {
         child: Text(
           "Seja Bem vindo ${FirebaseAuth.instance.currentUser?.displayName ?? ''}",
         ),
-      ),
+      ), indexMenuSelected: null,
     );
   }
 }
