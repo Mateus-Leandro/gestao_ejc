@@ -18,85 +18,86 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        child: Row(
-          children: [
-            Container(
+      body: Row(
+        children: [
+          Expanded(
+            flex: 3,
+            child: Container(
               color: Colors.indigo,
-              width: 400,
             ),
-            Expanded(
-              child: Container(
-                color: Colors.white,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    FlutterLogo(
-                      size: 350,
-                      style: FlutterLogoStyle.stacked,
+          ),
+          Expanded(
+            flex: 7,
+            child: Container(
+              color: Colors.white,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  const FlutterLogo(
+                    size: 350,
+                    style: FlutterLogoStyle.stacked,
+                  ),
+                  Container(
+                    padding: const EdgeInsets.all(30),
+                    child: Column(
+                      children: [
+                        const SizedBox(height: 40),
+                        TextField(
+                          controller: _emailController,
+                          decoration: const InputDecoration(
+                            labelText: 'Email',
+                          ),
+                          keyboardType: TextInputType.emailAddress,
+                        ),
+                        TextField(
+                          controller: _senhaController,
+                          decoration: const InputDecoration(
+                            labelText: 'Senha',
+                          ),
+                          obscureText: true,
+                        ),
+                        const SizedBox(height: 30),
+                        TextButton(
+                          onPressed: () {
+                            showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return const PasswordResetModal();
+                                });
+                          },
+                          child: Text('Esqueci minha senha.'),
+                        ),
+                        const SizedBox(height: 30),
+                        ElevatedButton(
+                          onPressed: () {
+                            _authService
+                                .entrarUsuario(
+                                    email: _emailController.text,
+                                    senha: _senhaController.text)
+                                .then((String? error) {
+                              if (error != null) {
+                                final snackBar = SnackBar(
+                                    content: Text(error),
+                                    backgroundColor: Colors.red);
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(snackBar);
+                              }
+                            });
+                          },
+                          style: ElevatedButton.styleFrom(
+                              foregroundColor: Colors.white,
+                              backgroundColor: Colors.indigo,
+                              fixedSize: const Size(220, 60)),
+                          child: const Text('Acessar'),
+                        )
+                      ],
                     ),
-                    Container(
-                      padding: EdgeInsets.all(30),
-                      child: Column(
-                        children: [
-                          SizedBox(height: 40),
-                          TextField(
-                            controller: _emailController,
-                            decoration: InputDecoration(
-                              labelText: 'Email',
-                            ),
-                            keyboardType: TextInputType.emailAddress,
-                          ),
-                          TextField(
-                            controller: _senhaController,
-                            decoration: InputDecoration(
-                              labelText: 'Senha',
-                            ),
-                            obscureText: true,
-                          ),
-                          SizedBox(height: 30),
-                          TextButton(
-                            onPressed: () {
-                              showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return PasswordResetModal();
-                                  });
-                            },
-                            child: Text('Esqueci minha senha.'),
-                          ),
-                          SizedBox(height: 30),
-                          ElevatedButton(
-                            onPressed: () {
-                              _authService
-                                  .entrarUsuario(
-                                      email: _emailController.text,
-                                      senha: _senhaController.text)
-                                  .then((String? error) {
-                                if (error != null) {
-                                  final snackBar = SnackBar(
-                                      content: Text(error),
-                                      backgroundColor: Colors.red);
-                                  ScaffoldMessenger.of(context)
-                                      .showSnackBar(snackBar);
-                                }
-                              });
-                            },
-                            child: Text('Acessar'),
-                            style: ElevatedButton.styleFrom(
-                                foregroundColor: Colors.white,
-                                backgroundColor: Colors.indigo,
-                                fixedSize: Size(220, 60)),
-                          )
-                        ],
-                      ),
-                    )
-                  ],
-                ),
+                  )
+                ],
               ),
-            )
-          ],
-        ),
+            ),
+          )
+        ],
       ),
     );
   }
