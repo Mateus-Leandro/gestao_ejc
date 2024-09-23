@@ -1,14 +1,21 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:gestao_ejc/services/auth_service.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
 
 class MenuDrawer extends StatelessWidget {
-  const MenuDrawer({super.key});
+  const MenuDrawer({super.key, required this.indexMenuSelected});
+  final int? indexMenuSelected;
 
   @override
   Widget build(BuildContext context) {
     final Color tileColor = Theme.of(context).primaryColor;
-    final FirebaseAuth firebaseAuth = getIt<FirebaseAuth>();
+    const Color selectedTileColor = Colors.white;
+    const Color textColor = Colors.white;
+    final Color selectedTextColor = Theme.of(context).primaryColor;
+    FirebaseAuth firebaseAuth = getIt<FirebaseAuth>();
+    AuthService authService = getIt<AuthService>();
+
     final User user = firebaseAuth.currentUser!;
 
     return Drawer(
@@ -19,51 +26,79 @@ class MenuDrawer extends StatelessWidget {
           Column(
             children: [
               ListTile(
-                selectedTileColor: Colors.red,
-                tileColor: tileColor,
-                textColor: Colors.white,
-                title: const Text('Encontros'),
-                onTap: () {},
-              ),
+                  selectedTileColor: selectedTileColor,
+                  selectedColor: selectedTextColor,
+                  textColor: textColor,
+                  tileColor: tileColor,
+                  title: const Text('Encontros'),
+                  selected: indexMenuSelected == 0,
+                  onTap: () {
+                    callScreen(context, '/encounters', 0);
+                  }),
               ListTile(
-                tileColor: tileColor,
-                textColor: Colors.white,
-                title: const Text('Circulos'),
-                onTap: () {},
-              ),
+                  selectedTileColor: selectedTileColor,
+                  selectedColor: selectedTextColor,
+                  textColor: textColor,
+                  tileColor: tileColor,
+                  title: const Text('Circulos'),
+                  selected: indexMenuSelected == 1,
+                  onTap: () {
+                    callScreen(context, '/circles', 1);
+                  }),
               ListTile(
-                tileColor: tileColor,
-                textColor: Colors.white,
-                title: const Text('Membros'),
-                onTap: () {},
-              ),
+                  selectedTileColor: selectedTileColor,
+                  selectedColor: selectedTextColor,
+                  textColor: textColor,
+                  tileColor: tileColor,
+                  title: const Text('Membros'),
+                  selected: indexMenuSelected == 2,
+                  onTap: () {
+                    callScreen(context, '/members', 2);
+                  }),
               ListTile(
-                tileColor: tileColor,
-                textColor: Colors.white,
-                title: const Text('Exportação'),
-                onTap: () {},
-              ),
+                  selectedTileColor: selectedTileColor,
+                  selectedColor: selectedTextColor,
+                  textColor: textColor,
+                  tileColor: tileColor,
+                  title: const Text('Exportação'),
+                  selected: indexMenuSelected == 3,
+                  onTap: () {
+                    callScreen(context, '/export', 3);
+                  }),
               ListTile(
-                tileColor: tileColor,
-                textColor: Colors.white,
-                title: const Text('Importação'),
-                onTap: () {},
-              ),
+                  selectedTileColor: selectedTileColor,
+                  selectedColor: selectedTextColor,
+                  textColor: textColor,
+                  tileColor: tileColor,
+                  title: const Text('Importação'),
+                  selected: indexMenuSelected == 4,
+                  onTap: () {
+                    callScreen(context, '/import', 4);
+                  }),
               ListTile(
-                tileColor: tileColor,
-                textColor: Colors.white,
-                title: const Text('Financeiro'),
-                onTap: () {},
-              ),
+                  selectedTileColor: selectedTileColor,
+                  selectedColor: selectedTextColor,
+                  textColor: textColor,
+                  tileColor: tileColor,
+                  title: const Text('Financeiro'),
+                  selected: indexMenuSelected == 5,
+                  onTap: () {
+                    callScreen(context, '/financial', 5);
+                  }),
             ],
           ),
           Column(
             children: [
               ListTile(
+                selectedTileColor: selectedTileColor,
+                selectedColor: selectedTextColor,
+                textColor: textColor,
                 tileColor: tileColor,
-                textColor: Colors.white,
                 title: const Text('Cadastro de Usuarios'),
-                onTap: () {},
+                selected: indexMenuSelected == 6,
+                onTap: () {
+                  callScreen(context, '/users', 6);
+                },
               ),
               SizedBox(
                 height: 170,
@@ -88,7 +123,8 @@ class MenuDrawer extends StatelessWidget {
                 textColor: Colors.white,
                 title: const Text('Sair'),
                 onTap: () {
-                  firebaseAuth.signOut();
+                  authService.deslogar();
+                  Navigator.of(context).popUntil((route) => route.isFirst);
                 },
               ),
             ],
@@ -96,5 +132,12 @@ class MenuDrawer extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  void callScreen(BuildContext context, String rout, int indexMenu) {
+    if (indexMenuSelected != indexMenu) {
+      Navigator.of(context).pop();
+      Navigator.pushNamed(context, rout);
+    }
   }
 }
