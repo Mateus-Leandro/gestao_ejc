@@ -1,7 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:gestao_ejc/screens/home_screen.dart';
 import 'package:gestao_ejc/screens/login_screen.dart';
+import 'package:gestao_ejc/screens/user_screen.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
 import 'firebase_options.dart';
 
@@ -12,6 +14,7 @@ Future<void> main() async {
   );
   setupGetIt();
   runApp(const MyApp());
+
 }
 
 class MyApp extends StatelessWidget {
@@ -23,16 +26,19 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
         useMaterial3: true,
       ),
-      home: const getScreen(),
+      routes: {
+        '/' : (context) => const GetScreen(),
+        '/users': (context) => const UserScreen()
+      },
     );
   }
 }
 
-class getScreen extends StatelessWidget {
-  const getScreen({super.key});
+class GetScreen extends StatelessWidget {
+  const GetScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -45,9 +51,9 @@ class getScreen extends StatelessWidget {
           );
         } else {
           if (snapshot.hasData) {
-            return Container();
+            return const HomeScreen();
           } else {
-            return LoginScreen();
+            return const LoginScreen();
           }
         }
       },
