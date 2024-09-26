@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:gestao_ejc/controllers/user_controller.dart';
 import 'package:gestao_ejc/services/auth_service.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
 
@@ -123,6 +124,7 @@ class MenuDrawer extends StatelessWidget {
                 textColor: Colors.white,
                 title: const Text('Sair'),
                 onTap: () {
+                  getIt<UserController>().dispose();
                   authService.deslogar();
                   Navigator.of(context).popUntil((route) => route.isFirst);
                 },
