@@ -28,6 +28,21 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
         useMaterial3: true,
+        textSelectionTheme: const TextSelectionThemeData(
+            selectionColor: Colors.blue,
+            cursorColor: Colors.white,
+            selectionHandleColor: Colors.blue),
+        inputDecorationTheme: const InputDecorationTheme(
+          enabledBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: Colors.grey),
+          ),
+          focusedBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: Colors.white),
+          ),
+          hintStyle: TextStyle(
+            color: Colors.white60
+          )
+        ),
       ),
       routes: {
         '/' : (context) => const GetScreen(),
