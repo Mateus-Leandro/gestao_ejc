@@ -1,8 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:gestao_ejc/models/userModel.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
+import 'package:gestao_ejc/services/user_service.dart';
 
 class AuthService {
   final FirebaseAuth _firebaseAuth = getIt<FirebaseAuth>();
+  final UserService _userService = getIt<UserService>();
 
   Future<String?> entrarUsuario(
       {required String email, required String senha}) async {
@@ -16,15 +19,20 @@ class AuthService {
   }
 
   Future<String?> cadastrarUsuario(
-      {required String email,
-      required String senha,
-      required String nome}) async {
+      {required UserModel user, required String password}) async {
     try {
-      UserCredential userCredential = await _firebaseAuth
-          .createUserWithEmailAndPassword(email: email, password: senha);
+      UserCredential userCredential =
+          await _firebaseAuth.createUserWithEmailAndPassword(
+              email: user.email, password: password);
       User? newUser = userCredential.user;
-      await newUser?.updateDisplayName(nome);
+      await newUser?.updateDisplayName(user.name);
       await newUser?.reload();
+
+      if(newUser != null){
+        user.userId = newUser.uid;
+        _userService.addUser(user);
+      }
+
     } on FirebaseAuthException catch (e) {
       return erroAuth(e);
     }

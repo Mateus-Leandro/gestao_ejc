@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gestao_ejc/components/user_form.dart';
 import 'package:gestao_ejc/controllers/user_controller.dart';
 import 'package:gestao_ejc/models/userModel.dart';
 import 'package:gestao_ejc/screens/model_screen.dart';
@@ -60,7 +61,14 @@ class _UserScreenState extends State<UserScreen> {
         Tooltip(
           message: 'Novo usuário',
           child: IconButton(
-            onPressed: _onNewUserPressed,
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return const UserForm();
+                },
+              );
+            },
             icon: const Icon(Icons.add),
             style: IconButton.styleFrom(
               backgroundColor: Colors.white,
@@ -112,7 +120,6 @@ class _UserScreenState extends State<UserScreen> {
     );
   }
 
-  /// Método que cria cada item (tile) da lista de usuários
   Widget _buildUserTile(BuildContext context, UserModel user) {
     return ListTile(
       title: Text(

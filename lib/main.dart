@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:gestao_ejc/screens/home_screen.dart';
 import 'package:gestao_ejc/screens/login_screen.dart';
 import 'package:gestao_ejc/screens/user_screen.dart';
@@ -24,14 +25,23 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
+      title: 'Gestão EJC',
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('pt', 'BR'), // Suporte ao português do Brasil
+      ],
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
         useMaterial3: true,
         textSelectionTheme: const TextSelectionThemeData(
-            selectionColor: Colors.blue,
-            cursorColor: Colors.white,
-            selectionHandleColor: Colors.blue),
+          selectionColor: Colors.blue,
+          cursorColor: Colors.blue,
+          selectionHandleColor: Colors.blue,
+        ),
         inputDecorationTheme: const InputDecorationTheme(
           enabledBorder: UnderlineInputBorder(
             borderSide: BorderSide(color: Colors.grey),

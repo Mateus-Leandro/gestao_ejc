@@ -16,4 +16,15 @@ class UserService {
       return [];
     }
   }
+
+  Future<void> addUser(UserModel newUser) async {
+    try {
+      await _firestore
+          .collection('users')
+          .doc(newUser.userId)
+          .set(newUser.toJson());
+    } catch (e) {
+      print('Erro ao adicionar usuário: $e');
+    }
+  }
 }
