@@ -1,8 +1,8 @@
 class UserModel {
   UserModel({
+    required this.activeUser,
     required this.birthday,
     required this.email,
-    required this.name,
     required this.manipulateAdministrator,
     required this.manipulateCircles,
     required this.manipulateEncounter,
@@ -11,12 +11,13 @@ class UserModel {
     required this.manipulateImport,
     required this.manipulateMembers,
     required this.manipulateUsers,
-    required this.activeUser,
+    required this.name,
+    required this.userId,
   });
 
+  final bool activeUser;
   final String birthday;
   final String email;
-  final String name;
   final bool manipulateAdministrator;
   final bool manipulateCircles;
   final bool manipulateEncounter;
@@ -25,13 +26,14 @@ class UserModel {
   final bool manipulateImport;
   final bool manipulateMembers;
   final bool manipulateUsers;
-  final bool activeUser;
+  final String name;
+  String userId;
 
   Map<String, dynamic> toJson() {
     return {
+      'activeUser': activeUser,
       'birthday': birthday,
       'email': email,
-      'name': name,
       'manipulateAdministrator': manipulateAdministrator,
       'manipulateCircles': manipulateCircles,
       'manipulateEncounter': manipulateEncounter,
@@ -39,15 +41,17 @@ class UserModel {
       'manipulateFinancial': manipulateFinancial,
       'manipulateImport': manipulateImport,
       'manipulateMembers': manipulateMembers,
-      'activeUser': activeUser,
+      'manipulateUsers': manipulateUsers,
+      'name': name,
+      'userId' : userId,
     };
   }
 
   factory UserModel.fromJson(Map<String, dynamic> map) {
     return UserModel(
+      activeUser: map['activeUser'],
       birthday: map['birthday'],
       email: map['email'],
-      name: map['name'],
       manipulateAdministrator: map['manipulateAdministrator'],
       manipulateCircles: map['manipulateCircles'],
       manipulateEncounter: map['manipulateEncounter'],
@@ -56,7 +60,8 @@ class UserModel {
       manipulateImport: map['manipulateImport'],
       manipulateMembers: map['manipulateMembers'],
       manipulateUsers: map['manipulateUsers'],
-      activeUser: map['activeUser'],
+      name: map['name'],
+      userId: map['userId'],
     );
   }
 }
