@@ -167,7 +167,9 @@ class _UserFormState extends State<UserForm> {
 
       if (result == null) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Usuário cadastrado com sucesso!')),
+          SnackBar(
+              content: Text('Usuário ${newUser.name} cadastrado com sucesso!'),
+              backgroundColor: Colors.green),
         );
         Navigator.of(context).pop();
       } else {

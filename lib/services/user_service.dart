@@ -27,4 +27,14 @@ class UserService {
       print('Erro ao adicionar usuário: $e');
     }
   }
+
+  Future<UserModel?> getActualUser({required String idUser}) async {
+    DocumentSnapshot snapshot =
+        await _firestore.collection('users').doc(idUser).get();
+    if (snapshot.exists) {
+      return UserModel.fromJson(snapshot.data() as Map<String, dynamic>);
+    } else {
+      return null;
+    }
+  }
 }

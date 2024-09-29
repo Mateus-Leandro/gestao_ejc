@@ -6,6 +6,8 @@ import 'package:gestao_ejc/services/user_service.dart';
 class AuthService {
   final FirebaseAuth _firebaseAuth = getIt<FirebaseAuth>();
   final UserService _userService = getIt<UserService>();
+  late final UserModel _actualUser;
+  late final String _passwordActualUser;
 
   Future<String?> entrarUsuario(
       {required String email, required String senha}) async {
@@ -15,6 +17,7 @@ class AuthService {
     } on FirebaseAuthException catch (e) {
       return erroAuth(e);
     }
+    _saveActualUser(senha);
     return null;
   }
 
@@ -27,12 +30,11 @@ class AuthService {
       User? newUser = userCredential.user;
       await newUser?.updateDisplayName(user.name);
       await newUser?.reload();
-
-      if(newUser != null){
+      if (newUser != null) {
         user.userId = newUser.uid;
         _userService.addUser(user);
+        entrarUsuario(email: _actualUser.email, senha: _passwordActualUser);
       }
-
     } on FirebaseAuthException catch (e) {
       return erroAuth(e);
     }
@@ -74,5 +76,11 @@ class AuthService {
       default:
         return 'Erro, tente novamente.';
     }
+  }
+
+  void _saveActualUser(String senha) async {
+    final _user = _firebaseAuth.currentUser;
+    _actualUser = (await _userService.getActualUser(idUser: _user!.uid))!;
+    _passwordActualUser = senha;
   }
 }
