@@ -11,6 +11,7 @@ class UserController extends ChangeNotifier {
   final AuthService _authService = getIt<AuthService>();
 
   var _streamController;
+
   Stream<List<UserModel>>? get stream => _streamController.stream;
 
   void init() {
@@ -29,9 +30,17 @@ class UserController extends ChangeNotifier {
     super.dispose();
   }
 
-  Future<String?> addUser({required UserModel newUser, required String password}) async {
-    String? result =
-        await _authService.createUser(user: newUser, password: password);
+  Future<String?> saveUser(
+      {required UserModel newUser, String? password}) async {
+
+    String? result;
+
+    if (password == null) {
+      result = await _userService.saveUser(newUser);
+    } else {
+      result = await _authService.createUser(user: newUser, password: password);
+    }
+
     if (result == null) {
       getUsers();
       return null;

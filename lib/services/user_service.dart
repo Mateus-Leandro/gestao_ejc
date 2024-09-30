@@ -17,14 +17,15 @@ class UserService {
     }
   }
 
-  Future<void> addUser(UserModel newUser) async {
+  Future<String?> saveUser(UserModel newUser) async {
     try {
       await _firestore
           .collection('users')
           .doc(newUser.userId)
           .set(newUser.toJson());
+      return null;
     } catch (e) {
-      print('Erro ao adicionar usuário: $e');
+      return 'Erro ao salvar usuário: $e';
     }
   }
 

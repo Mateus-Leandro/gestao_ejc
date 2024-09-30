@@ -32,7 +32,7 @@ class AuthService {
       await newUser?.reload();
       if (newUser != null) {
         user.userId = newUser.uid;
-        _userService.addUser(user);
+        _userService.saveUser(user);
         logIn(email: _actualUser.email, senha: _passwordActualUser);
       }
     } on FirebaseAuthException catch (e) {

@@ -62,12 +62,7 @@ class _UserScreenState extends State<UserScreen> {
           message: 'Novo usuário',
           child: IconButton(
             onPressed: () {
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return const UserForm();
-                },
-              );
+              _showUserForm(null);
             },
             icon: const Icon(Icons.add),
             style: IconButton.styleFrom(
@@ -137,7 +132,7 @@ class _UserScreenState extends State<UserScreen> {
           Tooltip(
             message: 'Editar',
             child: IconButton(
-              onPressed: () => _onEditUserPressed(user),
+              onPressed: () => _showUserForm(user),
               icon: const Icon(Icons.edit),
             ),
           ),
@@ -156,12 +151,13 @@ class _UserScreenState extends State<UserScreen> {
     );
   }
 
-  void _onNewUserPressed() {
-    // TODO: Lógica para adicionar um novo usuário
-  }
-
-  void _onEditUserPressed(UserModel user) {
-    // TODO: Lógica para editar o usuário
+  void _showUserForm(UserModel? user) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return UserForm(userEditing: user);
+      },
+    );
   }
 
   void _onDeactivateUserPressed(UserModel user) {
