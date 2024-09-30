@@ -29,6 +29,8 @@ class _UserFormState extends State<UserForm> {
   bool manipulateMembers = false;
   bool manipulateUsers = false;
 
+  bool _savingUser = false;
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -69,7 +71,16 @@ class _UserFormState extends State<UserForm> {
           ),
         ),
       ),
-      actions: [
+      actions: _savingUser
+          ? [
+        Center(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10),
+            child: CircularProgressIndicator(),
+          ),
+        )
+      ]
+          : [
         TextButton(
           onPressed: () {
             Navigator.of(context).pop();
@@ -99,7 +110,9 @@ class _UserFormState extends State<UserForm> {
           border: const OutlineInputBorder(),
         ),
         validator: validatorFunction ??
-            (value) => value!.isEmpty ? 'Informe o $label do usuário' : null);
+                (value) {
+              return value!.isEmpty ? 'Informe o $label do usuário' : null;
+            });
   }
 
   Widget _buildPermissionCheckboxes() {
@@ -110,36 +123,43 @@ class _UserFormState extends State<UserForm> {
             manipulateAdministrator = value!;
             manipulateCircles = manipulateEncounter = manipulateExport =
                 manipulateFinancial = manipulateImport = manipulateMembers =
-                    manipulateUsers = manipulateAdministrator;
+                manipulateUsers = manipulateAdministrator;
           });
         }),
         _buildCheckbox('Círculos', manipulateCircles, (value) {
-          if (!manipulateAdministrator)
+          if (!manipulateAdministrator) {
             setState(() => manipulateCircles = value!);
+          }
         }, disabled: manipulateAdministrator),
         _buildCheckbox('Encontros', manipulateEncounter, (value) {
-          if (!manipulateAdministrator)
+          if (!manipulateAdministrator) {
             setState(() => manipulateEncounter = value!);
+          }
         }, disabled: manipulateAdministrator),
         _buildCheckbox('Exportações', manipulateExport, (value) {
-          if (!manipulateAdministrator)
+          if (!manipulateAdministrator) {
             setState(() => manipulateExport = value!);
+          }
         }, disabled: manipulateAdministrator),
         _buildCheckbox('Financeiro', manipulateFinancial, (value) {
-          if (!manipulateAdministrator)
+          if (!manipulateAdministrator) {
             setState(() => manipulateFinancial = value!);
+          }
         }, disabled: manipulateAdministrator),
         _buildCheckbox('Importações', manipulateImport, (value) {
-          if (!manipulateAdministrator)
+          if (!manipulateAdministrator) {
             setState(() => manipulateImport = value!);
+          }
         }, disabled: manipulateAdministrator),
         _buildCheckbox('Membros', manipulateMembers, (value) {
-          if (!manipulateAdministrator)
+          if (!manipulateAdministrator) {
             setState(() => manipulateMembers = value!);
+          }
         }, disabled: manipulateAdministrator),
         _buildCheckbox('Usuários', manipulateUsers, (value) {
-          if (!manipulateAdministrator)
+          if (!manipulateAdministrator) {
             setState(() => manipulateUsers = value!);
+          }
         }, disabled: manipulateAdministrator),
       ],
     );
@@ -147,6 +167,10 @@ class _UserFormState extends State<UserForm> {
 
   void _saveUser() async {
     if (_formKey.currentState!.validate()) {
+      setState(() {
+        _savingUser = true;
+      });
+
       UserModel newUser = UserModel(
           activeUser: true,
           birthday: _birthdayController.text.trim(),
@@ -164,6 +188,10 @@ class _UserFormState extends State<UserForm> {
 
       String? result = await _userController.addUser(
           newUser: newUser, password: _passwordController.text.trim());
+
+      setState(() {
+        _savingUser = false;
+      });
 
       if (result == null) {
         ScaffoldMessenger.of(context).showSnackBar(
