@@ -44,7 +44,7 @@ class _PasswordResetModalState extends State<PasswordResetModal> {
         TextButton(
           onPressed: () {
             if (_formKey.currentState!.validate()) {
-              _authService.redefinicaoSenha(email: _emailController.text).then(
+              _authService.resetPassword(email: _emailController.text).then(
                 (String? erro) {
                   Navigator.of(context).pop();
 

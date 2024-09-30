@@ -9,7 +9,7 @@ class AuthService {
   late final UserModel _actualUser;
   late final String _passwordActualUser;
 
-  Future<String?> entrarUsuario(
+  Future<String?> logIn(
       {required String email, required String senha}) async {
     try {
       await _firebaseAuth.signInWithEmailAndPassword(
@@ -21,7 +21,7 @@ class AuthService {
     return null;
   }
 
-  Future<String?> cadastrarUsuario(
+  Future<String?> createUser(
       {required UserModel user, required String password}) async {
     try {
       UserCredential userCredential =
@@ -33,7 +33,7 @@ class AuthService {
       if (newUser != null) {
         user.userId = newUser.uid;
         _userService.addUser(user);
-        entrarUsuario(email: _actualUser.email, senha: _passwordActualUser);
+        logIn(email: _actualUser.email, senha: _passwordActualUser);
       }
     } on FirebaseAuthException catch (e) {
       return erroAuth(e);
@@ -41,7 +41,7 @@ class AuthService {
     return null;
   }
 
-  Future<String?> redefinicaoSenha({required String email}) async {
+  Future<String?> resetPassword({required String email}) async {
     try {
       await _firebaseAuth.sendPasswordResetEmail(email: email);
     } on FirebaseAuthException catch (e) {
@@ -50,7 +50,7 @@ class AuthService {
     return null;
   }
 
-  Future<String?> deslogar() async {
+  Future<String?> logOut() async {
     try {
       await _firebaseAuth.signOut();
     } on FirebaseAuthException catch (e) {

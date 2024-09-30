@@ -71,7 +71,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ElevatedButton(
                           onPressed: () {
                             _authService
-                                .entrarUsuario(
+                                .logIn(
                                     email: _emailController.text,
                                     senha: _senhaController.text)
                                 .then((String? error) {

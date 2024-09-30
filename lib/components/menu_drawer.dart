@@ -125,7 +125,7 @@ class MenuDrawer extends StatelessWidget {
                 title: const Text('Sair'),
                 onTap: () {
                   getIt<UserController>().dispose();
-                  authService.deslogar();
+                  authService.logOut();
                   Navigator.of(context).popUntil((route) => route.isFirst);
                 },
               ),

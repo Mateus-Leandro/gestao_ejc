@@ -31,8 +31,7 @@ class UserController extends ChangeNotifier {
 
   Future<String?> addUser({required UserModel newUser, required String password}) async {
     String? result =
-        await _authService.cadastrarUsuario(user: newUser, password: password);
-
+        await _authService.createUser(user: newUser, password: password);
     if (result == null) {
       getUsers();
       return null;
