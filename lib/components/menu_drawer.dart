@@ -100,23 +100,20 @@ class MenuDrawer extends StatelessWidget {
                   callScreen(context, '/users', 6);
                 },
               ),
-              SizedBox(
-                height: 170,
-                child: UserAccountsDrawerHeader(
-                  decoration:
-                      BoxDecoration(color: Theme.of(context).primaryColor),
-                  currentAccountPicture: const CircleAvatar(
-                    backgroundColor: Colors.white,
-                    child: Icon(
-                      Icons.account_circle,
-                      size: 50,
-                      color: Colors.indigo,
-                    ),
+              UserAccountsDrawerHeader(
+                decoration:
+                    BoxDecoration(color: Theme.of(context).primaryColor),
+                currentAccountPicture: const CircleAvatar(
+                  backgroundColor: Colors.white,
+                  child: Icon(
+                    Icons.account_circle,
+                    size: 60,
+                    color: Colors.indigo,
                   ),
-                  accountName: Text(user.displayName ?? ''),
-                  accountEmail: Text(user.email!),
-                  margin: EdgeInsets.zero,
                 ),
+                accountName: Text(user.displayName ?? ''),
+                accountEmail: Text(user.email!),
+                margin: EdgeInsets.zero,
               ),
               ListTile(
                 tileColor: tileColor,
