@@ -35,7 +35,10 @@ class MyApp extends StatelessWidget {
         Locale('pt', 'BR'),
       ],
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.blue,
+          primary: const Color(0xFF001F3F),
+        ),
         useMaterial3: true,
         textSelectionTheme: const TextSelectionThemeData(
           selectionColor: Colors.blue,
@@ -47,7 +50,7 @@ class MyApp extends StatelessWidget {
             borderSide: BorderSide(color: Colors.grey),
           ),
           focusedBorder: UnderlineInputBorder(
-            borderSide: BorderSide(color: Colors.white),
+            borderSide: BorderSide(color: Color(0xFF001F3F)),
           ),
           hintStyle: TextStyle(
             color: Colors.white60
