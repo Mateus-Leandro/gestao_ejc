@@ -1,3 +1,4 @@
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:gestao_ejc/screens/password_reset_modal.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
@@ -15,6 +16,15 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _senhaController = TextEditingController();
 
+  String? logoUrl;
+  String? roseUrl;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadImages();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,7 +33,17 @@ class _LoginScreenState extends State<LoginScreen> {
           Expanded(
             flex: 3,
             child: Container(
-              color: Colors.indigo,
+              color: Theme.of(context).primaryColor,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  roseUrl != null
+                      ? Image.network(
+                          roseUrl!,
+                        )
+                      : const CircularProgressIndicator(),
+                ],
+              ),
             ),
           ),
           Expanded(
@@ -33,15 +53,19 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  const FlutterLogo(
-                    size: 350,
-                    style: FlutterLogoStyle.stacked,
-                  ),
+                  logoUrl != null
+                      ? Image.network(
+                          logoUrl!,
+                          height: 300,
+                          width: 400,
+                          fit: BoxFit.fill,
+                        )
+                      : const CircularProgressIndicator(),
                   Container(
-                    padding: const EdgeInsets.all(30),
+                    padding: const EdgeInsets.only(left: 20, right: 20),
                     child: Column(
                       children: [
-                        const SizedBox(height: 40),
+                        const SizedBox(height: 20),
                         TextField(
                           controller: _emailController,
                           decoration: const InputDecoration(
@@ -65,7 +89,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   return const PasswordResetModal();
                                 });
                           },
-                          child: Text('Esqueci minha senha.'),
+                          child: const Text('Esqueci minha senha.'),
                         ),
                         const SizedBox(height: 30),
                         ElevatedButton(
@@ -86,7 +110,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           },
                           style: ElevatedButton.styleFrom(
                               foregroundColor: Colors.white,
-                              backgroundColor: Colors.indigo,
+                              backgroundColor: Theme.of(context).primaryColor,
                               fixedSize: const Size(220, 60)),
                           child: const Text('Acessar'),
                         )
@@ -100,5 +124,26 @@ class _LoginScreenState extends State<LoginScreen> {
         ],
       ),
     );
+  }
+
+  Future<void> _loadImages() async {
+    try {
+      final List<String> imagePaths = [
+        "images/app/logos/logo02.png",
+        "images/app/roses/rosa02.png"
+      ];
+
+      final List<String> urls = await Future.wait(imagePaths.map((path) async {
+        final Reference ref = FirebaseStorage.instance.ref().child(path);
+        return await ref.getDownloadURL();
+      }).toList());
+
+      setState(() {
+        logoUrl = urls[0];
+        roseUrl = urls[1];
+      });
+    } catch (e) {
+      print('Erro ao carregar imagens: $e');
+    }
   }
 }
