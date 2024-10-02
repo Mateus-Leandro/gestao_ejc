@@ -1,1 +1,37 @@
-{"flutter":{"platforms":{"android":{"default":{"projectId":"gestao-ejc","appId":"1:287517024269:android:f0cecf34fe35f12a2bb544","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options.dart":{"projectId":"gestao-ejc","configurations":{"android":"1:287517024269:android:f0cecf34fe35f12a2bb544","ios":"1:287517024269:ios:1421455161bad1842bb544","web":"1:287517024269:web:55047d77698058d12bb544"}}}}}}
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "gestao-ejc",
+          "appId": "1:287517024269:android:f0cecf34fe35f12a2bb544",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "gestao-ejc",
+          "configurations": {
+            "android": "1:287517024269:android:f0cecf34fe35f12a2bb544",
+            "ios": "1:287517024269:ios:1421455161bad1842bb544",
+            "web": "1:287517024269:web:55047d77698058d12bb544"
+          }
+        }
+      }
+    }
+  },
+  "hosting": {
+    "public": "build/web",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
+}
