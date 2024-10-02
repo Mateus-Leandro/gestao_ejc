@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gestao_ejc/components/user_form.dart';
 import 'package:gestao_ejc/controllers/user_controller.dart';
-import 'package:gestao_ejc/models/userModel.dart';
+import 'package:gestao_ejc/models/user_model.dart';
 import 'package:gestao_ejc/screens/model_screen.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
 

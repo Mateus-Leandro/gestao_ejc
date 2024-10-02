@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:gestao_ejc/models/userModel.dart';
+import 'package:gestao_ejc/models/user_model.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
 
 class UserService {
