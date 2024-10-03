@@ -1,23 +1,6 @@
-class UserModel {
-  UserModel({
-    required this.activeUser,
-    required this.birthday,
-    required this.email,
-    required this.manipulateAdministrator,
-    required this.manipulateCircles,
-    required this.manipulateEncounter,
-    required this.manipulateExport,
-    required this.manipulateFinancial,
-    required this.manipulateImport,
-    required this.manipulateMembers,
-    required this.manipulateUsers,
-    required this.name,
-    required this.userId,
-  });
+import 'package:gestao_ejc/models/abstract_person_model.dart';
 
-  final bool activeUser;
-  final String birthday;
-  final String email;
+class UserModel extends AbstractPersonModel {
   final bool manipulateAdministrator;
   final bool manipulateCircles;
   final bool manipulateEncounter;
@@ -26,14 +9,31 @@ class UserModel {
   final bool manipulateImport;
   final bool manipulateMembers;
   final bool manipulateUsers;
-  final String name;
-  String userId;
 
+  UserModel({
+    super.id,
+    required super.active,
+    required super.name,
+    required super.email,
+    required super.birthday,
+    required this.manipulateAdministrator,
+    required this.manipulateCircles,
+    required this.manipulateEncounter,
+    required this.manipulateExport,
+    required this.manipulateFinancial,
+    required this.manipulateImport,
+    required this.manipulateMembers,
+    required this.manipulateUsers,
+  });
+
+  @override
   Map<String, dynamic> toJson() {
     return {
-      'activeUser': activeUser,
-      'birthday': birthday,
-      'email': email,
+      'id': super.id,
+      'active': super.active,
+      'name': super.name,
+      'email': super.email,
+      'birthday': super.birthday,
       'manipulateAdministrator': manipulateAdministrator,
       'manipulateCircles': manipulateCircles,
       'manipulateEncounter': manipulateEncounter,
@@ -42,26 +42,24 @@ class UserModel {
       'manipulateImport': manipulateImport,
       'manipulateMembers': manipulateMembers,
       'manipulateUsers': manipulateUsers,
-      'name': name,
-      'userId' : userId,
     };
   }
 
   factory UserModel.fromJson(Map<String, dynamic> map) {
     return UserModel(
-      activeUser: map['activeUser'],
-      birthday: map['birthday'],
-      email: map['email'],
-      manipulateAdministrator: map['manipulateAdministrator'],
-      manipulateCircles: map['manipulateCircles'],
-      manipulateEncounter: map['manipulateEncounter'],
-      manipulateExport: map['manipulateExport'],
-      manipulateFinancial: map['manipulateFinancial'],
-      manipulateImport: map['manipulateImport'],
-      manipulateMembers: map['manipulateMembers'],
-      manipulateUsers: map['manipulateUsers'],
-      name: map['name'],
-      userId: map['userId'],
+      id: map['id'] ?? '',
+      active: map['active'] ?? true,
+      name: map['name'] ?? '',
+      email: map['email'] ?? '',
+      birthday: map['birthday'] ?? '',
+      manipulateAdministrator: map['manipulateAdministrator'] ?? false,
+      manipulateCircles: map['manipulateCircles'] ?? false,
+      manipulateEncounter: map['manipulateEncounter'] ?? false,
+      manipulateExport: map['manipulateExport'] ?? false,
+      manipulateFinancial: map['manipulateFinancial'] ?? false,
+      manipulateImport: map['manipulateImport'] ?? false,
+      manipulateMembers: map['manipulateMembers'] ?? false,
+      manipulateUsers: map['manipulateUsers'] ?? false,
     );
   }
 }

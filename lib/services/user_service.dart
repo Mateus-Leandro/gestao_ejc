@@ -21,7 +21,7 @@ class UserService {
     try {
       await _firestore
           .collection('users')
-          .doc(newUser.userId)
+          .doc(newUser.id)
           .set(newUser.toJson());
       return null;
     } catch (e) {
