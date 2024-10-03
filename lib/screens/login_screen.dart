@@ -56,9 +56,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   logoUrl != null
                       ? Image.network(
                           logoUrl!,
-                          height: 300,
-                          width: 400,
-                          fit: BoxFit.fill,
                         )
                       : const CircularProgressIndicator(),
                   Container(
