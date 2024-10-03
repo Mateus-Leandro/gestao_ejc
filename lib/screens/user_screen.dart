@@ -120,7 +120,7 @@ class _UserScreenState extends State<UserScreen> {
       title: Text(
         user.name,
         style: TextStyle(
-          color: user.activeUser
+          color: user.active
               ? (user.manipulateAdministrator ? Colors.blue : Colors.black)
               : Colors.red,
         ),

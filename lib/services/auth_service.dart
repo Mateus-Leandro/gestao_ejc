@@ -9,8 +9,7 @@ class AuthService {
   late final UserModel _actualUser;
   late final String _passwordActualUser;
 
-  Future<String?> logIn(
-      {required String email, required String senha}) async {
+  Future<String?> logIn({required String email, required String senha}) async {
     try {
       await _firebaseAuth.signInWithEmailAndPassword(
           email: email, password: senha);
@@ -31,7 +30,7 @@ class AuthService {
       await newUser?.updateDisplayName(user.name);
       await newUser?.reload();
       if (newUser != null) {
-        user.userId = newUser.uid;
+        user.id = newUser.uid;
         _userService.saveUser(user);
         logIn(email: _actualUser.email, senha: _passwordActualUser);
       }

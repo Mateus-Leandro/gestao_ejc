@@ -217,7 +217,7 @@ class _UserFormState extends State<UserForm> {
       });
 
       UserModel newUser = UserModel(
-        activeUser: true,
+        active: true,
         birthday: _birthdayController.text.trim(),
         email: _emailController.text.trim(),
         manipulateAdministrator: manipulateAdministrator,
@@ -229,7 +229,7 @@ class _UserFormState extends State<UserForm> {
         manipulateMembers: manipulateMembers,
         manipulateUsers: manipulateUsers,
         name: _nameController.text.trim(),
-        userId: widget.userEditing?.userId ?? '',
+        id: widget.userEditing?.id ?? '',
       );
 
       String? password =
