@@ -8,7 +8,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ModelScreen(
-      title: 'Gestao EJC',
+      title: 'Gestão EJC',
       body: Center(
         child: Text(
           "Seja Bem vindo ${FirebaseAuth.instance.currentUser?.displayName ?? ''}",
