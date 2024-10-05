@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:gestao_ejc/components/custom_firestore_image.dart';
 import 'package:gestao_ejc/services/auth_service.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
 
@@ -10,26 +11,32 @@ class MenuDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Color tileColor = Theme.of(context).primaryColor;
-    const Color selectedTileColor = Colors.white;
+    const Color selectedTileColor = Colors.blue;
     const Color textColor = Colors.white;
-    final Color selectedTextColor = Theme.of(context).primaryColor;
+
     FirebaseAuth firebaseAuth = getIt<FirebaseAuth>();
     AuthService authService = getIt<AuthService>();
 
     final User user = firebaseAuth.currentUser!;
 
     return Drawer(
-      backgroundColor: Colors.lightBlueAccent,
+      backgroundColor: Theme.of(context).primaryColor,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
+          const Column(
+            children: [
+              CustomFirestoreImage(imagePath: "images/app/roses/rosa02.png"),
+            ],
+          ),
           Column(
             children: [
               ListTile(
                   selectedTileColor: selectedTileColor,
-                  selectedColor: selectedTextColor,
+                  selectedColor: textColor,
                   textColor: textColor,
                   tileColor: tileColor,
+                  hoverColor: selectedTileColor,
                   title: const Text('Encontros'),
                   selected: indexMenuSelected == 0,
                   onTap: () {
@@ -37,9 +44,10 @@ class MenuDrawer extends StatelessWidget {
                   }),
               ListTile(
                   selectedTileColor: selectedTileColor,
-                  selectedColor: selectedTextColor,
+                  selectedColor: textColor,
                   textColor: textColor,
                   tileColor: tileColor,
+                  hoverColor: selectedTileColor,
                   title: const Text('Circulos'),
                   selected: indexMenuSelected == 1,
                   onTap: () {
@@ -47,9 +55,10 @@ class MenuDrawer extends StatelessWidget {
                   }),
               ListTile(
                   selectedTileColor: selectedTileColor,
-                  selectedColor: selectedTextColor,
+                  selectedColor: textColor,
                   textColor: textColor,
                   tileColor: tileColor,
+                  hoverColor: selectedTileColor,
                   title: const Text('Membros'),
                   selected: indexMenuSelected == 2,
                   onTap: () {
@@ -57,9 +66,10 @@ class MenuDrawer extends StatelessWidget {
                   }),
               ListTile(
                   selectedTileColor: selectedTileColor,
-                  selectedColor: selectedTextColor,
+                  selectedColor: textColor,
                   textColor: textColor,
                   tileColor: tileColor,
+                  hoverColor: selectedTileColor,
                   title: const Text('Exportação'),
                   selected: indexMenuSelected == 3,
                   onTap: () {
@@ -67,9 +77,10 @@ class MenuDrawer extends StatelessWidget {
                   }),
               ListTile(
                   selectedTileColor: selectedTileColor,
-                  selectedColor: selectedTextColor,
+                  selectedColor: textColor,
                   textColor: textColor,
                   tileColor: tileColor,
+                  hoverColor: selectedTileColor,
                   title: const Text('Importação'),
                   selected: indexMenuSelected == 4,
                   onTap: () {
@@ -77,47 +88,32 @@ class MenuDrawer extends StatelessWidget {
                   }),
               ListTile(
                   selectedTileColor: selectedTileColor,
-                  selectedColor: selectedTextColor,
+                  selectedColor: textColor,
                   textColor: textColor,
                   tileColor: tileColor,
+                  hoverColor: selectedTileColor,
                   title: const Text('Financeiro'),
                   selected: indexMenuSelected == 5,
                   onTap: () {
                     callScreen(context, '/financial', 5);
                   }),
-            ],
-          ),
-          Column(
-            children: [
               ListTile(
                 selectedTileColor: selectedTileColor,
-                selectedColor: selectedTextColor,
+                selectedColor: textColor,
                 textColor: textColor,
                 tileColor: tileColor,
+                hoverColor: selectedTileColor,
                 title: const Text('Cadastro de Usuarios'),
                 selected: indexMenuSelected == 6,
                 onTap: () {
                   callScreen(context, '/users', 6);
                 },
               ),
-              UserAccountsDrawerHeader(
-                decoration:
-                    BoxDecoration(color: Theme.of(context).primaryColor),
-                currentAccountPicture: const CircleAvatar(
-                  backgroundColor: Colors.white,
-                  child: Icon(
-                    Icons.account_circle,
-                    size: 60,
-                    color: Colors.indigo,
-                  ),
-                ),
-                accountName: Text(user.displayName ?? ''),
-                accountEmail: Text(user.email!),
-                margin: EdgeInsets.zero,
-              ),
               ListTile(
                 tileColor: tileColor,
+                selectedColor: textColor,
                 textColor: Colors.white,
+                hoverColor: selectedTileColor,
                 title: const Text('Sair'),
                 onTap: () {
                   authService.logOut();
