@@ -1,7 +1,6 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gestao_ejc/components/custom_firestore_image.dart';
-import 'package:gestao_ejc/services/auth_service.dart';
+import 'package:gestao_ejc/functions/function_screen.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
 
 class MenuDrawer extends StatelessWidget {
@@ -13,10 +12,7 @@ class MenuDrawer extends StatelessWidget {
     final Color tileColor = Theme.of(context).primaryColor;
     const Color selectedTileColor = Colors.blue;
     const Color textColor = Colors.white;
-
-    FirebaseAuth firebaseAuth = getIt<FirebaseAuth>();
-    AuthService authService = getIt<AuthService>();
-    final User user = firebaseAuth.currentUser!;
+    final FunctionScreen functionScreen = getIt<FunctionScreen>();
 
     final List<Map<String, dynamic>> menuItems = [
       {'title': 'Encontros', 'route': '/encounters', 'index': 0},
@@ -33,12 +29,22 @@ class MenuDrawer extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          const Padding(
-            padding: EdgeInsets.all(8.0),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
             child: SizedBox(
               width: double.infinity,
-              child: CustomFirestoreImage(
-                imagePath: "images/app/logos/logo07.png",
+              child: TextButton(
+                onPressed: () {
+                  functionScreen.call(
+                      context: context,
+                      route: "/",
+                      indexMenu: null,
+                      indexMenuSelected: indexMenuSelected,
+                      popActualScreen: true);
+                },
+                child: CustomFirestoreImage(
+                  imagePath: "images/app/logos/logo07.png",
+                ),
               ),
             ),
           ),
@@ -57,7 +63,12 @@ class MenuDrawer extends StatelessWidget {
                     title: Text(item['title']),
                     selected: indexMenuSelected == item['index'],
                     onTap: () {
-                      callScreen(context, item['route'], item['index']);
+                      functionScreen.call(
+                          context: context,
+                          route: item['route'],
+                          indexMenu: item['index'],
+                          indexMenuSelected: indexMenuSelected,
+                          popActualScreen: true);
                     },
                   ),
                 ListTile(
@@ -67,11 +78,7 @@ class MenuDrawer extends StatelessWidget {
                   hoverColor: selectedTileColor,
                   title: const Text('Sair'),
                   onTap: () {
-                    authService.logOut();
-                    Navigator.of(context).pushNamedAndRemoveUntil(
-                      '/',
-                          (Route<dynamic> route) => false,
-                    );
+                    functionScreen.callLogOut(context: context);
                   },
                 ),
               ],
@@ -80,12 +87,5 @@ class MenuDrawer extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  void callScreen(BuildContext context, String route, int indexMenu) {
-    if (indexMenuSelected != indexMenu) {
-      Navigator.of(context).pop();
-      Navigator.pushNamed(context, route);
-    }
   }
 }
