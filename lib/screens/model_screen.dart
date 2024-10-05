@@ -61,7 +61,24 @@ class _ModelScreenState extends State<ModelScreen> {
           ],
         ),
       ),
-      body: widget.body,
+      body: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: Container(
+            decoration: BoxDecoration(
+              color: Theme.of(context).primaryColor,
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Theme.of(context).canvasColor,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: widget.body,
+              ),
+            )),
+      ),
     );
   }
 }
