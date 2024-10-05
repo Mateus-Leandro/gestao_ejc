@@ -53,7 +53,7 @@ class MyApp extends StatelessWidget {
             borderSide: BorderSide(color: Color(0xFF001F3F)),
           ),
           hintStyle: TextStyle(
-            color: Colors.white60
+            color: Colors.black38
           )
         ),
       ),
