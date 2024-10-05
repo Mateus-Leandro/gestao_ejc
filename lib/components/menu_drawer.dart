@@ -42,47 +42,40 @@ class MenuDrawer extends StatelessWidget {
                       indexMenuSelected: indexMenuSelected,
                       popActualScreen: true);
                 },
-                child: CustomFirestoreImage(
+                child: const CustomFirestoreImage(
                   imagePath: "images/app/logos/logo07.png",
                 ),
               ),
             ),
           ),
-          const Spacer(),
-          Expanded(
-            flex: 7,
-            child: ListView(
-              children: [
-                for (var item in menuItems)
-                  ListTile(
-                    selectedTileColor: selectedTileColor,
-                    selectedColor: textColor,
-                    textColor: textColor,
-                    tileColor: tileColor,
-                    hoverColor: selectedTileColor,
-                    title: Text(item['title']),
-                    selected: indexMenuSelected == item['index'],
-                    onTap: () {
-                      functionScreen.call(
-                          context: context,
-                          route: item['route'],
-                          indexMenu: item['index'],
-                          indexMenuSelected: indexMenuSelected,
-                          popActualScreen: true);
-                    },
-                  ),
-                ListTile(
-                  tileColor: tileColor,
-                  selectedColor: textColor,
-                  textColor: textColor,
-                  hoverColor: selectedTileColor,
-                  title: const Text('Sair'),
-                  onTap: () {
-                    functionScreen.callLogOut(context: context);
-                  },
-                ),
-              ],
+          for (var item in menuItems) ...[
+            ListTile(
+              selectedTileColor: selectedTileColor,
+              selectedColor: textColor,
+              textColor: textColor,
+              tileColor: tileColor,
+              hoverColor: selectedTileColor,
+              title: Text(item['title']),
+              selected: indexMenuSelected == item['index'],
+              onTap: () {
+                functionScreen.call(
+                    context: context,
+                    route: item['route'],
+                    indexMenu: item['index'],
+                    indexMenuSelected: indexMenuSelected,
+                    popActualScreen: true);
+              },
             ),
+          ],
+          ListTile(
+            tileColor: tileColor,
+            selectedColor: textColor,
+            textColor: textColor,
+            hoverColor: selectedTileColor,
+            title: const Text('Sair'),
+            onTap: () {
+              functionScreen.callLogOut(context: context);
+            },
           ),
         ],
       ),
