@@ -1,6 +1,6 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:gestao_ejc/services/auth_service.dart';
+import 'package:gestao_ejc/components/custom_firestore_image.dart';
+import 'package:gestao_ejc/functions/function_screen.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
 
 class MenuDrawer extends StatelessWidget {
@@ -10,134 +10,75 @@ class MenuDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Color tileColor = Theme.of(context).primaryColor;
-    const Color selectedTileColor = Colors.white;
+    const Color selectedTileColor = Colors.blue;
     const Color textColor = Colors.white;
-    final Color selectedTextColor = Theme.of(context).primaryColor;
-    FirebaseAuth firebaseAuth = getIt<FirebaseAuth>();
-    AuthService authService = getIt<AuthService>();
+    final FunctionScreen functionScreen = getIt<FunctionScreen>();
 
-    final User user = firebaseAuth.currentUser!;
+    final List<Map<String, dynamic>> menuItems = [
+      {'title': 'Encontros', 'route': '/encounters', 'index': 0},
+      {'title': 'Círculos', 'route': '/circles', 'index': 1},
+      {'title': 'Membros', 'route': '/members', 'index': 2},
+      {'title': 'Exportação', 'route': '/export', 'index': 3},
+      {'title': 'Importação', 'route': '/import', 'index': 4},
+      {'title': 'Financeiro', 'route': '/financial', 'index': 5},
+      {'title': 'Cadastro de Usuários', 'route': '/users', 'index': 6},
+    ];
 
     return Drawer(
-      backgroundColor: Colors.lightBlueAccent,
+      backgroundColor: tileColor,
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Column(
-            children: [
-              ListTile(
-                  selectedTileColor: selectedTileColor,
-                  selectedColor: selectedTextColor,
-                  textColor: textColor,
-                  tileColor: tileColor,
-                  title: const Text('Encontros'),
-                  selected: indexMenuSelected == 0,
-                  onTap: () {
-                    callScreen(context, '/encounters', 0);
-                  }),
-              ListTile(
-                  selectedTileColor: selectedTileColor,
-                  selectedColor: selectedTextColor,
-                  textColor: textColor,
-                  tileColor: tileColor,
-                  title: const Text('Circulos'),
-                  selected: indexMenuSelected == 1,
-                  onTap: () {
-                    callScreen(context, '/circles', 1);
-                  }),
-              ListTile(
-                  selectedTileColor: selectedTileColor,
-                  selectedColor: selectedTextColor,
-                  textColor: textColor,
-                  tileColor: tileColor,
-                  title: const Text('Membros'),
-                  selected: indexMenuSelected == 2,
-                  onTap: () {
-                    callScreen(context, '/members', 2);
-                  }),
-              ListTile(
-                  selectedTileColor: selectedTileColor,
-                  selectedColor: selectedTextColor,
-                  textColor: textColor,
-                  tileColor: tileColor,
-                  title: const Text('Exportação'),
-                  selected: indexMenuSelected == 3,
-                  onTap: () {
-                    callScreen(context, '/export', 3);
-                  }),
-              ListTile(
-                  selectedTileColor: selectedTileColor,
-                  selectedColor: selectedTextColor,
-                  textColor: textColor,
-                  tileColor: tileColor,
-                  title: const Text('Importação'),
-                  selected: indexMenuSelected == 4,
-                  onTap: () {
-                    callScreen(context, '/import', 4);
-                  }),
-              ListTile(
-                  selectedTileColor: selectedTileColor,
-                  selectedColor: selectedTextColor,
-                  textColor: textColor,
-                  tileColor: tileColor,
-                  title: const Text('Financeiro'),
-                  selected: indexMenuSelected == 5,
-                  onTap: () {
-                    callScreen(context, '/financial', 5);
-                  }),
-            ],
-          ),
-          Column(
-            children: [
-              ListTile(
-                selectedTileColor: selectedTileColor,
-                selectedColor: selectedTextColor,
-                textColor: textColor,
-                tileColor: tileColor,
-                title: const Text('Cadastro de Usuarios'),
-                selected: indexMenuSelected == 6,
-                onTap: () {
-                  callScreen(context, '/users', 6);
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: SizedBox(
+              width: double.infinity,
+              child: TextButton(
+                onPressed: () {
+                  functionScreen.call(
+                      context: context,
+                      route: "/",
+                      indexMenu: null,
+                      indexMenuSelected: indexMenuSelected,
+                      popActualScreen: true);
                 },
-              ),
-              UserAccountsDrawerHeader(
-                decoration:
-                    BoxDecoration(color: Theme.of(context).primaryColor),
-                currentAccountPicture: const CircleAvatar(
-                  backgroundColor: Colors.white,
-                  child: Icon(
-                    Icons.account_circle,
-                    size: 60,
-                    color: Colors.indigo,
-                  ),
+                child: const CustomFirestoreImage(
+                  imagePath: "images/app/logos/logo07.png",
                 ),
-                accountName: Text(user.displayName ?? ''),
-                accountEmail: Text(user.email!),
-                margin: EdgeInsets.zero,
               ),
-              ListTile(
-                tileColor: tileColor,
-                textColor: Colors.white,
-                title: const Text('Sair'),
-                onTap: () {
-                  authService.logOut();
-                  Navigator.of(context).pushNamedAndRemoveUntil(
-                    '/',
-                        (Route<dynamic> route) => false,
-                  );
-                },
-              ),
-            ],
+            ),
+          ),
+          for (var item in menuItems) ...[
+            ListTile(
+              selectedTileColor: selectedTileColor,
+              selectedColor: textColor,
+              textColor: textColor,
+              tileColor: tileColor,
+              hoverColor: selectedTileColor,
+              title: Text(item['title']),
+              selected: indexMenuSelected == item['index'],
+              onTap: () {
+                functionScreen.call(
+                    context: context,
+                    route: item['route'],
+                    indexMenu: item['index'],
+                    indexMenuSelected: indexMenuSelected,
+                    popActualScreen: true);
+              },
+            ),
+          ],
+          ListTile(
+            tileColor: tileColor,
+            selectedColor: textColor,
+            textColor: textColor,
+            hoverColor: selectedTileColor,
+            title: const Text('Sair'),
+            onTap: () {
+              functionScreen.callLogOut(context: context);
+            },
           ),
         ],
       ),
     );
-  }
-
-  void callScreen(BuildContext context, String rout, int indexMenu) {
-    if (indexMenuSelected != indexMenu) {
-      Navigator.of(context).pop();
-      Navigator.pushNamed(context, rout);
-    }
   }
 }

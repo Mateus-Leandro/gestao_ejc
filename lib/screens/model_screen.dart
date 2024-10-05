@@ -1,6 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gestao_ejc/components/menu_drawer.dart';
+import 'package:gestao_ejc/functions/function_screen.dart';
 import 'package:gestao_ejc/helpers/date_format_string.dart';
+import 'package:gestao_ejc/services/auth_service.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
 
 class ModelScreen extends StatefulWidget {
@@ -21,6 +24,9 @@ class ModelScreen extends StatefulWidget {
 
 class _ModelScreenState extends State<ModelScreen> {
   String dateString = getIt<DateFormatString>().getDate();
+  final User user = getIt<FirebaseAuth>().currentUser!;
+  final AuthService authService = getIt<AuthService>();
+  final FunctionScreen functionScreen = getIt<FunctionScreen>();
 
   @override
   Widget build(BuildContext context) {
@@ -32,11 +38,47 @@ class _ModelScreenState extends State<ModelScreen> {
         title: Row(
           children: [
             Expanded(child: Text(widget.title)),
-            Text(dateString),
+            Tooltip(
+              message: "Sair do sistema",
+              child: TextButton(
+                onPressed: () {
+                  functionScreen.callLogOut(context: context);
+                },
+                child: Column(
+                  children: [
+                    Text(
+                      user.displayName ?? '',
+                      style: const TextStyle(fontSize: 17, color: Colors.white),
+                    ),
+                    Text(
+                      dateString,
+                      style: const TextStyle(fontSize: 14, color: Colors.white),
+                    ),
+                  ],
+                ),
+              ),
+            )
           ],
         ),
       ),
-      body: widget.body,
+      body: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: Container(
+            decoration: BoxDecoration(
+              color: Theme.of(context).primaryColor,
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Theme.of(context).canvasColor,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: widget.body,
+              ),
+            )),
+      ),
     );
   }
 }

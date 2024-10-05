@@ -1,5 +1,6 @@
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:gestao_ejc/components/custom_firestore_image.dart';
+import 'package:gestao_ejc/components/custom_text_form_field.dart';
 import 'package:gestao_ejc/screens/password_reset_modal.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
 import '../services/auth_service.dart';
@@ -14,15 +15,15 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final AuthService _authService = getIt<AuthService>();
   final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _senhaController = TextEditingController();
-
-  String? logoUrl;
-  String? roseUrl;
+  final TextEditingController _passwordController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+  final FocusNode _passwordFocusNode = FocusNode();
+  bool _visiblePassword = false;
+  bool _acessing = false;
 
   @override
   void initState() {
     super.initState();
-    _loadImages();
   }
 
   @override
@@ -34,14 +35,11 @@ class _LoginScreenState extends State<LoginScreen> {
             flex: 3,
             child: Container(
               color: Theme.of(context).primaryColor,
-              child: Column(
+              child: const Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  roseUrl != null
-                      ? Image.network(
-                          roseUrl!,
-                        )
-                      : const CircularProgressIndicator(),
+                  CustomFirestoreImage(
+                      imagePath: "images/app/roses/rosa02.png"),
                 ],
               ),
             ),
@@ -53,65 +51,81 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  logoUrl != null
-                      ? Image.network(
-                          logoUrl!,
-                        )
-                      : const CircularProgressIndicator(),
+                  CustomFirestoreImage(
+                      imagePath: "images/app/logos/logo02.png"),
                   Container(
                     padding: const EdgeInsets.only(left: 20, right: 20),
-                    child: Column(
-                      children: [
-                        const SizedBox(height: 20),
-                        TextField(
-                          controller: _emailController,
-                          decoration: const InputDecoration(
-                            labelText: 'Email',
+                    child: Form(
+                      key: _formKey,
+                      child: Column(
+                        children: [
+                          const SizedBox(height: 20),
+                          CustomTextFormField(
+                            controller: _emailController,
+                            decoration: const InputDecoration(
+                              labelText: 'Email',
+                            ),
+                            validator: (value) {
+                              return value!.isEmpty
+                                  ? 'Informe seu email'
+                                  : null;
+                            },
+                            obscure: false,
+                            functionSubimitted: (_) {
+                              FocusScope.of(context)
+                                  .requestFocus(_passwordFocusNode);
+                            },
                           ),
-                          keyboardType: TextInputType.emailAddress,
-                        ),
-                        TextField(
-                          controller: _senhaController,
-                          decoration: const InputDecoration(
-                            labelText: 'Senha',
+                          CustomTextFormField(
+                              controller: _passwordController,
+                              decoration: InputDecoration(
+                                labelText: 'Senha',
+                                suffixIcon: IconButton(
+                                  icon: Icon(_visiblePassword
+                                      ? Icons.visibility
+                                      : Icons.visibility_off),
+                                  onPressed: () {
+                                    _seePassword();
+                                  },
+                                ),
+                              ),
+                              validator: (value) {
+                                return value!.isEmpty
+                                    ? 'Informe sua senha'
+                                    : null;
+                              },
+                              obscure: !_visiblePassword,
+                              functionSubimitted: (_) {
+                                _login();
+                              },
+                              focusNode: _passwordFocusNode),
+                          const SizedBox(height: 30),
+                          TextButton(
+                            onPressed: () {
+                              showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return const PasswordResetModal();
+                                  });
+                            },
+                            child: const Text('Esqueci minha senha.'),
                           ),
-                          obscureText: true,
-                        ),
-                        const SizedBox(height: 30),
-                        TextButton(
-                          onPressed: () {
-                            showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return const PasswordResetModal();
-                                });
-                          },
-                          child: const Text('Esqueci minha senha.'),
-                        ),
-                        const SizedBox(height: 30),
-                        ElevatedButton(
-                          onPressed: () {
-                            _authService
-                                .logIn(
-                                    email: _emailController.text,
-                                    senha: _senhaController.text)
-                                .then((String? error) {
-                              if (error != null) {
-                                final snackBar = SnackBar(
-                                    content: Text(error),
-                                    backgroundColor: Colors.red);
-                                ScaffoldMessenger.of(context)
-                                    .showSnackBar(snackBar);
-                              }
-                            });
-                          },
-                          style: ElevatedButton.styleFrom(
-                              foregroundColor: Colors.white,
-                              backgroundColor: Theme.of(context).primaryColor,
-                              fixedSize: const Size(220, 60)),
-                          child: const Text('Acessar'),
-                        )
-                      ],
+                          const SizedBox(height: 30),
+                          !_acessing
+                              ? ElevatedButton(
+                                  onPressed: () {
+                                    _login();
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                      foregroundColor: Colors.white,
+                                      backgroundColor:
+                                          Theme.of(context).primaryColor,
+                                      fixedSize: const Size(220, 60)),
+                                  child: const Text('Acessar'),
+                                )
+                              : CircularProgressIndicator(),
+                        ],
+                      ),
                     ),
                   )
                 ],
@@ -123,24 +137,42 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Future<void> _loadImages() async {
-    try {
-      final List<String> imagePaths = [
-        "images/app/logos/logo02.png",
-        "images/app/roses/rosa02.png"
-      ];
-
-      final List<String> urls = await Future.wait(imagePaths.map((path) async {
-        final Reference ref = FirebaseStorage.instance.ref().child(path);
-        return await ref.getDownloadURL();
-      }).toList());
-
+  Future<void> _login() async {
+    if (_formKey.currentState!.validate()) {
       setState(() {
-        logoUrl = urls[0];
-        roseUrl = urls[1];
+        _acessing = true;
       });
-    } catch (e) {
-      print('Erro ao carregar imagens: $e');
+
+      try {
+        String? error = await _authService.logIn(
+          email: _emailController.text,
+          senha: _passwordController.text,
+        );
+
+        if (error != null) {
+          final snackBar = SnackBar(
+            content: Text(error),
+            backgroundColor: Colors.red,
+          );
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        }
+      } catch (e) {
+        const snackBar = SnackBar(
+          content: Text('Ocorreu um erro ao tentar fazer login.'),
+          backgroundColor: Colors.red,
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      } finally {
+        setState(() {
+          _acessing = false;
+        });
+      }
     }
+  }
+
+  void _seePassword() {
+    setState(() {
+      _visiblePassword = !_visiblePassword;
+    });
   }
 }
