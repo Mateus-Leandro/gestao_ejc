@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:gestao_ejc/controllers/user_controller.dart';
+import 'package:gestao_ejc/functions/function_call_email_app.dart';
+import 'package:gestao_ejc/functions/function_call_url.dart';
 import 'package:gestao_ejc/functions/function_screen.dart';
 import 'package:gestao_ejc/helpers/date_format_string.dart';
 import 'package:gestao_ejc/services/auth_service.dart';
@@ -19,4 +21,6 @@ void setupGetIt() {
   getIt.registerLazySingleton<UserService>(() => UserService());
   getIt.registerLazySingleton<UserController>(() => UserController());
   getIt.registerLazySingleton<FunctionScreen>(() => FunctionScreen());
+  getIt.registerLazySingleton<FunctionCallUrl>(() => FunctionCallUrl());
+  getIt.registerLazySingleton<FunctionCallEmailApp>(() => FunctionCallEmailApp());
 }
