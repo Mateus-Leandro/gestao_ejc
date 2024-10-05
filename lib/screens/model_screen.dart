@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gestao_ejc/components/menu_drawer.dart';
 import 'package:gestao_ejc/helpers/date_format_string.dart';
@@ -21,6 +22,7 @@ class ModelScreen extends StatefulWidget {
 
 class _ModelScreenState extends State<ModelScreen> {
   String dateString = getIt<DateFormatString>().getDate();
+  final User user = getIt<FirebaseAuth>().currentUser!;
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +34,12 @@ class _ModelScreenState extends State<ModelScreen> {
         title: Row(
           children: [
             Expanded(child: Text(widget.title)),
-            Text(dateString),
+            Column(
+              children: [
+                Text(user.displayName ?? '', style: const TextStyle(fontSize: 17)),
+                Text(dateString, style: const TextStyle(fontSize: 14)),
+              ],
+            ),
           ],
         ),
       ),
