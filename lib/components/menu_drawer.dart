@@ -42,8 +42,11 @@ class MenuDrawer extends StatelessWidget {
                       indexMenuSelected: indexMenuSelected,
                       popActualScreen: true);
                 },
-                child: const CustomFirestoreImage(
-                  imagePath: "images/app/logos/logo07.png",
+                child: const Tooltip(
+                  message: "Página inicial",
+                  child: CustomFirestoreImage(
+                    imagePath: "images/app/logos/logo07.png",
+                  ),
                 ),
               ),
             ),
