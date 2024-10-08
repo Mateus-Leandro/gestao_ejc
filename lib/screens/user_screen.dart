@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:gestao_ejc/components/user_form.dart';
 import 'package:gestao_ejc/controllers/user_controller.dart';
@@ -16,6 +17,7 @@ class UserScreen extends StatefulWidget {
 class _UserScreenState extends State<UserScreen> {
   final _userController = getIt<UserController>();
   final _appTheme = getIt<AppTheme>();
+  Timer? delay;
 
   @override
   void initState() {
@@ -26,6 +28,7 @@ class _UserScreenState extends State<UserScreen> {
   @override
   void dispose() {
     _userController.dispose();
+    delay?.cancel();
     super.dispose();
   }
 
@@ -64,12 +67,12 @@ class _UserScreenState extends State<UserScreen> {
             ),
           ),
         ),
-        const Expanded(
+        Expanded(
           child: Padding(
-            padding: EdgeInsets.only(left: 30),
-            child: _SearchField(),
+            padding: const EdgeInsets.only(left: 30),
+            child: _buildSearchField(),
           ),
-        )
+        ),
       ],
     );
   }
@@ -148,28 +151,43 @@ class _UserScreenState extends State<UserScreen> {
     );
   }
 
-  void _onDeactivateUserPressed(UserModel user) {
+  void _onDeactivateUserPressed(UserModel user) {}
 
-  }
-}
-
-class _SearchField extends StatelessWidget {
-  const _SearchField({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final iconColor = Theme.of(context).primaryColor;
+  Widget _buildSearchField() {
+    final TextEditingController userNameController = TextEditingController();
+    Timer? debounce;
     final appTheme = getIt<AppTheme>();
 
-    return TextField(
-      keyboardType: TextInputType.name,
-      style: TextStyle(color: appTheme.colorBackgroundButton),
-      decoration: InputDecoration(
-        hintText: 'Pesquisar usuários',
-        icon: Icon(Icons.search_outlined, color: iconColor),
-        border: InputBorder.none,
-      ),
+    return StatefulBuilder(
+      builder: (context, setState) {
+        return TextField(
+          keyboardType: TextInputType.name,
+          style: TextStyle(color: appTheme.colorBackgroundButton),
+          controller: userNameController,
+          decoration: InputDecoration(
+            hintText: 'Pesquisar usuários',
+            icon: Icon(Icons.search_outlined,
+                color: Theme.of(context).primaryColor),
+            border: InputBorder.none,
+          ),
+          onChanged: (text) {
+            if (debounce?.isActive ?? false) {
+              debounce!.cancel();
+            }
+            debounce = Timer(const Duration(milliseconds: 500), () {
+              _getUserByName(text.trim());
+            });
+          },
+        );
+      },
     );
   }
-}
 
+  void _getUserByName(String userName) {
+    if (userName.isNotEmpty) {
+      _userController.getUsers(userName);
+    } else {
+      _userController.getUsers(null);
+    }
+  }
+}
