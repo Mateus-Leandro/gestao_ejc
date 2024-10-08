@@ -5,6 +5,7 @@ import 'package:gestao_ejc/functions/function_screen.dart';
 import 'package:gestao_ejc/helpers/date_format_string.dart';
 import 'package:gestao_ejc/services/auth_service.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
+import 'package:gestao_ejc/theme/app_theme.dart';
 
 class ModelScreen extends StatefulWidget {
   final String title;
@@ -27,14 +28,15 @@ class _ModelScreenState extends State<ModelScreen> {
   final User user = getIt<FirebaseAuth>().currentUser!;
   final AuthService authService = getIt<AuthService>();
   final FunctionScreen functionScreen = getIt<FunctionScreen>();
+  final AppTheme appTheme = getIt<AppTheme>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: MenuDrawer(indexMenuSelected: widget.indexMenuSelected),
       appBar: AppBar(
-        foregroundColor: Colors.white,
-        backgroundColor: Theme.of(context).primaryColor,
+        foregroundColor: appTheme.colorTextTopBar,
+        backgroundColor: appTheme.colorTopBar,
         title: Row(
           children: [
             Expanded(child: Text(widget.title)),
@@ -48,11 +50,11 @@ class _ModelScreenState extends State<ModelScreen> {
                   children: [
                     Text(
                       user.displayName ?? '',
-                      style: const TextStyle(fontSize: 17, color: Colors.white),
+                      style: TextStyle(fontSize: 17, color: appTheme.colorTextTopBar),
                     ),
                     Text(
                       dateString,
-                      style: const TextStyle(fontSize: 14, color: Colors.white),
+                      style: TextStyle(fontSize: 14, color: appTheme.colorTextTopBar),
                     ),
                   ],
                 ),
@@ -65,14 +67,14 @@ class _ModelScreenState extends State<ModelScreen> {
         padding: const EdgeInsets.all(12.0),
         child: Container(
             decoration: BoxDecoration(
-              color: Theme.of(context).primaryColor,
+              color: appTheme.colorOuterFrame,
               borderRadius: BorderRadius.circular(20),
             ),
             child: Padding(
               padding: const EdgeInsets.all(15.0),
               child: Container(
                 decoration: BoxDecoration(
-                  color: Theme.of(context).canvasColor,
+                  color: appTheme.colorInnerFrame,
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: widget.body,

@@ -7,6 +7,7 @@ import 'package:gestao_ejc/functions/function_screen.dart';
 import 'package:gestao_ejc/helpers/date_format_string.dart';
 import 'package:gestao_ejc/services/auth_service.dart';
 import 'package:gestao_ejc/services/user_service.dart';
+import 'package:gestao_ejc/theme/app_theme.dart';
 import 'package:get_it/get_it.dart';
 
 final getIt = GetIt.instance;
@@ -23,4 +24,5 @@ void setupGetIt() {
   getIt.registerLazySingleton<FunctionScreen>(() => FunctionScreen());
   getIt.registerLazySingleton<FunctionCallUrl>(() => FunctionCallUrl());
   getIt.registerLazySingleton<FunctionCallEmailApp>(() => FunctionCallEmailApp());
+  getIt.registerLazySingleton<AppTheme>(() => AppTheme());
 }

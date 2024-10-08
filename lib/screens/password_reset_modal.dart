@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gestao_ejc/services/auth_service.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
+import 'package:gestao_ejc/theme/app_theme.dart';
 
 class PasswordResetModal extends StatefulWidget {
   const PasswordResetModal({super.key});
@@ -14,6 +15,7 @@ class _PasswordResetModalState extends State<PasswordResetModal> {
   final _emailController = TextEditingController();
 
   final AuthService _authService = getIt<AuthService>();
+  final AppTheme _appTheme = getIt<AppTheme>();
   String? erro_message;
 
   @override
@@ -50,13 +52,14 @@ class _PasswordResetModalState extends State<PasswordResetModal> {
 
                   if (erro != null) {
                     final snackBar = SnackBar(
-                        content: Text(erro), backgroundColor: Colors.red);
+                        content: Text(erro),
+                        backgroundColor: _appTheme.colorSnackBarErro);
                     ScaffoldMessenger.of(context).showSnackBar(snackBar);
                   } else {
                     final snackBar = SnackBar(
                         content: Text(
                             'Um link de redefinição de senha foi enviado para seu email.'),
-                        backgroundColor: Colors.green);
+                        backgroundColor: _appTheme.colorSnackBarSucess);
                     ScaffoldMessenger.of(context).showSnackBar(snackBar);
                   }
                 },
