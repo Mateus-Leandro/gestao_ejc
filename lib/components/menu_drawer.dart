@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gestao_ejc/components/custom_firestore_image.dart';
 import 'package:gestao_ejc/functions/function_screen.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
+import 'package:gestao_ejc/theme/app_theme.dart';
 
 class MenuDrawer extends StatelessWidget {
   const MenuDrawer({super.key, required this.indexMenuSelected});
@@ -9,10 +10,11 @@ class MenuDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Color tileColor = Theme.of(context).primaryColor;
-    const Color selectedTileColor = Colors.blue;
-    const Color textColor = Colors.white;
     final FunctionScreen functionScreen = getIt<FunctionScreen>();
+    final AppTheme appTheme = getIt<AppTheme>();
+    final Color tileColor = appTheme.colorTile;
+    final Color selectedTileColor = appTheme.colorFocusTile;
+    final Color textColor = appTheme.colorLightText;
 
     final List<Map<String, dynamic>> menuItems = [
       {'title': 'Encontros', 'route': '/encounters', 'index': 0},

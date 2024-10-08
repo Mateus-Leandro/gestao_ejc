@@ -16,11 +16,11 @@ class UserController extends ChangeNotifier {
 
   void init() {
     _streamController = StreamController<List<UserModel>>();
-    getUsers();
+    getUsers(null);
   }
 
-  void getUsers() async {
-    var response = await _userService.getUsers();
+  void getUsers(String? userName) async {
+    var response = await _userService.getUsers(userName?.toLowerCase());
     _streamController.sink.add(response);
   }
 
@@ -42,7 +42,7 @@ class UserController extends ChangeNotifier {
     }
 
     if (result == null) {
-      getUsers();
+      getUsers(null);
       return null;
     } else {
       return result;

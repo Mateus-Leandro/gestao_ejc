@@ -1,9 +1,11 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:gestao_ejc/components/user_form.dart';
 import 'package:gestao_ejc/controllers/user_controller.dart';
 import 'package:gestao_ejc/models/user_model.dart';
 import 'package:gestao_ejc/screens/model_screen.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
+import 'package:gestao_ejc/theme/app_theme.dart';
 
 class UserScreen extends StatefulWidget {
   const UserScreen({super.key});
@@ -14,6 +16,8 @@ class UserScreen extends StatefulWidget {
 
 class _UserScreenState extends State<UserScreen> {
   final _userController = getIt<UserController>();
+  final _appTheme = getIt<AppTheme>();
+  Timer? delay;
 
   @override
   void initState() {
@@ -24,6 +28,7 @@ class _UserScreenState extends State<UserScreen> {
   @override
   void dispose() {
     _userController.dispose();
+    delay?.cancel();
     super.dispose();
   }
 
@@ -57,17 +62,17 @@ class _UserScreenState extends State<UserScreen> {
             },
             icon: const Icon(Icons.add),
             style: IconButton.styleFrom(
-              backgroundColor: Theme.of(context).primaryColor,
-              foregroundColor: Theme.of(context).canvasColor,
+              backgroundColor: _appTheme.colorBackgroundButton,
+              foregroundColor: _appTheme.colorForegroundButton,
             ),
           ),
         ),
-        const Expanded(
+        Expanded(
           child: Padding(
-            padding: EdgeInsets.only(left: 30),
-            child: _SearchField(),
+            padding: const EdgeInsets.only(left: 30),
+            child: _buildSearchField(),
           ),
-        )
+        ),
       ],
     );
   }
@@ -108,7 +113,7 @@ class _UserScreenState extends State<UserScreen> {
         style: TextStyle(
           color: user.active
               ? (user.manipulateAdministrator ? Colors.blue : Colors.black)
-              : Colors.red,
+              : _appTheme.colorInativeUser,
         ),
       ),
       subtitle: Text(user.email),
@@ -146,27 +151,43 @@ class _UserScreenState extends State<UserScreen> {
     );
   }
 
-  void _onDeactivateUserPressed(UserModel user) {
-    // TODO: Lógica para inativar o usuário
-  }
-}
+  void _onDeactivateUserPressed(UserModel user) {}
 
-class _SearchField extends StatelessWidget {
-  const _SearchField({super.key});
+  Widget _buildSearchField() {
+    final TextEditingController userNameController = TextEditingController();
+    Timer? debounce;
+    final appTheme = getIt<AppTheme>();
 
-  @override
-  Widget build(BuildContext context) {
-    final iconColor = Theme.of(context).primaryColor;
-
-    return TextField(
-      keyboardType: TextInputType.name,
-      style: const TextStyle(color: Colors.white),
-      decoration: InputDecoration(
-        hintText: 'Pesquisar usuários',
-        icon: Icon(Icons.search_outlined, color: iconColor),
-        border: InputBorder.none,
-      ),
+    return StatefulBuilder(
+      builder: (context, setState) {
+        return TextField(
+          keyboardType: TextInputType.name,
+          style: TextStyle(color: appTheme.colorBackgroundButton),
+          controller: userNameController,
+          decoration: InputDecoration(
+            hintText: 'Pesquisar usuários',
+            icon: Icon(Icons.search_outlined,
+                color: Theme.of(context).primaryColor),
+            border: InputBorder.none,
+          ),
+          onChanged: (text) {
+            if (debounce?.isActive ?? false) {
+              debounce!.cancel();
+            }
+            debounce = Timer(const Duration(milliseconds: 500), () {
+              _getUserByName(text.trim());
+            });
+          },
+        );
+      },
     );
   }
-}
 
+  void _getUserByName(String userName) {
+    if (userName.isNotEmpty) {
+      _userController.getUsers(userName);
+    } else {
+      _userController.getUsers(null);
+    }
+  }
+}

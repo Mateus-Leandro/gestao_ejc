@@ -3,6 +3,7 @@ import 'package:gestao_ejc/components/date_of_birth_field.dart';
 import 'package:gestao_ejc/controllers/user_controller.dart';
 import 'package:gestao_ejc/models/user_model.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
+import 'package:gestao_ejc/theme/app_theme.dart';
 
 class UserForm extends StatefulWidget {
   const UserForm({super.key, this.userEditing});
@@ -20,6 +21,7 @@ class _UserFormState extends State<UserForm> {
   final _confirmePasswordController = TextEditingController();
   final _birthdayController = TextEditingController();
   final _userController = getIt<UserController>();
+  final _appTheme = getIt<AppTheme>();
   final _formKey = GlobalKey<FormState>();
 
   bool manipulateAdministrator = false;
@@ -229,6 +231,7 @@ class _UserFormState extends State<UserForm> {
         manipulateMembers: manipulateMembers,
         manipulateUsers: manipulateUsers,
         name: _nameController.text.trim(),
+        nameLowerCase: _nameController.text.trim().toLowerCase(),
         id: widget.userEditing?.id ?? '',
       );
 
@@ -249,12 +252,14 @@ class _UserFormState extends State<UserForm> {
           SnackBar(
               content: Text(
                   'Usuário ${newUser.name} ${widget.userEditing == null ? 'cadastrado' : 'atualizado'} com sucesso!'),
-              backgroundColor: Colors.green),
+              backgroundColor: _appTheme.colorSnackBarSucess),
         );
         Navigator.of(context).pop();
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Erro: $result')),
+          SnackBar(
+              content: Text('Erro: $result'),
+              backgroundColor: _appTheme.colorSnackBarErro),
         );
       }
     }
