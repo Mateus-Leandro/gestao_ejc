@@ -2,6 +2,7 @@ abstract class AbstractPersonModel {
   String? id;
   final bool active;
   final String name;
+  final String nameLowerCase;
   final String email;
   final String birthday;
 
@@ -9,6 +10,7 @@ abstract class AbstractPersonModel {
     this.id,
     required this.active,
     required this.name,
+    required this.nameLowerCase,
     required this.email,
     required this.birthday,
   });

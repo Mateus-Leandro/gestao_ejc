@@ -231,6 +231,7 @@ class _UserFormState extends State<UserForm> {
         manipulateMembers: manipulateMembers,
         manipulateUsers: manipulateUsers,
         name: _nameController.text.trim(),
+        nameLowerCase: _nameController.text.trim().toLowerCase(),
         id: widget.userEditing?.id ?? '',
       );
 
