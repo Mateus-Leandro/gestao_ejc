@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:gestao_ejc/components/custom_inactivate_user_alert.dart';
 import 'package:gestao_ejc/components/user_form.dart';
 import 'package:gestao_ejc/controllers/user_controller.dart';
 import 'package:gestao_ejc/models/user_model.dart';
@@ -128,14 +129,8 @@ class _UserScreenState extends State<UserScreen> {
             ),
           ),
           Tooltip(
-            message: 'Inativar usuário',
-            child: IconButton(
-              onPressed: () => _onDeactivateUserPressed(user),
-              icon: const Icon(
-                Icons.no_accounts,
-                color: Colors.red,
-              ),
-            ),
+            message: user.active ? 'Inativar usuário' : 'Ativar usuário',
+            child: CustomInactivateUserAlert(user: user),
           ),
         ],
       ),
@@ -150,8 +145,6 @@ class _UserScreenState extends State<UserScreen> {
       },
     );
   }
-
-  void _onDeactivateUserPressed(UserModel user) {}
 
   Widget _buildSearchField() {
     final TextEditingController userNameController = TextEditingController();
