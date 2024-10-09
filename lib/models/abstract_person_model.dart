@@ -1,6 +1,6 @@
 abstract class AbstractPersonModel {
   String? id;
-  final bool active;
+  bool active;
   final String name;
   final String nameLowerCase;
   final String email;

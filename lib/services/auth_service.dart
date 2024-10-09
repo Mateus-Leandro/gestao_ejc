@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:gestao_ejc/models/user_model.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
 import 'package:gestao_ejc/services/user_service.dart';
@@ -6,17 +8,20 @@ import 'package:gestao_ejc/services/user_service.dart';
 class AuthService {
   final FirebaseAuth _firebaseAuth = getIt<FirebaseAuth>();
   final UserService _userService = getIt<UserService>();
-  late final UserModel _actualUser;
-  late final String _passwordActualUser;
+  final FirebaseFirestore _firestore = getIt<FirebaseFirestore>();
+  UserModel? actualUserModel;
 
   Future<String?> logIn({required String email, required String senha}) async {
     try {
       await _firebaseAuth.signInWithEmailAndPassword(
           email: email, password: senha);
+      final User? user = _firebaseAuth.currentUser;
+      if (user != null) {
+        await saveActualUserModel(idUser: user.uid);
+      }
     } on FirebaseAuthException catch (e) {
       return erroAuth(e);
     }
-    _saveActualUser(senha);
     return null;
   }
 
@@ -32,7 +37,6 @@ class AuthService {
       if (newUser != null) {
         user.id = newUser.uid;
         _userService.saveUser(user);
-        logIn(email: _actualUser.email, senha: _passwordActualUser);
       }
     } on FirebaseAuthException catch (e) {
       return erroAuth(e);
@@ -77,9 +81,52 @@ class AuthService {
     }
   }
 
-  void _saveActualUser(String senha) async {
-    final _user = _firebaseAuth.currentUser;
-    _actualUser = (await _userService.getActualUser(idUser: _user!.uid))!;
-    _passwordActualUser = senha;
+  Future<UserModel?> get getActualUserModel async {
+    final User? user = _firebaseAuth.currentUser;
+    if (user == null) {
+      return null;
+    }
+    if (actualUserModel == null) {
+      String? errorMessage = await saveActualUserModel(idUser: user.uid);
+      if (errorMessage != null) {
+        print(errorMessage);
+        return null;
+      }
+    }
+    return actualUserModel;
+  }
+
+  Future<String?> saveActualUserModel({required String idUser}) async {
+    try {
+      DocumentSnapshot snapshot =
+          await _firestore.collection('users').doc(idUser).get();
+      if (snapshot.exists && snapshot.data() != null) {
+        actualUserModel =
+            UserModel.fromJson(snapshot.data() as Map<String, dynamic>);
+        return null;
+      } else {
+        return "Documento não encontrado ou sem dados.";
+      }
+    } catch (e) {
+      return "Erro ao buscar usuário: $e";
+    }
+  }
+
+  String? userHasPermission(
+      {required BuildContext context, required UserModel user}) {
+    String? actualRoute = ModalRoute.of(context)?.settings.name;
+    if (!user.active) {
+      return 'Usuário inativo!';
+    }
+    switch (actualRoute) {
+      case '/users':
+        if (user.manipulateUsers == true) {
+          return null;
+        } else {
+          return 'Sem permissão de acesso aos usuários.';
+        }
+      default:
+        return null;
+    }
   }
 }

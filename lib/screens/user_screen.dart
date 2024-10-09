@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:gestao_ejc/components/custom_inactivate_user_alert.dart';
 import 'package:gestao_ejc/components/user_form.dart';
 import 'package:gestao_ejc/controllers/user_controller.dart';
 import 'package:gestao_ejc/models/user_model.dart';
 import 'package:gestao_ejc/screens/model_screen.dart';
+import 'package:gestao_ejc/services/auth_service.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
 import 'package:gestao_ejc/theme/app_theme.dart';
 
@@ -17,7 +19,11 @@ class UserScreen extends StatefulWidget {
 class _UserScreenState extends State<UserScreen> {
   final _userController = getIt<UserController>();
   final _appTheme = getIt<AppTheme>();
+  final AuthService _authService = getIt<AuthService>();
+
   Timer? delay;
+  Timer? debounce;
+  final TextEditingController userNameController = TextEditingController();
 
   @override
   void initState() {
@@ -29,6 +35,8 @@ class _UserScreenState extends State<UserScreen> {
   void dispose() {
     _userController.dispose();
     delay?.cancel();
+    debounce?.cancel();
+    userNameController.dispose();
     super.dispose();
   }
 
@@ -54,19 +62,21 @@ class _UserScreenState extends State<UserScreen> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Tooltip(
-          message: 'Novo usuário',
-          child: IconButton(
-            onPressed: () {
-              _showUserForm(null);
-            },
-            icon: const Icon(Icons.add),
-            style: IconButton.styleFrom(
-              backgroundColor: _appTheme.colorBackgroundButton,
-              foregroundColor: _appTheme.colorForegroundButton,
+        if (_authService.actualUserModel?.manipulateAdministrator ?? false) ...[
+          Tooltip(
+            message: 'Novo usuário',
+            child: IconButton(
+              onPressed: () {
+                _showUserForm(null);
+              },
+              icon: const Icon(Icons.add),
+              style: IconButton.styleFrom(
+                backgroundColor: _appTheme.colorBackgroundButton,
+                foregroundColor: _appTheme.colorForegroundButton,
+              ),
             ),
           ),
-        ),
+        ],
         Expanded(
           child: Padding(
             padding: const EdgeInsets.only(left: 30),
@@ -120,23 +130,19 @@ class _UserScreenState extends State<UserScreen> {
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Tooltip(
-            message: 'Editar',
-            child: IconButton(
-              onPressed: () => _showUserForm(user),
-              icon: const Icon(Icons.edit),
-            ),
-          ),
-          Tooltip(
-            message: 'Inativar usuário',
-            child: IconButton(
-              onPressed: () => _onDeactivateUserPressed(user),
-              icon: const Icon(
-                Icons.no_accounts,
-                color: Colors.red,
+          if (_authService.actualUserModel?.manipulateAdministrator ?? false) ...[
+            Tooltip(
+              message: 'Editar',
+              child: IconButton(
+                onPressed: () => _showUserForm(user),
+                icon: const Icon(Icons.edit),
               ),
             ),
-          ),
+            Tooltip(
+              message: user.active ? 'Inativar usuário' : 'Ativar usuário',
+              child: CustomInactivateUserAlert(user: user),
+            ),
+          ],
         ],
       ),
     );
@@ -151,34 +157,25 @@ class _UserScreenState extends State<UserScreen> {
     );
   }
 
-  void _onDeactivateUserPressed(UserModel user) {}
-
   Widget _buildSearchField() {
-    final TextEditingController userNameController = TextEditingController();
-    Timer? debounce;
     final appTheme = getIt<AppTheme>();
 
-    return StatefulBuilder(
-      builder: (context, setState) {
-        return TextField(
-          keyboardType: TextInputType.name,
-          style: TextStyle(color: appTheme.colorBackgroundButton),
-          controller: userNameController,
-          decoration: InputDecoration(
-            hintText: 'Pesquisar usuários',
-            icon: Icon(Icons.search_outlined,
-                color: Theme.of(context).primaryColor),
-            border: InputBorder.none,
-          ),
-          onChanged: (text) {
-            if (debounce?.isActive ?? false) {
-              debounce!.cancel();
-            }
-            debounce = Timer(const Duration(milliseconds: 500), () {
-              _getUserByName(text.trim());
-            });
-          },
-        );
+    return TextField(
+      keyboardType: TextInputType.name,
+      style: TextStyle(color: appTheme.colorBackgroundButton),
+      controller: userNameController,
+      decoration: InputDecoration(
+        hintText: 'Pesquisar usuários',
+        icon: Icon(Icons.search_outlined, color: Theme.of(context).primaryColor),
+        border: InputBorder.none,
+      ),
+      onChanged: (text) {
+        if (debounce?.isActive ?? false) {
+          debounce!.cancel();
+        }
+        debounce = Timer(const Duration(milliseconds: 500), () {
+          _getUserByName(text.trim());
+        });
       },
     );
   }

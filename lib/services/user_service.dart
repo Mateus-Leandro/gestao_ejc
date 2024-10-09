@@ -4,7 +4,6 @@ import 'package:gestao_ejc/services/locator/service_locator.dart';
 
 class UserService {
   final FirebaseFirestore _firestore = getIt<FirebaseFirestore>();
-
   Future<List<UserModel>> getUsers(String? userName) async {
     try {
       QuerySnapshot snapshot;
@@ -13,12 +12,9 @@ class UserService {
       } else {
         snapshot = await _firestore
             .collection('users')
-            .where('nameLowerCase',
-            // Usuário que possui nome >= "userName".
-            isGreaterThanOrEqualTo: userName)
+            .where('nameLowerCase', isGreaterThanOrEqualTo: userName)
             .where(
               'nameLowerCase',
-              // Usuário que possui nome < que próxima String após "userName"
               isLessThan: userName.substring(0, userName.length - 1) +
                   String.fromCharCode(
                       userName.codeUnitAt(userName.length - 1) + 1),
@@ -44,16 +40,6 @@ class UserService {
       return null;
     } catch (e) {
       return 'Erro ao salvar usuário: $e';
-    }
-  }
-
-  Future<UserModel?> getActualUser({required String idUser}) async {
-    DocumentSnapshot snapshot =
-        await _firestore.collection('users').doc(idUser).get();
-    if (snapshot.exists) {
-      return UserModel.fromJson(snapshot.data() as Map<String, dynamic>);
-    } else {
-      return null;
     }
   }
 }

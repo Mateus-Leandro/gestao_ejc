@@ -32,7 +32,6 @@ class UserController extends ChangeNotifier {
 
   Future<String?> saveUser(
       {required UserModel newUser, String? password}) async {
-
     String? result;
 
     if (password == null) {
@@ -47,5 +46,10 @@ class UserController extends ChangeNotifier {
     } else {
       return result;
     }
+  }
+
+  Future<String?> changeUserState({required UserModel user}) async {
+    user.active = !user.active;
+    return await saveUser(newUser: user, password: null);
   }
 }
