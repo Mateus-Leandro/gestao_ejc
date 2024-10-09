@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class DateOfBirthField extends StatefulWidget {
+class CustomDateOfBirthField extends StatefulWidget {
   final TextEditingController controller;
 
-  const DateOfBirthField({Key? key, required this.controller}) : super(key: key);
+  const CustomDateOfBirthField({Key? key, required this.controller}) : super(key: key);
 
   @override
-  _DateOfBirthFieldState createState() => _DateOfBirthFieldState();
+  _CustomDateOfBirthFieldState createState() => _CustomDateOfBirthFieldState();
 }
 
-class _DateOfBirthFieldState extends State<DateOfBirthField> {
+class _CustomDateOfBirthFieldState extends State<CustomDateOfBirthField> {
   DateTime? _selectedDate;
 
   Future<void> _selectDate(BuildContext context) async {
