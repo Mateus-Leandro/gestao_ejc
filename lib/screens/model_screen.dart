@@ -116,7 +116,8 @@ class _ModelScreenState extends State<ModelScreen> {
               barrierDismissible: false,
               onConfirmBtnTap: () {
                 Navigator.of(context).pop();
-                Navigator.pushNamed(context, "/");
+                Navigator.of(context)
+                    .pushNamedAndRemoveUntil('/', (Route<dynamic> route) => false);
                 if (!authService.actualUserModel!.active) {
                   authService.logOut();
                 }
