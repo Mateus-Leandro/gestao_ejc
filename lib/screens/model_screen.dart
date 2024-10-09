@@ -111,7 +111,7 @@ class _ModelScreenState extends State<ModelScreen> {
               context: context,
               type: QuickAlertType.error,
               title: 'Acesso Negado',
-              text: '${ret} Entre em contato com o suporte.',
+              text: '${ret} Entre em contato com a equipe dirigente!',
               confirmBtnText: 'OK',
               barrierDismissible: false,
               onConfirmBtnTap: () {
