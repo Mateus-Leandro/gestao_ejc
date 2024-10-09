@@ -29,17 +29,21 @@ class _CustomFirestoreImageState extends State<CustomFirestoreImage> {
       final Reference ref =
           FirebaseStorage.instance.ref().child(widget.imagePath);
       final String url = await ref.getDownloadURL();
-      setState(() {
-        _imageUrl = url;
-        _isLoading = false;
-        _hasError = false;
-      });
+      if(mounted){
+        setState(() {
+          _imageUrl = url;
+          _isLoading = false;
+          _hasError = false;
+        });
+      }
     } catch (e) {
       print("Erro ao carregar a imagem: $e");
-      setState(() {
-        _isLoading = false;
-        _hasError = true;
-      });
+      if(mounted){
+        setState(() {
+          _isLoading = false;
+          _hasError = true;
+        });
+      }
     }
   }
 

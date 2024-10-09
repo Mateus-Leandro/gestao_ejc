@@ -139,9 +139,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> _login() async {
     if (_formKey.currentState!.validate()) {
-      setState(() {
-        _acessing = true;
-      });
+      if (mounted) {
+        setState(() {
+          _acessing = true;
+        });
+      }
 
       try {
         String? error = await _authService.logIn(
@@ -163,9 +165,11 @@ class _LoginScreenState extends State<LoginScreen> {
         );
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
       } finally {
-        setState(() {
-          _acessing = false;
-        });
+        if (mounted) {
+          setState(() {
+            _acessing = false;
+          });
+        }
       }
     }
   }
