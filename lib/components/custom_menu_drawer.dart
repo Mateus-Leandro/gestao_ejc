@@ -72,6 +72,10 @@ class CustomMenuDrawer extends StatelessWidget {
               },
             ),
           ],
+          Spacer(),
+          Divider(
+            color: appTheme.colorDivider,
+          ),
           ListTile(
             tileColor: tileColor,
             selectedColor: textColor,
