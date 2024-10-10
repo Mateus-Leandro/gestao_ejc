@@ -6,7 +6,7 @@ import 'package:gestao_ejc/helpers/date_format_string.dart';
 import 'package:gestao_ejc/services/auth_service.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
 import 'package:gestao_ejc/theme/app_theme.dart';
-import 'package:quickalert/quickalert.dart'; // Importa o QuickAlert
+import 'package:quickalert/quickalert.dart';
 
 class ModelScreen extends StatefulWidget {
   final String title;
@@ -31,7 +31,7 @@ class _ModelScreenState extends State<ModelScreen> {
   final FunctionScreen functionScreen = getIt<FunctionScreen>();
   final AppTheme appTheme = getIt<AppTheme>();
 
-  bool _alertShown = false; // Variável para verificar se o alerta foi exibido
+  bool _alertShown = false;
 
   @override
   void initState() {
