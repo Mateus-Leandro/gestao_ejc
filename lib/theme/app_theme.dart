@@ -1,22 +1,29 @@
 import 'package:flutter/material.dart';
 
 class AppTheme{
-  final Color colorLightInputText = Colors.white;
-  final Color colorDarkInputText = const Color(0xFF001F3F);
-  final Color colorLightText = Colors.white;
-  final Color colorDarkText = const Color(0xFF001F3F);
-  final Color colorTile = const Color(0xFF001F3F);
+  final Color primaryColor = const Color(0xFF001F3F);
+  final Color secundaryColor = Colors.white;
+
+  Color get colorBackGroundDrawer => primaryColor;
+  Color get colorBackgroundTabBar => primaryColor;
+  Color get colorBackgroundButton => primaryColor;
+  Color get colorDarkInputText => primaryColor;
+  Color get colorOuterFrame => primaryColor;
+  Color get colorDarkText => primaryColor;
+  Color get colorTopBar => primaryColor;
+  Color get colorTile => primaryColor;
+
+  Color get colorForegroundButton => secundaryColor;
+  Color get colorLightInputText => secundaryColor;
+  Color get colorLightButton => secundaryColor;
+  Color get colorTextTopBar => secundaryColor;
+  Color get colorInnerFrame => secundaryColor;
+  Color get colorLightText => secundaryColor;
+
   final Color colorFocusTile = Colors.blue;
-  final Color colorBackGroundDrawer = const Color(0xFF001F3F);
-  final Color colorTopBar = const Color(0xFF001F3F);
-  final Color colorTextTopBar = Colors.white;
-  final Color colorOuterFrame = const Color(0xFF001F3F);
-  final Color colorInnerFrame = Colors.white;
-  final Color colorLightButton = Colors.white;
-  final Color colorBackgroundButton = const Color(0xFF001F3F);
-  final Color colorForegroundButton = Colors.white;
   final Color colorInativeUser = Colors.red;
   final Color colorAdminUser = Colors.blue;
   final Color colorSnackBarErro = Colors.red;
   final Color colorSnackBarSucess = Colors.green;
+  final Color colorDivider = Colors.blue;
 }
