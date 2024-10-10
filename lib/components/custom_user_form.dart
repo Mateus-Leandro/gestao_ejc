@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:gestao_ejc/components/date_of_birth_field.dart';
+import 'package:gestao_ejc/components/custom_date_of_birth_field.dart';
 import 'package:gestao_ejc/controllers/user_controller.dart';
 import 'package:gestao_ejc/models/user_model.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
 import 'package:gestao_ejc/theme/app_theme.dart';
 
-class UserForm extends StatefulWidget {
-  const UserForm({super.key, this.userEditing});
+class CustomUserForm extends StatefulWidget {
+  const CustomUserForm({super.key, this.userEditing});
 
   final UserModel? userEditing;
 
   @override
-  _UserFormState createState() => _UserFormState();
+  _CustomUserFormState createState() => _CustomUserFormState();
 }
 
-class _UserFormState extends State<UserForm> {
+class _CustomUserFormState extends State<CustomUserForm> {
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -84,7 +84,7 @@ class _UserFormState extends State<UserForm> {
               _buildTextField(false, _nameController, 'Nome',
                   TextInputType.text, null, true),
               const SizedBox(height: 10),
-              DateOfBirthField(controller: _birthdayController),
+              CustomDateOfBirthField(controller: _birthdayController),
               const SizedBox(height: 10),
               _buildTextField(false, _emailController, 'Email',
                   TextInputType.emailAddress, null, widget.userEditing == null),

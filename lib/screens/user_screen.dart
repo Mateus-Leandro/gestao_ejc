@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:gestao_ejc/components/custom_inactivate_user_alert.dart';
-import 'package:gestao_ejc/components/user_form.dart';
+import 'package:gestao_ejc/components/custom_user_form.dart';
 import 'package:gestao_ejc/controllers/user_controller.dart';
 import 'package:gestao_ejc/models/user_model.dart';
 import 'package:gestao_ejc/screens/model_screen.dart';
@@ -152,7 +152,7 @@ class _UserScreenState extends State<UserScreen> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return UserForm(userEditing: user);
+        return CustomUserForm(userEditing: user);
       },
     );
   }

@@ -4,8 +4,8 @@ import 'package:gestao_ejc/functions/function_screen.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
 import 'package:gestao_ejc/theme/app_theme.dart';
 
-class MenuDrawer extends StatelessWidget {
-  const MenuDrawer({super.key, required this.indexMenuSelected});
+class CustomMenuDrawer extends StatelessWidget {
+  const CustomMenuDrawer({super.key, required this.indexMenuSelected});
   final int? indexMenuSelected;
 
   @override
@@ -72,6 +72,10 @@ class MenuDrawer extends StatelessWidget {
               },
             ),
           ],
+          Spacer(),
+          Divider(
+            color: appTheme.colorDivider,
+          ),
           ListTile(
             tileColor: tileColor,
             selectedColor: textColor,

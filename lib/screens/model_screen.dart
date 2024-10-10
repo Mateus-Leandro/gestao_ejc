@@ -1,12 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:gestao_ejc/components/menu_drawer.dart';
+import 'package:gestao_ejc/components/custom_menu_drawer.dart';
 import 'package:gestao_ejc/functions/function_screen.dart';
 import 'package:gestao_ejc/helpers/date_format_string.dart';
 import 'package:gestao_ejc/services/auth_service.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
 import 'package:gestao_ejc/theme/app_theme.dart';
-import 'package:quickalert/quickalert.dart'; // Importa o QuickAlert
+import 'package:quickalert/quickalert.dart';
 
 class ModelScreen extends StatefulWidget {
   final String title;
@@ -31,7 +31,7 @@ class _ModelScreenState extends State<ModelScreen> {
   final FunctionScreen functionScreen = getIt<FunctionScreen>();
   final AppTheme appTheme = getIt<AppTheme>();
 
-  bool _alertShown = false; // Variável para verificar se o alerta foi exibido
+  bool _alertShown = false;
 
   @override
   void initState() {
@@ -50,7 +50,7 @@ class _ModelScreenState extends State<ModelScreen> {
 
     if (ret == null) {
       return Scaffold(
-        drawer: MenuDrawer(indexMenuSelected: widget.indexMenuSelected),
+        drawer: CustomMenuDrawer(indexMenuSelected: widget.indexMenuSelected),
         appBar: AppBar(
           foregroundColor: appTheme.colorTextTopBar,
           backgroundColor: appTheme.colorTopBar,
