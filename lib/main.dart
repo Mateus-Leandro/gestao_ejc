@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:gestao_ejc/screens/financial_screen.dart';
 import 'package:gestao_ejc/screens/home_screen.dart';
 import 'package:gestao_ejc/screens/login_screen.dart';
 import 'package:gestao_ejc/screens/user_screen.dart';
@@ -59,7 +60,8 @@ class MyApp extends StatelessWidget {
       ),
       routes: {
         '/' : (context) => const GetScreen(),
-        '/users': (context) => const UserScreen()
+        '/users': (context) => const UserScreen(),
+        '/financial': (context) => const FinancialScreen(),
       },
     );
   }
