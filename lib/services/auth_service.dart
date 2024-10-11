@@ -125,6 +125,12 @@ class AuthService {
         } else {
           return 'Sem permissão de acesso aos usuários.';
         }
+        case '/financial':
+        if (user.manipulateFinancial == true) {
+          return null;
+        } else {
+          return 'Sem permissão de acesso ao financeiro.';
+        }
       default:
         return null;
     }
