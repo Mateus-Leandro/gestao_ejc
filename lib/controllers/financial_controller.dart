@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:gestao_ejc/models/financial_model.dart';
-import 'package:gestao_ejc/services/locator/financial_service.dart';
+import 'package:gestao_ejc/services/financial_service.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
 
 class FinancialController extends ChangeNotifier {
@@ -11,13 +11,15 @@ class FinancialController extends ChangeNotifier {
 
   Stream<List<FinancialModel>>? get stream => _streamController.stream;
 
-  void init() {
+  void init({int? transactionType, int? transactionNumber}) {
     _streamController = StreamController<List<FinancialModel>>();
-    getFinancial(null);
+    getFinancial(
+        transactionType: transactionType, transactionNumber: transactionNumber);
   }
 
-  void getFinancial(int? numberTransaction) async {
-    var response = await _financialService.getFinancial(numberTransaction);
+  void getFinancial({int? transactionNumber, int? transactionType}) async {
+    var response = await _financialService.getFinancial(
+        transactionNumber: transactionNumber, transactionType: transactionType);
     _streamController.sink.add(response);
   }
 
@@ -32,7 +34,7 @@ class FinancialController extends ChangeNotifier {
     String? result = await _financialService.saveFinancial(financialModel);
 
     if (result == null) {
-      getFinancial(null);
+      getFinancial();
       return null;
     } else {
       return result;

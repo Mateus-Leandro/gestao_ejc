@@ -5,26 +5,37 @@ import 'package:gestao_ejc/services/locator/service_locator.dart';
 class FinancialService {
   final FirebaseFirestore _firestore = getIt<FirebaseFirestore>();
   final String collection = 'financial';
-  final String field = 'numberTransaction';
+  final String nameFieldTransactionNumber = 'numberTransaction';
+  final String nameFieldTransactionType = 'type';
 
-  Future<List<FinancialModel>> getFinancial(int? numberTransaction) async {
-    QuerySnapshot snapshot;
+  Future<List<FinancialModel>> getFinancial({
+    int? transactionNumber,
+    int? transactionType,
+  }) async {
     try {
-      if (numberTransaction == null) {
-        snapshot = await _firestore.collection(collection).get();
-      } else {
-        snapshot = await _firestore
-            .collection(collection)
-            .where(field, isGreaterThanOrEqualTo: numberTransaction)
-            .get();
+      Query query = _firestore.collection(collection);
+      if (transactionType != null) {
+        query =
+            query.where(nameFieldTransactionType, isEqualTo: transactionType);
       }
+
+      if (transactionNumber != null) {
+        query = query.where(nameFieldTransactionNumber,
+            isGreaterThanOrEqualTo:
+                transactionNumber > 0 ? transactionNumber : null);
+        query = query.where(nameFieldTransactionNumber,
+            isLessThanOrEqualTo:
+                transactionNumber < 0 ? transactionNumber : null);
+      }
+
+      QuerySnapshot snapshot = await query.get();
       return snapshot.docs
           .map((doc) =>
               FinancialModel.fromJson(doc.data() as Map<String, dynamic>))
           .toList();
     } catch (e) {
       print('Erro ao buscar Lançamentos financeiros: $e');
-      return [];
+      throw Exception('Erro ao buscar Lançamentos financeiros: $e');
     }
   }
 
