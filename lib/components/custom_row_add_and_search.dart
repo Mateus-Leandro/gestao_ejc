@@ -5,7 +5,6 @@ import 'package:gestao_ejc/components/custom_text_field.dart';
 class CustomRowAddAndSearch extends StatelessWidget {
   final String messageButton;
   final Function functionButton;
-  final Icon iconButton;
 
   final TextInputType inputType;
   final TextEditingController controller;
@@ -16,7 +15,6 @@ class CustomRowAddAndSearch extends StatelessWidget {
       {super.key,
       required this.messageButton,
       required this.functionButton,
-      required this.iconButton,
       required this.inputType,
       required this.controller,
       required this.messageTextField,
@@ -30,7 +28,7 @@ class CustomRowAddAndSearch extends StatelessWidget {
         CustomAddButton(
           message: messageButton,
           function: functionButton,
-          icon: iconButton,
+          icon: const Icon(Icons.add),
         ),
         CustomTextField(
           inputType: TextInputType.text,

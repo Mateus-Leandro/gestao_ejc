@@ -52,7 +52,6 @@ class _UserScreenState extends State<UserScreen> {
             CustomRowAddAndSearch(
               messageButton: 'Novo Usuário',
               functionButton: () => _showUserForm(null),
-              iconButton: const Icon(Icons.add),
               inputType: TextInputType.text,
               controller: userNameController,
               messageTextField: 'Nome Usuário',
