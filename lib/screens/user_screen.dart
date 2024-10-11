@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:gestao_ejc/components/custom_inactivate_user_alert.dart';
+import 'package:gestao_ejc/components/custom_row_add_and_search.dart';
 import 'package:gestao_ejc/components/custom_user_form.dart';
 import 'package:gestao_ejc/controllers/user_controller.dart';
 import 'package:gestao_ejc/models/user_model.dart';
@@ -48,42 +49,25 @@ class _UserScreenState extends State<UserScreen> {
         padding: const EdgeInsets.all(12.0),
         child: Column(
           children: [
-            _buildTopBar(context),
+            CustomRowAddAndSearch(
+              messageButton: 'Novo Usuário',
+              functionButton: () => _showUserForm(null),
+              iconButton: const Icon(Icons.add),
+              inputType: TextInputType.text,
+              controller: userNameController,
+              messageTextField: 'Nome Usuário',
+              functionTextField: () => _userController.getUsers(
+                userNameController.text.trim().isEmpty
+                    ? null
+                    : userNameController.text.trim(),
+              ),
+            ),
             const SizedBox(height: 15),
             Expanded(child: _buildUserList(context)),
           ],
         ),
       ),
       indexMenuSelected: 6,
-    );
-  }
-
-  Widget _buildTopBar(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        if (_authService.actualUserModel?.manipulateAdministrator ?? false) ...[
-          Tooltip(
-            message: 'Novo usuário',
-            child: IconButton(
-              onPressed: () {
-                _showUserForm(null);
-              },
-              icon: const Icon(Icons.add),
-              style: IconButton.styleFrom(
-                backgroundColor: _appTheme.colorBackgroundButton,
-                foregroundColor: _appTheme.colorForegroundButton,
-              ),
-            ),
-          ),
-        ],
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.only(left: 30),
-            child: _buildSearchField(),
-          ),
-        ),
-      ],
     );
   }
 
@@ -155,36 +139,5 @@ class _UserScreenState extends State<UserScreen> {
         return CustomUserForm(userEditing: user);
       },
     );
-  }
-
-  Widget _buildSearchField() {
-    final appTheme = getIt<AppTheme>();
-
-    return TextField(
-      keyboardType: TextInputType.name,
-      style: TextStyle(color: appTheme.colorBackgroundButton),
-      controller: userNameController,
-      decoration: InputDecoration(
-        hintText: 'Pesquisar usuários',
-        icon: Icon(Icons.search_outlined, color: Theme.of(context).primaryColor),
-        border: InputBorder.none,
-      ),
-      onChanged: (text) {
-        if (debounce?.isActive ?? false) {
-          debounce!.cancel();
-        }
-        debounce = Timer(const Duration(milliseconds: 500), () {
-          _getUserByName(text.trim());
-        });
-      },
-    );
-  }
-
-  void _getUserByName(String userName) {
-    if (userName.isNotEmpty) {
-      _userController.getUsers(userName);
-    } else {
-      _userController.getUsers(null);
-    }
   }
 }
