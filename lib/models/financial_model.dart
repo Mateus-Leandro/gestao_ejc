@@ -33,13 +33,13 @@ class FinancialModel {
 
   factory FinancialModel.fromJson(Map<String, dynamic> map) {
     return FinancialModel(
-        numberTransaction: map['numberTransaction'],
-        type: map['type'],
-        value: map['value'],
-        description: map['description'],
-        originOrDestination: map['originOrDestination'],
-        transactionDate: map['transactionDate'],
-        registrationDate: map['registrationDate'],
-        registrationUserId: map['registrationUserId']);
+        numberTransaction: map['numberTransaction'] ?? 0,
+        type: map['type'] ?? 0,
+        value: map['value'] ?? 0,
+        description: map['description'] ?? '',
+        originOrDestination: map['originOrDestination'] ?? '',
+        transactionDate: map['transactionDate'] ?? '',
+        registrationDate: map['registrationDate'] ?? '',
+        registrationUserId: map['registrationUserId'] ?? '');
   }
 }
