@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
-class CustomFirestoreImage extends StatefulWidget {
+class FunctionImageFromStorage extends StatefulWidget {
   final String imagePath;
 
-  const CustomFirestoreImage({
+  const FunctionImageFromStorage({
     super.key,
     required this.imagePath,
   });
 
   @override
-  _CustomFirestoreImageState createState() => _CustomFirestoreImageState();
+  _FunctionImageFromStorageState createState() => _FunctionImageFromStorageState();
 }
 
-class _CustomFirestoreImageState extends State<CustomFirestoreImage> {
+class _FunctionImageFromStorageState extends State<FunctionImageFromStorage> {
   String? _imageUrl;
   bool _isLoading = true;
   bool _hasError = false;

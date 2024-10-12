@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gestao_ejc/components/custom_firestore_image.dart';
+import 'package:gestao_ejc/functions/function_image_from_storage.dart';
 import 'package:gestao_ejc/functions/function_screen.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
 import 'package:gestao_ejc/theme/app_theme.dart';
@@ -46,7 +46,7 @@ class CustomMenuDrawer extends StatelessWidget {
                 },
                 child: const Tooltip(
                   message: "Página inicial",
-                  child: CustomFirestoreImage(
+                  child: FunctionImageFromStorage(
                     imagePath: "images/app/logos/logo07.png",
                   ),
                 ),
