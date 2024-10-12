@@ -5,27 +5,32 @@ import 'package:gestao_ejc/services/locator/service_locator.dart';
 class FinancialService {
   final FirebaseFirestore _firestore = getIt<FirebaseFirestore>();
   final String collection = 'financial';
-  final String nameFieldTransactionNumber = 'numberTransaction';
-  final String nameFieldTransactionType = 'type';
 
   Future<List<FinancialModel>> getFinancial({
-    int? transactionNumber,
-    int? transactionType,
+    String? transactionNumber,
+    String? transactionType,
   }) async {
     try {
-      Query query = _firestore.collection(collection);
+      Query query = _firestore.collection('financial');
       if (transactionType != null) {
-        query =
-            query.where(nameFieldTransactionType, isEqualTo: transactionType);
+        query = query.where('type', isEqualTo: transactionType);
       }
 
       if (transactionNumber != null) {
-        query = query.where(nameFieldTransactionNumber,
-            isGreaterThanOrEqualTo:
-                transactionNumber > 0 ? transactionNumber : null);
-        query = query.where(nameFieldTransactionNumber,
-            isLessThanOrEqualTo:
-                transactionNumber < 0 ? transactionNumber : null);
+        query = query.where('numberTransaction',
+            isGreaterThanOrEqualTo: transactionNumber);
+
+        if (transactionNumber.length > 1) {
+          query = query.where('numberTransaction',
+              isLessThan: transactionNumber.substring(
+                  0, transactionNumber.length - 1) +
+                  String.fromCharCode(transactionNumber
+                      .codeUnitAt(transactionNumber.length - 1) +
+                      1));
+        } else {
+          query = query.where('numberTransaction',
+              isLessThan: String.fromCharCode(transactionNumber.codeUnitAt(0) + 1));
+        }
       }
 
       QuerySnapshot snapshot = await query.get();

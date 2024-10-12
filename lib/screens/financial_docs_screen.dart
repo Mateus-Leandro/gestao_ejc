@@ -6,17 +6,15 @@ import 'package:gestao_ejc/models/financial_model.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
 
 class FinancialDocsScreen extends StatefulWidget {
-  final int? transactionType;
+  final String? transactionType;
 
   const FinancialDocsScreen({super.key, required this.transactionType});
 
   @override
-  State<FinancialDocsScreen> createState() =>
-      _FinancialDocsScreenState();
+  State<FinancialDocsScreen> createState() => _FinancialDocsScreenState();
 }
 
-class _FinancialDocsScreenState
-    extends State<FinancialDocsScreen> {
+class _FinancialDocsScreenState extends State<FinancialDocsScreen> {
   final TextEditingController numberTransactionController =
       TextEditingController();
   final FinancialController _financialController = getIt<FinancialController>();
@@ -34,6 +32,11 @@ class _FinancialDocsScreenState
 
   @override
   Widget build(BuildContext context) {
+    final FinancialController _financialController =
+        getIt<FinancialController>();
+
+    String? type = widget.transactionType;
+    String? doc;
     return Column(
       children: [
         CustomRowAddAndSearch(
@@ -42,7 +45,14 @@ class _FinancialDocsScreenState
           inputType: TextInputType.text,
           controller: numberTransactionController,
           messageTextField: 'Nº do lançamento',
-          functionTextField: () {},
+          functionTextField: () {
+            doc = null;
+            if (numberTransactionController.text.trim().isNotEmpty) {
+              doc = numberTransactionController.text.trim();
+            }
+            _financialController.getFinancial(
+                transactionNumber: doc, transactionType: type);
+          },
         ),
         Expanded(
           child: Padding(
@@ -91,20 +101,15 @@ class _FinancialDocsScreenState
     final FunctionMaskDecimal functionMaskDecimal =
         getIt<FunctionMaskDecimal>();
 
-    if (doc.type == 1) {
-      textColor = Colors.red;
-      textType = 'SAÍDA';
-    } else {
-      textColor = Colors.green;
-      textType = 'ENTRADA';
-    }
+    textColor = doc.type == "S" ? Colors.red : Colors.green;
+    textType = 'Documento: ${doc.type}${doc.numberTransaction}';
     return ListTile(
       title: Row(
         children: [
           Text(
             textType,
             style: TextStyle(
-              color: doc.type == 1 ? Colors.red : Colors.green,
+              color: doc.type == "S" ? Colors.red : Colors.green,
             ),
           )
         ],
@@ -120,9 +125,11 @@ class _FinancialDocsScreenState
           ),
         ],
       ),
-      trailing: const Row(
+      trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
+          IconButton(onPressed: () {}, icon: Icon(Icons.edit)),
+          IconButton(onPressed: () {}, icon: Icon(Icons.delete_forever))
         ],
       ),
     );

@@ -11,13 +11,13 @@ class FinancialController extends ChangeNotifier {
 
   Stream<List<FinancialModel>>? get stream => _streamController.stream;
 
-  void init({int? transactionType, int? transactionNumber}) {
+  void init({String? transactionType, String? transactionNumber}) {
     _streamController = StreamController<List<FinancialModel>>();
     getFinancial(
         transactionType: transactionType, transactionNumber: transactionNumber);
   }
 
-  void getFinancial({int? transactionNumber, int? transactionType}) async {
+  void getFinancial({String? transactionNumber, String? transactionType}) async {
     var response = await _financialService.getFinancial(
         transactionNumber: transactionNumber, transactionType: transactionType);
     _streamController.sink.add(response);

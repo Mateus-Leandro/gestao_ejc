@@ -39,8 +39,8 @@ class _CustomFinancialTabBarState extends State<CustomFinancialTabBar> {
           const Expanded(
             child: TabBarView(
               children: [
-                Center(child: FinancialDocsScreen(transactionType: 2)),
-                Center(child: FinancialDocsScreen(transactionType: 1)),
+                Center(child: FinancialDocsScreen(transactionType: "E")),
+                Center(child: FinancialDocsScreen(transactionType: "S")),
                 Center(child: FinancialDocsScreen(transactionType: null)),
               ],
             ),
