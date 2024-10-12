@@ -10,10 +10,13 @@ class FunctionImageFromStorage extends StatefulWidget {
   });
 
   @override
-  _FunctionImageFromStorageState createState() => _FunctionImageFromStorageState();
+  _FunctionImageFromStorageState createState() =>
+      _FunctionImageFromStorageState();
 }
 
 class _FunctionImageFromStorageState extends State<FunctionImageFromStorage> {
+  static final Map<String, String> _imageCache = {};
+
   String? _imageUrl;
   bool _isLoading = true;
   bool _hasError = false;
@@ -26,19 +29,24 @@ class _FunctionImageFromStorageState extends State<FunctionImageFromStorage> {
 
   Future<void> _loadImage() async {
     try {
-      final Reference ref =
-          FirebaseStorage.instance.ref().child(widget.imagePath);
-      final String url = await ref.getDownloadURL();
-      if(mounted){
+      if (_imageCache.containsKey(widget.imagePath)) {
+        _imageUrl = _imageCache[widget.imagePath];
+      } else {
+        final ref = FirebaseStorage.instance.ref().child(widget.imagePath);
+        final url = await ref.getDownloadURL();
+        _imageCache[widget.imagePath] = url;
+        _imageUrl = url;
+      }
+
+      if (mounted) {
         setState(() {
-          _imageUrl = url;
           _isLoading = false;
           _hasError = false;
         });
       }
     } catch (e) {
       print("Erro ao carregar a imagem: $e");
-      if(mounted){
+      if (mounted) {
         setState(() {
           _isLoading = false;
           _hasError = true;
@@ -71,7 +79,7 @@ class _FunctionImageFromStorageState extends State<FunctionImageFromStorage> {
             child: CircularProgressIndicator(
               value: loadingProgress.expectedTotalBytes != null
                   ? loadingProgress.cumulativeBytesLoaded /
-                      (loadingProgress.expectedTotalBytes!)
+                  loadingProgress.expectedTotalBytes!
                   : null,
             ),
           );
