@@ -4,6 +4,7 @@ import 'package:gestao_ejc/controllers/financial_controller.dart';
 import 'package:gestao_ejc/controllers/user_controller.dart';
 import 'package:gestao_ejc/functions/function_call_email_app.dart';
 import 'package:gestao_ejc/functions/function_call_url.dart';
+import 'package:gestao_ejc/functions/function_mask_decimal.dart';
 import 'package:gestao_ejc/functions/function_screen.dart';
 import 'package:gestao_ejc/helpers/date_format_string.dart';
 import 'package:gestao_ejc/services/auth_service.dart';
@@ -29,4 +30,5 @@ void setupGetIt() {
   getIt.registerLazySingleton<AppTheme>(() => AppTheme());
   getIt.registerLazySingleton<FinancialService>(() => FinancialService());
   getIt.registerLazySingleton<FinancialController>(() => FinancialController());
+  getIt.registerLazySingleton<FunctionMaskDecimal>(() => FunctionMaskDecimal());
 }

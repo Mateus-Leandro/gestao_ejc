@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gestao_ejc/components/custom_row_add_and_search.dart';
 import 'package:gestao_ejc/controllers/financial_controller.dart';
+import 'package:gestao_ejc/functions/function_mask_decimal.dart';
 import 'package:gestao_ejc/models/financial_model.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
 
@@ -87,6 +88,8 @@ class _FinancialDocsScreenState
   Widget _buildUserTile(BuildContext context, FinancialModel doc) {
     Color textColor;
     String textType;
+    final FunctionMaskDecimal functionMaskDecimal =
+        getIt<FunctionMaskDecimal>();
 
     if (doc.type == 1) {
       textColor = Colors.red;
@@ -112,12 +115,12 @@ class _FinancialDocsScreenState
             child: Text(doc.description),
           ),
           Text(
-            'R\$ ${doc.value}',
+            functionMaskDecimal.formatValue(doc.value),
             style: TextStyle(fontSize: 20, color: textColor),
           ),
         ],
       ),
-      trailing: Row(
+      trailing: const Row(
         mainAxisSize: MainAxisSize.min,
         children: [
         ],
