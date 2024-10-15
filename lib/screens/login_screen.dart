@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gestao_ejc/components/custom_firestore_image.dart';
+import 'package:gestao_ejc/functions/function_image_from_storage.dart';
 import 'package:gestao_ejc/components/custom_text_form_field.dart';
 import 'package:gestao_ejc/screens/password_reset_modal.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
@@ -38,7 +38,7 @@ class _LoginScreenState extends State<LoginScreen> {
               child: const Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  CustomFirestoreImage(
+                  FunctionImageFromStorage(
                       imagePath: "images/app/roses/rosa02.png"),
                 ],
               ),
@@ -51,7 +51,7 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  CustomFirestoreImage(
+                  FunctionImageFromStorage(
                       imagePath: "images/app/logos/logo02.png"),
                   Container(
                     padding: const EdgeInsets.only(left: 20, right: 20),
