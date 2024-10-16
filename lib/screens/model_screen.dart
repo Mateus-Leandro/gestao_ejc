@@ -1,8 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gestao_ejc/components/custom_menu_drawer.dart';
+import 'package:gestao_ejc/functions/function_date_to_string.dart';
 import 'package:gestao_ejc/functions/function_screen.dart';
-import 'package:gestao_ejc/helpers/date_format_string.dart';
 import 'package:gestao_ejc/services/auth_service.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
 import 'package:gestao_ejc/theme/app_theme.dart';
@@ -25,7 +25,7 @@ class ModelScreen extends StatefulWidget {
 }
 
 class _ModelScreenState extends State<ModelScreen> {
-  String dateString = getIt<DateFormatString>().getDate();
+  String dateString = getIt<FunctionDateToString>().getActualDateToString();
   final User user = getIt<FirebaseAuth>().currentUser!;
   final AuthService authService = getIt<AuthService>();
   final FunctionScreen functionScreen = getIt<FunctionScreen>();

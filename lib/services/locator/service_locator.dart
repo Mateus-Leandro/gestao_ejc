@@ -4,9 +4,9 @@ import 'package:gestao_ejc/controllers/financial_controller.dart';
 import 'package:gestao_ejc/controllers/user_controller.dart';
 import 'package:gestao_ejc/functions/function_call_email_app.dart';
 import 'package:gestao_ejc/functions/function_call_url.dart';
+import 'package:gestao_ejc/functions/function_date_to_string.dart';
 import 'package:gestao_ejc/functions/function_mask_decimal.dart';
 import 'package:gestao_ejc/functions/function_screen.dart';
-import 'package:gestao_ejc/helpers/date_format_string.dart';
 import 'package:gestao_ejc/services/auth_service.dart';
 import 'package:gestao_ejc/services/financial_service.dart';
 import 'package:gestao_ejc/services/user_service.dart';
@@ -18,8 +18,8 @@ final getIt = GetIt.instance;
 void setupGetIt() {
   getIt.registerLazySingleton<AuthService>(() => AuthService());
   getIt.registerLazySingleton<FirebaseAuth>(() => FirebaseAuth.instance);
-  getIt.registerLazySingleton<DateFormatString>(
-      () => DateFormatString(originalDate: DateTime.now()));
+  getIt.registerLazySingleton<FunctionDateToString>(
+      () => FunctionDateToString());
   getIt.registerLazySingleton<FirebaseFirestore>(
       () => FirebaseFirestore.instance);
   getIt.registerLazySingleton<UserService>(() => UserService());
