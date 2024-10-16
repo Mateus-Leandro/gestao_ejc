@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gestao_ejc/components/custom_date_of_birth_field.dart';
+import 'package:gestao_ejc/components/custom_date_picker.dart';
 import 'package:gestao_ejc/controllers/user_controller.dart';
 import 'package:gestao_ejc/models/user_model.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
@@ -84,7 +84,7 @@ class _CustomUserFormState extends State<CustomUserForm> {
               _buildTextField(false, _nameController, 'Nome',
                   TextInputType.text, null, true),
               const SizedBox(height: 10),
-              CustomDateOfBirthField(controller: _birthdayController),
+              CustomDatePicker(controller: _birthdayController, labelText: 'Data de nascimento',),
               const SizedBox(height: 10),
               _buildTextField(false, _emailController, 'Email',
                   TextInputType.emailAddress, null, widget.userEditing == null),
