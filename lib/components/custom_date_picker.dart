@@ -6,11 +6,12 @@ class CustomDatePicker extends StatefulWidget {
   final String labelText;
   final DateTime? lowestDate;
 
-  const CustomDatePicker(
-      {super.key,
-      required this.controller,
-      required this.labelText,
-      this.lowestDate});
+  const CustomDatePicker({
+    super.key,
+    required this.controller,
+    required this.labelText,
+    this.lowestDate,
+  });
 
   @override
   _CustomDatePickerState createState() => _CustomDatePickerState();
@@ -21,11 +22,12 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
-        context: context,
-        initialDate: _selectedDate ?? DateTime.now(),
-        firstDate: widget.lowestDate ?? DateTime(1900),
-        lastDate: DateTime.now(),
-        locale: Locale('pt', 'BR'));
+      context: context,
+      initialDate: _selectedDate ?? DateTime.now(),
+      firstDate: widget.lowestDate ?? DateTime(1900),
+      lastDate: DateTime.now(),
+      locale: const Locale('pt', 'BR'),
+    );
     if (picked != null && picked != _selectedDate) {
       setState(() {
         _selectedDate = picked;
@@ -45,6 +47,12 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
         border: const OutlineInputBorder(),
       ),
       onTap: () => _selectDate(context),
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'A data não pode ser vazia';
+        }
+        return null;
+      },
     );
   }
 }
