@@ -52,6 +52,9 @@ class _UserScreenState extends State<UserScreen> {
             CustomRowAddAndSearch(
               messageButton: 'Novo Usuário',
               functionButton: () => _showUserForm(null),
+              showAddButton:
+                  _authService.actualUserModel?.manipulateAdministrator ??
+                      false,
               inputType: TextInputType.text,
               controller: userNameController,
               messageTextField: 'Nome Usuário',
@@ -113,7 +116,8 @@ class _UserScreenState extends State<UserScreen> {
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (_authService.actualUserModel?.manipulateAdministrator ?? false) ...[
+          if (_authService.actualUserModel?.manipulateAdministrator ??
+              false) ...[
             Tooltip(
               message: 'Editar',
               child: IconButton(
