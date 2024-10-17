@@ -22,14 +22,15 @@ class FinancialService {
 
         if (transactionNumber.length > 1) {
           query = query.where('numberTransaction',
-              isLessThan: transactionNumber.substring(
-                  0, transactionNumber.length - 1) +
-                  String.fromCharCode(transactionNumber
-                      .codeUnitAt(transactionNumber.length - 1) +
-                      1));
+              isLessThan:
+                  transactionNumber.substring(0, transactionNumber.length - 1) +
+                      String.fromCharCode(transactionNumber
+                              .codeUnitAt(transactionNumber.length - 1) +
+                          1));
         } else {
           query = query.where('numberTransaction',
-              isLessThan: String.fromCharCode(transactionNumber.codeUnitAt(0) + 1));
+              isLessThan:
+                  String.fromCharCode(transactionNumber.codeUnitAt(0) + 1));
         }
       }
 
@@ -44,15 +45,17 @@ class FinancialService {
     }
   }
 
-  Future<String?> saveFinancial(FinancialModel newFinancial) async {
+  Future<int?> saveFinancial(FinancialModel newFinancial) async {
     try {
       await _firestore
           .collection(collection)
-          .doc(newFinancial.numberTransaction.toString())
+          .doc(newFinancial.type + newFinancial.numberTransaction.toString())
           .set(newFinancial.toJson());
-      return null;
+      newFinancial.numberTransaction;
+      return int.parse(newFinancial.numberTransaction!);
     } catch (e) {
-      return 'Erro ao salvar Lançamento financeiro: $e';
+      print('Erro ao salvar Lançamento financeiro: $e');
+      return null;
     }
   }
 }

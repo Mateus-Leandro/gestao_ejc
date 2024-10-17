@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gestao_ejc/components/custom_financial_form.dart';
 import 'package:gestao_ejc/components/custom_row_add_and_search.dart';
 import 'package:gestao_ejc/controllers/financial_controller.dart';
 import 'package:gestao_ejc/functions/function_mask_decimal.dart';
@@ -41,7 +42,10 @@ class _FinancialDocsScreenState extends State<FinancialDocsScreen> {
       children: [
         CustomRowAddAndSearch(
           messageButton: 'Adicionar Lançamento',
-          functionButton: () {},
+          functionButton: () {
+            _showFinancialForm(null);
+          },
+          showAddButton: widget.transactionType != null,
           inputType: TextInputType.text,
           controller: numberTransactionController,
           messageTextField: 'Nº do lançamento',
@@ -132,6 +136,16 @@ class _FinancialDocsScreenState extends State<FinancialDocsScreen> {
           IconButton(onPressed: () {}, icon: Icon(Icons.delete_forever))
         ],
       ),
+    );
+  }
+
+  void _showFinancialForm(FinancialModel? financialModel) {
+    String? type = widget.transactionType;
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return CustomFinancialForm(financialModel: financialModel, transactionType: type!);
+      },
     );
   }
 }
