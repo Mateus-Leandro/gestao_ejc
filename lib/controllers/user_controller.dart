@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:gestao_ejc/models/user_model.dart';
 import 'package:gestao_ejc/services/auth_service.dart';
@@ -22,6 +23,12 @@ class UserController extends ChangeNotifier {
   void getUsers(String? userName) async {
     var response = await _userService.getUsers(userName?.toLowerCase());
     _streamController.sink.add(response);
+  }
+
+  Future<String?> getNameByReferenceUser(
+      {required DocumentReference referenceUser}) async {
+    return await _userService.getNameByReferenceUser(
+        referenceUser: referenceUser);
   }
 
   @override
