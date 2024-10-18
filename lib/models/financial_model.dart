@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class FinancialModel {
   String? numberTransaction;
   final String type; // E = Entrada. S = Saída.
@@ -6,7 +8,7 @@ class FinancialModel {
   final String originOrDestination;
   final String transactionDate;
   final String registrationDate;
-  final String registrationUserId;
+  final DocumentReference? registrationUser;
 
   FinancialModel(
       {this.numberTransaction,
@@ -16,7 +18,7 @@ class FinancialModel {
       required this.originOrDestination,
       required this.transactionDate,
       required this.registrationDate,
-      required this.registrationUserId});
+      required this.registrationUser});
 
   Map<String, dynamic> toJson() {
     return {
@@ -24,10 +26,10 @@ class FinancialModel {
       'type' :type,
       'value': value,
       'description': description,
-      'origrinOrDestination': originOrDestination,
-      'trasactionDate': transactionDate,
-      'registractionDate': registrationDate,
-      'registractionUserId': registrationUserId
+      'originOrDestination': originOrDestination,
+      'transactionDate': transactionDate,
+      'registrationDate': registrationDate,
+      'registrationUser': registrationUser
     };
   }
 
@@ -40,6 +42,6 @@ class FinancialModel {
         originOrDestination: map['originOrDestination'] ?? '',
         transactionDate: map['transactionDate'] ?? '',
         registrationDate: map['registrationDate'] ?? '',
-        registrationUserId: map['registrationUserId'] ?? '');
+        registrationUser: map['registrationUser']);
   }
 }
