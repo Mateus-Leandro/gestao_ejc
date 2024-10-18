@@ -1,9 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:currency_textfield/currency_textfield.dart';
 import 'package:gestao_ejc/components/custom_date_picker.dart';
 import 'package:gestao_ejc/components/custom_text_form_field.dart';
 import 'package:gestao_ejc/controllers/financial_controller.dart';
+import 'package:gestao_ejc/controllers/user_controller.dart';
+import 'package:gestao_ejc/functions/function_date_to_string.dart';
 import 'package:gestao_ejc/models/financial_model.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
 import 'package:gestao_ejc/theme/app_theme.dart';
@@ -21,6 +24,10 @@ class CustomFinancialForm extends StatefulWidget {
 
 class _CustomFinancialFormState extends State<CustomFinancialForm> {
   bool _savingFinancial = false;
+  String? _createdBy;
+  final _userController = getIt<UserController>();
+  final _functionDateToString = getIt<FunctionDateToString>();
+  final _firestore = getIt<FirebaseFirestore>();
   final _appTheme = getIt<AppTheme>();
   final _financialController = getIt<FinancialController>();
   final _currentUser = getIt<FirebaseAuth>().currentUser;
@@ -42,6 +49,15 @@ class _CustomFinancialFormState extends State<CustomFinancialForm> {
     super.initState();
     editing = widget.financialModel == null ? false : true;
     originOrDestination = widget.transactionType == "E" ? 'Origem' : 'Destino';
+    if (editing) {
+      _originOrDestinationController.text =
+          widget.financialModel?.originOrDestination ?? '';
+      _descriptionController.text = widget.financialModel?.description ?? '';
+      _transactionDateController.text = widget.financialModel!.transactionDate;
+      _valueController.forceValue(
+          initDoubleValue: widget.financialModel?.value ?? 0);
+      _getNameUser();
+    }
   }
 
   @override
@@ -63,16 +79,23 @@ class _CustomFinancialFormState extends State<CustomFinancialForm> {
         child: Form(
           key: _formKey,
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              if (editing) ...[
-                Text(
-                  'Lançamento criado em: ${widget.financialModel?.registrationDate}',
+              Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: Row(
+                  // mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (editing) ...[
+                      Expanded(
+                        child: Text(
+                            'Criado por ${_createdBy ?? ''} em ${widget.financialModel?.registrationDate}'),
+                      ),
+                    ],
+                  ],
                 ),
-                Text(
-                  'por: ${widget.financialModel?.registrationUserId}',
-                ),
-              ],
+              ),
               CustomTextFormField(
                   controller: _originOrDestinationController,
                   decoration: InputDecoration(labelText: originOrDestination),
@@ -103,7 +126,9 @@ class _CustomFinancialFormState extends State<CustomFinancialForm> {
               CustomDatePicker(
                 controller: _transactionDateController,
                 labelText: 'Data do lançamento',
-                lowestDate: DateTime.now().subtract(const Duration(days: 7)),
+                lowestDate: DateTime.now().subtract(
+                  const Duration(days: 7),
+                ),
               ),
             ],
           ),
@@ -138,17 +163,26 @@ class _CustomFinancialFormState extends State<CustomFinancialForm> {
       setState(() {
         _savingFinancial = true;
       });
-      FinancialModel financialModel = FinancialModel(
+      FinancialModel newFinancialModel = FinancialModel(
+          numberTransaction:
+              editing ? widget.financialModel!.numberTransaction! : null,
           type: widget.transactionType,
           value: _valueController.doubleValue,
           description: _descriptionController.text.trim(),
           originOrDestination: _originOrDestinationController.text.trim(),
           transactionDate: _transactionDateController.text.trim(),
-          registrationDate: DateTime.now().toString(),
-          registrationUserId: _currentUser!.uid);
+          registrationDate: _functionDateToString.getActualDateToString(),
+          registrationUser: _firestore.doc('users/${_currentUser!.uid}'));
+      int? result;
 
-      int? result = await _financialController.saveFinancial(
-          financialModel: financialModel);
+      if (editing) {
+        result = await _financialController.updateFinancial(
+            financialModel: widget.financialModel!,
+            newFinancialModel: newFinancialModel);
+      } else {
+        result = await _financialController.createFinancial(
+            financialModel: newFinancialModel);
+      }
 
       setState(() {
         _savingFinancial = false;
@@ -158,7 +192,7 @@ class _CustomFinancialFormState extends State<CustomFinancialForm> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
               content: Text(
-                  'Lançamento ${financialModel.type}$result ${editing ? 'atualizado' : 'cadastrado'} com sucesso!'),
+                  'Lançamento ${newFinancialModel.type}$result ${editing ? 'atualizado' : 'cadastrado'} com sucesso!'),
               backgroundColor: _appTheme.colorSnackBarSucess),
         );
         Navigator.of(context).pop();
@@ -170,5 +204,13 @@ class _CustomFinancialFormState extends State<CustomFinancialForm> {
         );
       }
     }
+  }
+
+  void _getNameUser() async {
+    String? nameUser = await _userController.getNameByReferenceUser(
+        referenceUser: widget.financialModel!.registrationUser!);
+    setState(() {
+      _createdBy = nameUser;
+    });
   }
 }

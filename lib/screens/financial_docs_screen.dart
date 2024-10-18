@@ -132,7 +132,9 @@ class _FinancialDocsScreenState extends State<FinancialDocsScreen> {
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          IconButton(onPressed: () {}, icon: Icon(Icons.edit)),
+          IconButton(onPressed: () {
+            _showFinancialForm(doc);
+          }, icon: Icon(Icons.edit)),
           IconButton(onPressed: () {}, icon: Icon(Icons.delete_forever))
         ],
       ),

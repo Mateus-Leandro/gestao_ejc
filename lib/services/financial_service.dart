@@ -45,14 +45,14 @@ class FinancialService {
     }
   }
 
-  Future<int?> saveFinancial(FinancialModel newFinancial) async {
+  Future<int?> saveFinancial(FinancialModel financialModel) async {
     try {
       await _firestore
           .collection(collection)
-          .doc(newFinancial.type + newFinancial.numberTransaction.toString())
-          .set(newFinancial.toJson());
-      newFinancial.numberTransaction;
-      return int.parse(newFinancial.numberTransaction!);
+          .doc(financialModel.type + financialModel.numberTransaction.toString())
+          .set(financialModel.toJson());
+      financialModel.numberTransaction;
+      return int.parse(financialModel.numberTransaction!);
     } catch (e) {
       print('Erro ao salvar Lançamento financeiro: $e');
       return null;

@@ -37,8 +37,7 @@ class FinancialController extends ChangeNotifier {
     super.dispose();
   }
 
-  Future<int?> saveFinancial(
-      {required FinancialModel financialModel}) async {
+  Future<int?> createFinancial({required FinancialModel financialModel}) async {
     FinancialIndexModel financialIndexModel =
         await _financialIndexService.getFinancialIndex();
     int docNumber;
@@ -56,18 +55,39 @@ class FinancialController extends ChangeNotifier {
     }
 
     financialModel.numberTransaction = docNumber.toString();
-    int? result = await _financialService.saveFinancial(financialModel);
+    return await saveFinancialDocAndIndex(
+        financialModel: financialModel,
+        financialIndexModel: financialIndexModel);
+  }
 
+  Future<int?> updateFinancial(
+      {required FinancialModel financialModel,
+      required FinancialModel newFinancialModel}) async {
+    double valueDifference = newFinancialModel.value - financialModel.value;
+
+    FinancialIndexModel financialIndexModel =
+        await _financialIndexService.getFinancialIndex();
+
+    newFinancialModel.type == "E"
+        ? financialIndexModel.totalInputValue += valueDifference
+        : financialIndexModel.totalOutputValue += valueDifference;
+
+    return await saveFinancialDocAndIndex(
+        financialModel: newFinancialModel,
+        financialIndexModel: financialIndexModel);
+  }
+
+  Future<int?> saveFinancialDocAndIndex(
+      {required FinancialModel financialModel,
+      required FinancialIndexModel financialIndexModel}) async {
+    int? result = await _financialService.saveFinancial(financialModel);
     if (result != null) {
       _financialIndexController.saveFinancialIndex(
           financialIndexModel: financialIndexModel);
-      getFinancial();
+      getFinancial(transactionType: financialModel.type);
       return result;
     } else {
       return null;
     }
   }
-
-
-
 }
