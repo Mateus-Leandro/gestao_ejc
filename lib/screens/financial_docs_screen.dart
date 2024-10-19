@@ -108,17 +108,15 @@ class _FinancialDocsScreenState extends State<FinancialDocsScreen> {
     textColor = doc.type == "S" ? Colors.red : Colors.green;
     return ListTile(
       title: Row(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                '${doc.type}${doc.numberTransaction} - ${doc.originOrDestination}',
-                style: TextStyle(
-                  color: doc.type == "S" ? Colors.red : Colors.green,
-                ),
+          Expanded(
+            child: Text(
+              '${doc.type}${doc.numberTransaction} - ${doc.originOrDestination}',
+              style: TextStyle(
+                color: doc.type == "S" ? Colors.red : Colors.green,
               ),
-            ],
+            ),
           )
         ],
       ),
