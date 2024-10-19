@@ -104,7 +104,8 @@ class _CustomFinancialFormState extends State<CustomFinancialForm> {
                         ? 'Informe ${widget.transactionType == 'E' ? 'a origem' : 'o destino'} do lançamento.'
                         : null;
                   },
-                  obscure: false),
+                  obscure: false,
+              maxLength: 15),
               CustomTextFormField(
                   controller: _descriptionController,
                   decoration: const InputDecoration(labelText: 'Descrição'),
