@@ -117,7 +117,26 @@ class _FinancialDocsScreenState extends State<FinancialDocsScreen> {
                 color: doc.type == "S" ? Colors.red : Colors.green,
               ),
             ),
-          )
+          ),
+          if(widget.transactionType != null)...[
+            Tooltip(
+              message: 'Editar Lançamento',
+              child: IconButton(
+                onPressed: () {
+                  _showFinancialForm(doc);
+                },
+                icon: const Icon(Icons.edit),
+              ),
+            ),
+            Tooltip(
+              message: 'Excluir Lançamento',
+              child: CustomDeleteButton(
+                alertMessage: 'Excluir lançamento?',
+                deleteFunction: () async => await _financialController
+                    .deleteFinancial(financialModel: doc),
+              ),
+            )
+          ],
         ],
       ),
       subtitle: Row(
@@ -129,28 +148,6 @@ class _FinancialDocsScreenState extends State<FinancialDocsScreen> {
             functionMaskDecimal.formatValue(doc.value),
             style: TextStyle(fontSize: 20, color: textColor),
           ),
-        ],
-      ),
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Tooltip(
-            message: 'Editar Lançamento',
-            child: IconButton(
-              onPressed: () {
-                _showFinancialForm(doc);
-              },
-              icon: const Icon(Icons.edit),
-            ),
-          ),
-          Tooltip(
-            message: 'Excluir Lançamento',
-            child: CustomDeleteButton(
-              alertMessage: 'Excluir lançamento?',
-              deleteFunction: () async => await _financialController
-                  .deleteFinancial(financialModel: doc),
-            ),
-          )
         ],
       ),
     );
