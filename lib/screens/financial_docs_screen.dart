@@ -102,20 +102,23 @@ class _FinancialDocsScreenState extends State<FinancialDocsScreen> {
 
   Widget _buildUserTile(BuildContext context, FinancialModel doc) {
     Color textColor;
-    String textType;
     final FunctionMaskDecimal functionMaskDecimal =
         getIt<FunctionMaskDecimal>();
 
     textColor = doc.type == "S" ? Colors.red : Colors.green;
-    textType = 'Documento: ${doc.type}${doc.numberTransaction}';
     return ListTile(
       title: Row(
         children: [
-          Text(
-            textType,
-            style: TextStyle(
-              color: doc.type == "S" ? Colors.red : Colors.green,
-            ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                '${doc.type}${doc.numberTransaction} - ${doc.originOrDestination}',
+                style: TextStyle(
+                  color: doc.type == "S" ? Colors.red : Colors.green,
+                ),
+              ),
+            ],
           )
         ],
       ),
@@ -146,8 +149,8 @@ class _FinancialDocsScreenState extends State<FinancialDocsScreen> {
             message: 'Excluir Lançamento',
             child: CustomDeleteButton(
               alertMessage: 'Excluir lançamento?',
-              deleteFunction: () async =>
-                  await _financialController.deleteFinancial(financialModel: doc),
+              deleteFunction: () async => await _financialController
+                  .deleteFinancial(financialModel: doc),
             ),
           )
         ],
