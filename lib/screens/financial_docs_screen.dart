@@ -132,9 +132,11 @@ class _FinancialDocsScreenState extends State<FinancialDocsScreen> {
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          IconButton(onPressed: () {
-            _showFinancialForm(doc);
-          }, icon: Icon(Icons.edit)),
+          IconButton(
+              onPressed: () {
+                _showFinancialForm(doc);
+              },
+              icon: Icon(Icons.edit)),
           IconButton(onPressed: () {}, icon: Icon(Icons.delete_forever))
         ],
       ),
@@ -142,11 +144,13 @@ class _FinancialDocsScreenState extends State<FinancialDocsScreen> {
   }
 
   void _showFinancialForm(FinancialModel? financialModel) {
-    String? type = widget.transactionType;
+    String? type = financialModel?.type ?? widget.transactionType;
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return CustomFinancialForm(financialModel: financialModel, transactionType: type!);
+        return CustomFinancialForm(
+            financialModel: financialModel, transactionType: type!);
       },
     );
   }
