@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gestao_ejc/components/custom_delete_button.dart';
 import 'package:gestao_ejc/components/custom_financial_form.dart';
 import 'package:gestao_ejc/components/custom_row_add_and_search.dart';
 import 'package:gestao_ejc/controllers/financial_controller.dart';
@@ -132,12 +133,23 @@ class _FinancialDocsScreenState extends State<FinancialDocsScreen> {
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          IconButton(
+          Tooltip(
+            message: 'Editar Lançamento',
+            child: IconButton(
               onPressed: () {
                 _showFinancialForm(doc);
               },
-              icon: Icon(Icons.edit)),
-          IconButton(onPressed: () {}, icon: Icon(Icons.delete_forever))
+              icon: const Icon(Icons.edit),
+            ),
+          ),
+          Tooltip(
+            message: 'Excluir Lançamento',
+            child: CustomDeleteButton(
+              alertMessage: 'Excluir lançamento?',
+              deleteFunction: () async =>
+                  await _financialController.deleteFinancial(financialModel: doc),
+            ),
+          )
         ],
       ),
     );

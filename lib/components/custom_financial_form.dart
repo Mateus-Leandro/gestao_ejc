@@ -192,14 +192,14 @@ class _CustomFinancialFormState extends State<CustomFinancialForm> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
               content: Text(
-                  'Lançamento ${newFinancialModel.type}$result ${editing ? 'atualizado' : 'cadastrado'} com sucesso!'),
+                  'Lançamento ${newFinancialModel.type}$result salvo com sucesso!'),
               backgroundColor: _appTheme.colorSnackBarSucess),
         );
         Navigator.of(context).pop();
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-              content: Text('Erro ao salvar lançamento: $result'),
+              content: Text('Erro ao salvar lançamento, tente novamente!'),
               backgroundColor: _appTheme.colorSnackBarErro),
         );
       }

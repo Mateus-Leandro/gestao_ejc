@@ -45,17 +45,34 @@ class FinancialService {
     }
   }
 
-  Future<int?> saveFinancial(FinancialModel financialModel) async {
+  Future<String?> saveFinancial(FinancialModel financialModel) async {
     try {
       await _firestore
           .collection(collection)
-          .doc(financialModel.type + financialModel.numberTransaction.toString())
+          .doc(
+              financialModel.type + financialModel.numberTransaction.toString())
           .set(financialModel.toJson());
       financialModel.numberTransaction;
-      return int.parse(financialModel.numberTransaction!);
-    } catch (e) {
-      print('Erro ao salvar Lançamento financeiro: $e');
       return null;
+    } catch (e) {
+      String message = 'Erro ao salvar Lançamento financeiro: $e';
+      print(message);
+      return message;
+    }
+  }
+
+  Future<String?> deleteFinancial(FinancialModel financialModel) async {
+    try {
+      await _firestore
+          .collection(collection)
+          .doc(
+              financialModel.type + financialModel.numberTransaction.toString())
+          .delete();
+      return null;
+    } catch (e) {
+      String message = 'Erro ao excluir Lançamento financeiro: $e';
+      print(message);
+      return message;
     }
   }
 }

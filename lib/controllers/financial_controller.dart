@@ -55,9 +55,14 @@ class FinancialController extends ChangeNotifier {
     }
 
     financialModel.numberTransaction = docNumber.toString();
-    return await saveFinancialDocAndIndex(
-        financialModel: financialModel,
-        financialIndexModel: financialIndexModel);
+    String? result = await _financialService.saveFinancial(financialModel);
+    if (result == null) {
+      await _financialIndexService.saveFinancialIndex(financialIndexModel);
+      getFinancial(transactionType: financialModel.type);
+      return int.parse(financialModel.numberTransaction!);
+    } else {
+      return null;
+    }
   }
 
   Future<int?> updateFinancial(
@@ -65,29 +70,45 @@ class FinancialController extends ChangeNotifier {
       required FinancialModel newFinancialModel}) async {
     double valueDifference = newFinancialModel.value - financialModel.value;
 
-    FinancialIndexModel financialIndexModel =
-        await _financialIndexService.getFinancialIndex();
+    String? result = await _financialService.saveFinancial(newFinancialModel);
 
-    newFinancialModel.type == "E"
-        ? financialIndexModel.totalInputValue += valueDifference
-        : financialIndexModel.totalOutputValue += valueDifference;
+    if (result == null) {
+      FinancialIndexModel financialIndexModel =
+          await _financialIndexService.getFinancialIndex();
 
-    return await saveFinancialDocAndIndex(
-        financialModel: newFinancialModel,
-        financialIndexModel: financialIndexModel);
-  }
-
-  Future<int?> saveFinancialDocAndIndex(
-      {required FinancialModel financialModel,
-      required FinancialIndexModel financialIndexModel}) async {
-    int? result = await _financialService.saveFinancial(financialModel);
-    if (result != null) {
-      _financialIndexController.saveFinancialIndex(
+      newFinancialModel.type == "E"
+          ? financialIndexModel.totalInputValue += valueDifference
+          : financialIndexModel.totalOutputValue += valueDifference;
+      await _financialIndexController.saveFinancialIndex(
           financialIndexModel: financialIndexModel);
       getFinancial(transactionType: financialModel.type);
-      return result;
+      return int.parse(financialModel.numberTransaction!);
     } else {
       return null;
+    }
+  }
+
+  Future<String?> deleteFinancial(
+      {required FinancialModel financialModel}) async {
+    String? result = await _financialService.deleteFinancial(financialModel);
+
+    if (result == null) {
+      FinancialIndexModel financialIndexModel =
+          await _financialIndexService.getFinancialIndex();
+
+      if (financialModel.type == "E") {
+        financialIndexModel.totalInputValue -= financialModel.value;
+        financialIndexModel.inputQuantity--;
+      } else {
+        financialIndexModel.totalInputValue -= financialModel.value;
+        financialIndexModel.outputQuantity--;
+      }
+      await _financialIndexController.saveFinancialIndex(
+          financialIndexModel: financialIndexModel);
+      getFinancial(transactionType: financialModel.type);
+      return null;
+    } else {
+      return 'Erro ao excluir lançamento financeiro: $result';
     }
   }
 }
