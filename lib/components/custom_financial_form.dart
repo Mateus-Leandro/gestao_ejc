@@ -106,7 +106,8 @@ class _CustomFinancialFormState extends State<CustomFinancialForm> {
                         : null;
                   },
                   obscure: false,
-                  maxLength: 15),
+                  maxLength: 15,
+              capitalizeFirstLetter: true),
               CustomTextFormField(
                   controller: _descriptionController,
                   decoration: const InputDecoration(labelText: 'Descrição'),
@@ -115,7 +116,8 @@ class _CustomFinancialFormState extends State<CustomFinancialForm> {
                         ? 'Informe a decrição do lançamento'
                         : null;
                   },
-                  obscure: false),
+                  obscure: false,
+              capitalizeFirstLetter: true),
               CustomTextFormField(
                   controller: _valueController,
                   decoration: const InputDecoration(labelText: 'Valor'),
