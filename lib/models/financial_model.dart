@@ -6,8 +6,8 @@ class FinancialModel {
   final double value;
   final String description;
   final String originOrDestination;
-  final String transactionDate;
-  final String registrationDate;
+  final Timestamp transactionDate;
+  final Timestamp registrationDate;
   final DocumentReference? registrationUser;
 
   FinancialModel(
@@ -40,8 +40,8 @@ class FinancialModel {
         value: map['value'] ?? 0,
         description: map['description'] ?? '',
         originOrDestination: map['originOrDestination'] ?? '',
-        transactionDate: map['transactionDate'] ?? '',
-        registrationDate: map['registrationDate'] ?? '',
+        transactionDate: map['transactionDate'],
+        registrationDate: map['registrationDate'],
         registrationUser: map['registrationUser']);
   }
 }
