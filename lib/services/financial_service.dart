@@ -13,7 +13,7 @@ class FinancialService {
     try {
       Query query = _firestore
           .collection('financial')
-          .orderBy('registrationDate', descending: true);
+          .orderBy('transactionDate', descending: true);
       if (transactionType != null) {
         query = query.where('type', isEqualTo: transactionType);
       }
