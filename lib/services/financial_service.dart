@@ -11,7 +11,9 @@ class FinancialService {
     String? transactionType,
   }) async {
     try {
-      Query query = _firestore.collection('financial');
+      Query query = _firestore
+          .collection('financial')
+          .orderBy('registrationDate', descending: true);
       if (transactionType != null) {
         query = query.where('type', isEqualTo: transactionType);
       }
