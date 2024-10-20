@@ -22,14 +22,15 @@ class FinancialService {
 
         if (transactionNumber.length > 1) {
           query = query.where('numberTransaction',
-              isLessThan: transactionNumber.substring(
-                  0, transactionNumber.length - 1) +
-                  String.fromCharCode(transactionNumber
-                      .codeUnitAt(transactionNumber.length - 1) +
-                      1));
+              isLessThan:
+                  transactionNumber.substring(0, transactionNumber.length - 1) +
+                      String.fromCharCode(transactionNumber
+                              .codeUnitAt(transactionNumber.length - 1) +
+                          1));
         } else {
           query = query.where('numberTransaction',
-              isLessThan: String.fromCharCode(transactionNumber.codeUnitAt(0) + 1));
+              isLessThan:
+                  String.fromCharCode(transactionNumber.codeUnitAt(0) + 1));
         }
       }
 
@@ -44,15 +45,34 @@ class FinancialService {
     }
   }
 
-  Future<String?> saveFinancial(FinancialModel newFinancial) async {
+  Future<String?> saveFinancial(FinancialModel financialModel) async {
     try {
       await _firestore
           .collection(collection)
-          .doc(newFinancial.numberTransaction.toString())
-          .set(newFinancial.toJson());
+          .doc(
+              financialModel.type + financialModel.numberTransaction.toString())
+          .set(financialModel.toJson());
+      financialModel.numberTransaction;
       return null;
     } catch (e) {
-      return 'Erro ao salvar Lançamento financeiro: $e';
+      String message = 'Erro ao salvar Lançamento financeiro: $e';
+      print(message);
+      return message;
+    }
+  }
+
+  Future<String?> deleteFinancial(FinancialModel financialModel) async {
+    try {
+      await _firestore
+          .collection(collection)
+          .doc(
+              financialModel.type + financialModel.numberTransaction.toString())
+          .delete();
+      return null;
+    } catch (e) {
+      String message = 'Erro ao excluir Lançamento financeiro: $e';
+      print(message);
+      return message;
     }
   }
 }

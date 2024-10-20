@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class CustomTextFormField extends StatefulWidget {
   const CustomTextFormField({
@@ -9,6 +10,7 @@ class CustomTextFormField extends StatefulWidget {
     required this.obscure,
     this.functionSubimitted,
     this.focusNode,
+    this.maxLength
   });
 
   final TextEditingController controller;
@@ -17,6 +19,7 @@ class CustomTextFormField extends StatefulWidget {
   final bool obscure;
   final Null Function(dynamic value)? functionSubimitted;
   final FocusNode? focusNode;
+  final int? maxLength;
 
   @override
   State<CustomTextFormField> createState() => _CustomTextFormFieldState();
@@ -32,6 +35,9 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
       onFieldSubmitted: widget.functionSubimitted,
       obscureText: widget.obscure,
       focusNode: widget.focusNode,
+      inputFormatters: [
+        LengthLimitingTextInputFormatter(widget.maxLength)
+      ],
     );
   }
 }

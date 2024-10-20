@@ -31,6 +31,21 @@ class UserService {
     }
   }
 
+  Future<String?> getNameByReferenceUser(
+      {required DocumentReference referenceUser}) async {
+    try {
+      DocumentSnapshot documentSnapshot = await referenceUser.get();
+      if (documentSnapshot.exists) {
+        return documentSnapshot.get('name');
+      } else {
+        return null;
+      }
+    } catch (e) {
+      print('Erro ao buscar nome do usuário: $e');
+      return null;
+    }
+  }
+
   Future<String?> saveUser(UserModel newUser) async {
     try {
       await _firestore

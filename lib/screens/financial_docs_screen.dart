@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:gestao_ejc/components/custom_delete_button.dart';
+import 'package:gestao_ejc/components/custom_financial_form.dart';
 import 'package:gestao_ejc/components/custom_row_add_and_search.dart';
 import 'package:gestao_ejc/controllers/financial_controller.dart';
 import 'package:gestao_ejc/functions/function_mask_decimal.dart';
@@ -41,7 +43,10 @@ class _FinancialDocsScreenState extends State<FinancialDocsScreen> {
       children: [
         CustomRowAddAndSearch(
           messageButton: 'Adicionar Lançamento',
-          functionButton: () {},
+          functionButton: () {
+            _showFinancialForm(null);
+          },
+          showAddButton: widget.transactionType != null,
           inputType: TextInputType.text,
           controller: numberTransactionController,
           messageTextField: 'Nº do lançamento',
@@ -97,21 +102,41 @@ class _FinancialDocsScreenState extends State<FinancialDocsScreen> {
 
   Widget _buildUserTile(BuildContext context, FinancialModel doc) {
     Color textColor;
-    String textType;
     final FunctionMaskDecimal functionMaskDecimal =
         getIt<FunctionMaskDecimal>();
 
     textColor = doc.type == "S" ? Colors.red : Colors.green;
-    textType = 'Documento: ${doc.type}${doc.numberTransaction}';
     return ListTile(
       title: Row(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          Text(
-            textType,
-            style: TextStyle(
-              color: doc.type == "S" ? Colors.red : Colors.green,
+          Expanded(
+            child: Text(
+              '${doc.type}${doc.numberTransaction} - ${doc.originOrDestination}',
+              style: TextStyle(
+                color: doc.type == "S" ? Colors.red : Colors.green,
+              ),
             ),
-          )
+          ),
+          if(widget.transactionType != null)...[
+            Tooltip(
+              message: 'Editar Lançamento',
+              child: IconButton(
+                onPressed: () {
+                  _showFinancialForm(doc);
+                },
+                icon: const Icon(Icons.edit),
+              ),
+            ),
+            Tooltip(
+              message: 'Excluir Lançamento',
+              child: CustomDeleteButton(
+                alertMessage: 'Excluir lançamento?',
+                deleteFunction: () async => await _financialController
+                    .deleteFinancial(financialModel: doc),
+              ),
+            )
+          ],
         ],
       ),
       subtitle: Row(
@@ -125,13 +150,18 @@ class _FinancialDocsScreenState extends State<FinancialDocsScreen> {
           ),
         ],
       ),
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          IconButton(onPressed: () {}, icon: Icon(Icons.edit)),
-          IconButton(onPressed: () {}, icon: Icon(Icons.delete_forever))
-        ],
-      ),
+    );
+  }
+
+  void _showFinancialForm(FinancialModel? financialModel) {
+    String? type = financialModel?.type ?? widget.transactionType;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return CustomFinancialForm(
+            financialModel: financialModel, transactionType: type!);
+      },
     );
   }
 }
