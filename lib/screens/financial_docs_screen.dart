@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gestao_ejc/components/custom_delete_button.dart';
 import 'package:gestao_ejc/components/custom_financial_form.dart';
-import 'package:gestao_ejc/components/custom_row_add_and_search.dart';
+import 'package:gestao_ejc/components/custom_search_row.dart';
+import 'package:gestao_ejc/components/custom_xlsx_financial_form.dart';
 import 'package:gestao_ejc/controllers/financial_controller.dart';
 import 'package:gestao_ejc/functions/function_mask_decimal.dart';
 import 'package:gestao_ejc/models/financial_model.dart';
@@ -30,23 +31,34 @@ class _FinancialDocsScreenState extends State<FinancialDocsScreen> {
   @override
   void dispose() {
     super.dispose();
+    numberTransactionController.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final FinancialController _financialController =
+    final FinancialController financialController =
         getIt<FinancialController>();
 
     String? type = widget.transactionType;
     String? doc;
     return Column(
       children: [
-        CustomRowAddAndSearch(
-          messageButton: 'Adicionar Lançamento',
+        CustomSearchRow(
+          messageButton: widget.transactionType == null
+              ? 'Exportar Extrato'
+              : 'Adicionar Lançamento',
           functionButton: () {
-            _showFinancialForm(null);
+            if (widget.transactionType != null) {
+              _showFinancialForm(null);
+            } else {
+              _showXlsxForm();
+            }
           },
-          showAddButton: widget.transactionType != null,
+          showButton: true,
+          iconButton: widget.transactionType == null
+              ? const Icon(Icons.description_outlined)
+              : const Icon(Icons.add),
+          buttonColor: widget.transactionType == null ? Colors.green : null,
           inputType: TextInputType.text,
           controller: numberTransactionController,
           messageTextField: 'Nº do lançamento',
@@ -55,7 +67,7 @@ class _FinancialDocsScreenState extends State<FinancialDocsScreen> {
             if (numberTransactionController.text.trim().isNotEmpty) {
               doc = numberTransactionController.text.trim();
             }
-            _financialController.getFinancial(
+            financialController.getFinancial(
                 transactionNumber: doc, transactionType: type);
           },
         ),
@@ -63,7 +75,7 @@ class _FinancialDocsScreenState extends State<FinancialDocsScreen> {
           child: Padding(
             padding: const EdgeInsets.only(top: 15),
             child: StreamBuilder<List<FinancialModel>>(
-              stream: _financialController.stream,
+              stream: financialController.stream,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(
@@ -154,13 +166,21 @@ class _FinancialDocsScreenState extends State<FinancialDocsScreen> {
   }
 
   void _showFinancialForm(FinancialModel? financialModel) {
-    String? type = financialModel?.type ?? widget.transactionType;
-
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return CustomFinancialForm(
-            financialModel: financialModel, transactionType: type!);
+            financialModel: financialModel,
+            transactionType: widget.transactionType!);
+      },
+    );
+  }
+
+  void _showXlsxForm() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return const CustomXlsxFinancialForm();
       },
     );
   }

@@ -6,26 +6,31 @@ class CustomAddButton extends StatelessWidget {
   final String message;
   final Function function;
   final Icon icon;
+  final Color? colorButton;
 
   const CustomAddButton(
       {super.key,
       required this.message,
       required this.function,
-      required this.icon});
+      required this.icon,
+      this.colorButton});
 
   @override
   Widget build(BuildContext context) {
     final AppTheme appTheme = getIt<AppTheme>();
     return Tooltip(
       message: message,
-      child: IconButton(
-        onPressed: () {
-          function();
-        },
-        icon: const Icon(Icons.add),
-        style: IconButton.styleFrom(
-          backgroundColor: appTheme.colorBackgroundButton,
-          foregroundColor: appTheme.colorForegroundButton,
+      child: Padding(
+        padding: const EdgeInsets.only(left: 15),
+        child: IconButton(
+          onPressed: () {
+            function();
+          },
+          icon: icon,
+          style: IconButton.styleFrom(
+            backgroundColor: colorButton ?? appTheme.colorBackgroundButton,
+            foregroundColor: appTheme.colorForegroundButton,
+          ),
         ),
       ),
     );
