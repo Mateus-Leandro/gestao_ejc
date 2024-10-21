@@ -21,4 +21,8 @@ class FunctionDate {
         timestampDate.millisecondsSinceEpoch);
     return DateFormat('dd/MM/yyyy').format(date);
   }
+
+  getTimestampFromDateTime(DateTime dateTime) {
+    return Timestamp.fromDate(dateTime);
+  }
 }
