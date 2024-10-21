@@ -29,6 +29,7 @@ class FinancialController extends ChangeNotifier {
     var response = await _financialService.getFinancial(
         transactionNumber: transactionNumber, transactionType: transactionType);
     _streamController.sink.add(response);
+    _financialIndexController.getFinancialIndex();
   }
 
   @override
@@ -57,7 +58,8 @@ class FinancialController extends ChangeNotifier {
     financialModel.numberTransaction = docNumber.toString();
     String? result = await _financialService.saveFinancial(financialModel);
     if (result == null) {
-      await _financialIndexService.saveFinancialIndex(financialIndexModel);
+      await _financialIndexController.saveFinancialIndex(
+          financialIndexModel: financialIndexModel);
       getFinancial(transactionType: financialModel.type);
       return int.parse(financialModel.numberTransaction!);
     } else {
@@ -100,7 +102,7 @@ class FinancialController extends ChangeNotifier {
         financialIndexModel.totalInputValue -= financialModel.value;
         financialIndexModel.inputQuantity--;
       } else {
-        financialIndexModel.totalInputValue -= financialModel.value;
+        financialIndexModel.totalOutputValue -= financialModel.value;
         financialIndexModel.outputQuantity--;
       }
       await _financialIndexController.saveFinancialIndex(

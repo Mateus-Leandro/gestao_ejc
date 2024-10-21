@@ -32,9 +32,6 @@ class FinancialIndexController extends ChangeNotifier {
       {required FinancialIndexModel financialIndexModel}) async {
     String? result =
         await _financialIndexService.saveFinancialIndex(financialIndexModel);
-    if (result == null) {
-      getFinancialIndex();
-    }
     return result;
   }
 }

@@ -6,7 +6,7 @@ import 'package:gestao_ejc/components/custom_date_picker.dart';
 import 'package:gestao_ejc/components/custom_text_form_field.dart';
 import 'package:gestao_ejc/controllers/financial_controller.dart';
 import 'package:gestao_ejc/controllers/user_controller.dart';
-import 'package:gestao_ejc/functions/function_date_to_string.dart';
+import 'package:gestao_ejc/functions/function_date.dart';
 import 'package:gestao_ejc/models/financial_model.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
 import 'package:gestao_ejc/theme/app_theme.dart';
@@ -26,7 +26,7 @@ class _CustomFinancialFormState extends State<CustomFinancialForm> {
   bool _savingFinancial = false;
   String? _createdBy;
   final _userController = getIt<UserController>();
-  final _functionDateToString = getIt<FunctionDateToString>();
+  final _functionDate = getIt<FunctionDate>();
   final _firestore = getIt<FirebaseFirestore>();
   final _appTheme = getIt<AppTheme>();
   final _financialController = getIt<FinancialController>();
@@ -53,7 +53,8 @@ class _CustomFinancialFormState extends State<CustomFinancialForm> {
       _originOrDestinationController.text =
           widget.financialModel?.originOrDestination ?? '';
       _descriptionController.text = widget.financialModel?.description ?? '';
-      _transactionDateController.text = widget.financialModel!.transactionDate;
+      _transactionDateController.text = _functionDate
+          .getStringFromTimestamp(widget.financialModel!.transactionDate);
       _valueController.forceValue(
           initDoubleValue: widget.financialModel?.value ?? 0);
       _getNameUser();
@@ -90,7 +91,7 @@ class _CustomFinancialFormState extends State<CustomFinancialForm> {
                     if (editing) ...[
                       Expanded(
                         child: Text(
-                            'Criado por ${_createdBy ?? ''} em ${widget.financialModel?.registrationDate}'),
+                            'Criado por ${_createdBy ?? ''} em ${_functionDate.getStringFromTimestamp(widget.financialModel!.registrationDate)}'),
                       ),
                     ],
                   ],
@@ -105,7 +106,8 @@ class _CustomFinancialFormState extends State<CustomFinancialForm> {
                         : null;
                   },
                   obscure: false,
-              maxLength: 15),
+                  maxLength: 15,
+              capitalizeFirstLetter: true),
               CustomTextFormField(
                   controller: _descriptionController,
                   decoration: const InputDecoration(labelText: 'Descrição'),
@@ -114,7 +116,8 @@ class _CustomFinancialFormState extends State<CustomFinancialForm> {
                         ? 'Informe a decrição do lançamento'
                         : null;
                   },
-                  obscure: false),
+                  obscure: false,
+              capitalizeFirstLetter: true),
               CustomTextFormField(
                   controller: _valueController,
                   decoration: const InputDecoration(labelText: 'Valor'),
@@ -164,6 +167,7 @@ class _CustomFinancialFormState extends State<CustomFinancialForm> {
       setState(() {
         _savingFinancial = true;
       });
+
       FinancialModel newFinancialModel = FinancialModel(
           numberTransaction:
               editing ? widget.financialModel!.numberTransaction! : null,
@@ -171,9 +175,12 @@ class _CustomFinancialFormState extends State<CustomFinancialForm> {
           value: _valueController.doubleValue,
           description: _descriptionController.text.trim(),
           originOrDestination: _originOrDestinationController.text.trim(),
-          transactionDate: _transactionDateController.text.trim(),
-          registrationDate: _functionDateToString.getActualDateToString(),
-          registrationUser: _firestore.doc('users/${_currentUser!.uid}'));
+          transactionDate: _functionDate
+              .getTimestampFromString(_transactionDateController.text.trim()),
+          registrationDate: _functionDate.getTimestampFromString(null),
+          registrationUser: editing
+              ? widget.financialModel!.registrationUser
+              : _firestore.doc('users/${_currentUser!.uid}'));
       int? result;
 
       if (editing) {

@@ -10,16 +10,18 @@ class CustomTextFormField extends StatefulWidget {
     required this.obscure,
     this.functionSubimitted,
     this.focusNode,
-    this.maxLength
+    this.maxLength,
+    this.capitalizeFirstLetter = false,
   });
 
   final TextEditingController controller;
   final InputDecoration decoration;
-  final FormFieldValidator validator;
+  final FormFieldValidator<String> validator;
   final bool obscure;
-  final Null Function(dynamic value)? functionSubimitted;
+  final void Function(String)? functionSubimitted;
   final FocusNode? focusNode;
   final int? maxLength;
+  final bool capitalizeFirstLetter;
 
   @override
   State<CustomTextFormField> createState() => _CustomTextFormFieldState();
@@ -35,9 +37,24 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
       onFieldSubmitted: widget.functionSubimitted,
       obscureText: widget.obscure,
       focusNode: widget.focusNode,
+      textCapitalization: TextCapitalization.sentences,
       inputFormatters: [
-        LengthLimitingTextInputFormatter(widget.maxLength)
+        if (widget.maxLength != null)
+          LengthLimitingTextInputFormatter(widget.maxLength),
       ],
+      onChanged: (value) {
+        if (value.isNotEmpty && widget.capitalizeFirstLetter) {
+          final capitalized =
+              value[0].toUpperCase() + value.substring(1);
+
+          if (capitalized != value) {
+            widget.controller.value = widget.controller.value.copyWith(
+              text: capitalized,
+              selection: TextSelection.collapsed(offset: capitalized.length),
+            );
+          }
+        }
+      },
     );
   }
 }
