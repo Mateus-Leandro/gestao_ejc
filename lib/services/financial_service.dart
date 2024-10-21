@@ -1,42 +1,41 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:gestao_ejc/functions/function_date.dart';
 import 'package:gestao_ejc/models/financial_model.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
 
 class FinancialService {
   final FirebaseFirestore _firestore = getIt<FirebaseFirestore>();
   final String collection = 'financial';
+  final FunctionDate functionDate = getIt<FunctionDate>();
+  late Query query = _firestore
+      .collection(collection)
+      .orderBy('transactionDate', descending: true);
+  late QuerySnapshot snapshot;
 
-  Future<List<FinancialModel>> getFinancial({
+  Future getFinancial({
     String? transactionNumber,
     String? transactionType,
+    List<DateTime>? rangeDates,
   }) async {
     try {
-      Query query = _firestore
-          .collection('financial')
-          .orderBy('transactionDate', descending: true);
+      initQuery();
+
       if (transactionType != null) {
-        query = query.where('type', isEqualTo: transactionType);
+        filterTypeQuery(transactionType);
       }
 
       if (transactionNumber != null) {
-        query = query.where('numberTransaction',
-            isGreaterThanOrEqualTo: transactionNumber);
-
-        if (transactionNumber.length > 1) {
-          query = query.where('numberTransaction',
-              isLessThan:
-                  transactionNumber.substring(0, transactionNumber.length - 1) +
-                      String.fromCharCode(transactionNumber
-                              .codeUnitAt(transactionNumber.length - 1) +
-                          1));
-        } else {
-          query = query.where('numberTransaction',
-              isLessThan:
-                  String.fromCharCode(transactionNumber.codeUnitAt(0) + 1));
-        }
+        filterNumberTransactionQuery(transactionNumber);
       }
 
-      QuerySnapshot snapshot = await query.get();
+      if (rangeDates != null) {
+        filterRangeDate(
+          initialDate: rangeDates[0],
+          finalDate: rangeDates[1],
+        );
+      }
+
+      snapshot = await query.get();
       return snapshot.docs
           .map((doc) =>
               FinancialModel.fromJson(doc.data() as Map<String, dynamic>))
@@ -76,5 +75,44 @@ class FinancialService {
       print(message);
       return message;
     }
+  }
+
+  void initQuery() {
+    query = _firestore
+        .collection(collection)
+        .orderBy('transactionDate', descending: true);
+  }
+
+  //Filters
+  void filterTypeQuery(String transactionType) {
+    query = query.where('type', isEqualTo: transactionType);
+  }
+
+  void filterNumberTransactionQuery(String transactionNumber) {
+    query = query.where('numberTransaction',
+        isGreaterThanOrEqualTo: transactionNumber);
+
+    if (transactionNumber.length > 1) {
+      query = query.where('numberTransaction',
+          isLessThan: transactionNumber.substring(
+                  0, transactionNumber.length - 1) +
+              String.fromCharCode(
+                  transactionNumber.codeUnitAt(transactionNumber.length - 1) +
+                      1));
+    } else {
+      query = query.where('numberTransaction',
+          isLessThan: String.fromCharCode(transactionNumber.codeUnitAt(0) + 1));
+    }
+  }
+
+  void filterRangeDate(
+      {required DateTime initialDate, required DateTime finalDate}) {
+
+    query = query.where('transactionDate',
+        isGreaterThanOrEqualTo:
+            functionDate.getTimestampFromDateTime(initialDate));
+    query = query.where('transactionDate',
+        isLessThanOrEqualTo:
+            functionDate.getTimestampFromDateTime(finalDate));
   }
 }

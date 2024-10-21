@@ -1,12 +1,16 @@
 import 'dart:async';
-
+import 'dart:typed_data';
 import 'package:flutter/cupertino.dart';
+import 'dart:html' as html;
+import 'package:syncfusion_flutter_xlsio/xlsio.dart';
 import 'package:gestao_ejc/controllers/financial_index_controller.dart';
+import 'package:gestao_ejc/functions/function_date.dart';
 import 'package:gestao_ejc/models/financial_index_model.dart';
 import 'package:gestao_ejc/models/financial_model.dart';
 import 'package:gestao_ejc/services/financial_index_service.dart';
 import 'package:gestao_ejc/services/financial_service.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
+import 'package:gestao_ejc/services/user_service.dart';
 
 class FinancialController extends ChangeNotifier {
   var _streamController;
@@ -112,5 +116,88 @@ class FinancialController extends ChangeNotifier {
     } else {
       return 'Erro ao excluir lançamento financeiro: $result';
     }
+  }
+
+  Future<void> generateXlsx(List<FinancialModel> docs, String fileName) async {
+    final FunctionDate functionDate = getIt<FunctionDate>();
+    final UserService userService = getIt<UserService>();
+    final Workbook workbook = Workbook();
+    workbook.currency = 'R\$';
+    Style globalStyle = workbook.styles.add('style');
+    globalStyle.fontSize = 12;
+    final Worksheet inputSheet = workbook.worksheets[0];
+    final Worksheet outputSheet = workbook.worksheets.add();
+    inputSheet.name = 'Entradas';
+    outputSheet.name = 'Saídas';
+    int inputLine = 0;
+    int outputLine = 0;
+
+    List<String> inputTitles = [
+      'Documento',
+      'Valor',
+      'Descrição',
+      'Origem',
+      'Data da Transação',
+      'Criado em',
+      'Criado por'
+    ];
+    List<String> outputTitles = [
+      'Documento',
+      'Valor',
+      'Descrição',
+      'Destino',
+      'Data da Transação',
+      'Criado em',
+      'Criado por'
+    ];
+    inputSheet.importList(inputTitles, 1, 1, false);
+    outputSheet.importList(outputTitles, 1, 1, false);
+
+    List<List<dynamic>> rows = await Future.wait(docs.map((doc) async {
+      return [
+        '${doc.numberTransaction}${doc.type}',
+        doc.value,
+        doc.description,
+        doc.originOrDestination,
+        functionDate.getStringFromTimestamp(doc.transactionDate),
+        functionDate.getStringFromTimestamp(doc.registrationDate),
+        await userService.getNameByReferenceUser(
+            referenceUser: doc.registrationUser!)
+      ];
+    }).toList());
+
+    if (rows.isNotEmpty) {
+      final Range inputRange = inputSheet.getRangeByName('B2:B${rows.length}');
+      inputRange.setBuiltInStyle(BuiltInStyles.currency);
+      final Range outputRange =
+          outputSheet.getRangeByName('B2:B${rows.length}');
+      outputRange.setBuiltInStyle(BuiltInStyles.currency);
+
+      for (int i = 0; i < rows.length; i++) {
+        if (docs[i].type == "E") {
+          inputSheet.importList(rows[i], inputLine + 2, 1, false);
+          inputLine++;
+        } else {
+          outputSheet.importList(rows[i], outputLine + 2, 1, false);
+          outputLine++;
+        }
+      }
+    }
+
+    final List<int> bytes = workbook.saveAsStream();
+    workbook.dispose();
+
+    final blob = html.Blob([Uint8List.fromList(bytes)],
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    final url = html.Url.createObjectUrl(blob);
+
+    final anchor = html.AnchorElement(href: url)
+      ..setAttribute('download', '$fileName.xlsx')
+      ..style.display = 'none';
+
+    html.document.body?.append(anchor);
+    anchor.click();
+    anchor.remove();
+    html.Url.revokeObjectUrl(url);
   }
 }

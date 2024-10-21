@@ -50,6 +50,9 @@ dependencies:
   buttons_tabbar: ^1.3.13
   mask_text_input_formatter: ^2.9.0
   currency_textfield: ^4.12.0
+  file_picker: ^8.1.3
+  calendar_date_picker2: ^1.1.7
+  syncfusion_flutter_xlsio: ^27.1.53
 
 dev_dependencies:
   flutter_test:
