@@ -6,6 +6,7 @@ import 'package:gestao_ejc/controllers/user_controller.dart';
 import 'package:gestao_ejc/functions/function_call_email_app.dart';
 import 'package:gestao_ejc/functions/function_call_url.dart';
 import 'package:gestao_ejc/functions/function_date.dart';
+import 'package:gestao_ejc/functions/function_decimal_place.dart';
 import 'package:gestao_ejc/functions/function_mask_decimal.dart';
 import 'package:gestao_ejc/functions/function_screen.dart';
 import 'package:gestao_ejc/services/auth_service.dart';
@@ -20,8 +21,7 @@ final getIt = GetIt.instance;
 void setupGetIt() {
   getIt.registerLazySingleton<AuthService>(() => AuthService());
   getIt.registerLazySingleton<FirebaseAuth>(() => FirebaseAuth.instance);
-  getIt.registerLazySingleton<FunctionDate>(
-      () => FunctionDate());
+  getIt.registerLazySingleton<FunctionDate>(() => FunctionDate());
   getIt.registerLazySingleton<FirebaseFirestore>(
       () => FirebaseFirestore.instance);
   getIt.registerLazySingleton<UserService>(() => UserService());
@@ -38,4 +38,6 @@ void setupGetIt() {
   getIt.registerLazySingleton<FinancialIndexController>(
       () => FinancialIndexController());
   getIt.registerLazySingleton<FunctionMaskDecimal>(() => FunctionMaskDecimal());
+  getIt.registerLazySingleton<FunctionDecimalPlace>(
+      () => FunctionDecimalPlace());
 }
