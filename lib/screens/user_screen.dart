@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:gestao_ejc/components/custom_inactivate_user_alert.dart';
+import 'package:gestao_ejc/components/custom_list_tile.dart';
 import 'package:gestao_ejc/components/custom_search_row.dart';
 import 'package:gestao_ejc/components/custom_user_form.dart';
 import 'package:gestao_ejc/controllers/user_controller.dart';
@@ -104,36 +105,38 @@ class _UserScreenState extends State<UserScreen> {
   }
 
   Widget _buildUserTile(BuildContext context, UserModel user) {
-    return ListTile(
-      title: Text(
-        user.name,
-        style: TextStyle(
-          color: user.active
-              ? (user.manipulateAdministrator ? Colors.blue : Colors.black)
-              : _appTheme.colorInativeUser,
+    return CustomListTile(
+        listTile: ListTile(
+          title: Text(
+            user.name,
+            style: TextStyle(
+              color: user.active
+                  ? (user.manipulateAdministrator ? Colors.blue : Colors.black)
+                  : _appTheme.colorInativeUser,
+            ),
+          ),
+          subtitle: Text(user.email),
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (_authService.actualUserModel?.manipulateAdministrator ??
+                  false) ...[
+                Tooltip(
+                  message: 'Editar',
+                  child: IconButton(
+                    onPressed: () => _showUserForm(user),
+                    icon: const Icon(Icons.edit),
+                  ),
+                ),
+                Tooltip(
+                  message: user.active ? 'Inativar usuário' : 'Ativar usuário',
+                  child: CustomInactivateUserAlert(user: user),
+                ),
+              ],
+            ],
+          ),
         ),
-      ),
-      subtitle: Text(user.email),
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (_authService.actualUserModel?.manipulateAdministrator ??
-              false) ...[
-            Tooltip(
-              message: 'Editar',
-              child: IconButton(
-                onPressed: () => _showUserForm(user),
-                icon: const Icon(Icons.edit),
-              ),
-            ),
-            Tooltip(
-              message: user.active ? 'Inativar usuário' : 'Ativar usuário',
-              child: CustomInactivateUserAlert(user: user),
-            ),
-          ],
-        ],
-      ),
-    );
+        defaultBackgroundColor: Colors.white);
   }
 
   void _showUserForm(UserModel? user) {
