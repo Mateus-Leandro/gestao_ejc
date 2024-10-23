@@ -62,7 +62,7 @@ class _FinancialDocsScreenState extends State<FinancialDocsScreen> {
           buttonColor: widget.transactionType == null ? Colors.green : null,
           inputType: TextInputType.text,
           controller: searchTextController,
-          messageTextField: 'Nº do lançamento',
+          messageTextField: 'Pesquisar Lançamento',
           functionTextField: () {
             searchedText = null;
             if (searchTextController.text.trim().isNotEmpty) {
