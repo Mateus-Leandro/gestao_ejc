@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gestao_ejc/components/custom_delete_button.dart';
 import 'package:gestao_ejc/components/custom_financial_form.dart';
+import 'package:gestao_ejc/components/custom_list_tile.dart';
 import 'package:gestao_ejc/components/custom_search_row.dart';
 import 'package:gestao_ejc/components/custom_xlsx_financial_form.dart';
 import 'package:gestao_ejc/controllers/financial_controller.dart';
@@ -113,56 +114,61 @@ class _FinancialDocsScreenState extends State<FinancialDocsScreen> {
   }
 
   Widget _buildUserTile(BuildContext context, FinancialModel doc) {
-    Color textColor;
     final FunctionMaskDecimal functionMaskDecimal =
         getIt<FunctionMaskDecimal>();
 
-    textColor = doc.type == "S" ? Colors.red : Colors.green;
-    return ListTile(
-      title: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Expanded(
-            child: Text(
-              '${doc.type}${doc.numberTransaction} - ${doc.originOrDestination}',
-              style: TextStyle(
-                color: doc.type == "S" ? Colors.red : Colors.green,
+    return CustomListTile(
+        listTile: ListTile(
+          title: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Expanded(
+                child: Text(
+                  '${doc.type}${doc.numberTransaction} - ${doc.originOrDestination}',
+                  style: TextStyle(
+                    color: doc.type == "S" ? Colors.red : Colors.green,
+                  ),
+                ),
               ),
-            ),
+              if (widget.transactionType != null) ...[
+                Tooltip(
+                  message: 'Editar Lançamento',
+                  child: IconButton(
+                    onPressed: () {
+                      _showFinancialForm(doc);
+                    },
+                    icon: const Icon(Icons.edit),
+                  ),
+                ),
+                Tooltip(
+                  message: 'Excluir Lançamento',
+                  child: CustomDeleteButton(
+                    alertMessage: 'Excluir lançamento?',
+                    deleteFunction: () async =>
+                        await _financialController.deleteFinancial(
+                      financialModel: doc,
+                    ),
+                  ),
+                ),
+              ],
+            ],
           ),
-          if(widget.transactionType != null)...[
-            Tooltip(
-              message: 'Editar Lançamento',
-              child: IconButton(
-                onPressed: () {
-                  _showFinancialForm(doc);
-                },
-                icon: const Icon(Icons.edit),
+          subtitle: Row(
+            children: [
+              Expanded(
+                child: Text(doc.description),
               ),
-            ),
-            Tooltip(
-              message: 'Excluir Lançamento',
-              child: CustomDeleteButton(
-                alertMessage: 'Excluir lançamento?',
-                deleteFunction: () async => await _financialController
-                    .deleteFinancial(financialModel: doc),
+              Text(
+                functionMaskDecimal.formatValue(doc.value),
+                style: TextStyle(
+                  fontSize: 20,
+                  color: doc.type == "S" ? Colors.red : Colors.green,
+                ),
               ),
-            )
-          ],
-        ],
-      ),
-      subtitle: Row(
-        children: [
-          Expanded(
-            child: Text(doc.description),
+            ],
           ),
-          Text(
-            functionMaskDecimal.formatValue(doc.value),
-            style: TextStyle(fontSize: 20, color: textColor),
-          ),
-        ],
-      ),
-    );
+        ),
+        defaultBackgroundColor: Colors.white);
   }
 
   void _showFinancialForm(FinancialModel? financialModel) {

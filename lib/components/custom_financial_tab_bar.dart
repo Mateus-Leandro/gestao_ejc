@@ -23,6 +23,10 @@ class _CustomFinancialTabBarState extends State<CustomFinancialTabBar> {
             backgroundColor: appTheme.colorBackgroundTabBar,
             tabs: const [
               Tab(
+                icon: Icon(Icons.payments_outlined),
+                text: 'Extrato',
+              ),
+              Tab(
                 icon: Icon(Icons.arrow_downward, color: Colors.green),
                 text: 'Entradas',
               ),
@@ -30,18 +34,14 @@ class _CustomFinancialTabBarState extends State<CustomFinancialTabBar> {
                 icon: Icon(Icons.arrow_upward, color: Colors.red),
                 text: 'Saídas',
               ),
-              Tab(
-                icon: Icon(Icons.payments_outlined),
-                text: 'Extrato',
-              ),
             ],
           ),
           const Expanded(
             child: TabBarView(
               children: [
+                Center(child: FinancialDocsScreen(transactionType: null)),
                 Center(child: FinancialDocsScreen(transactionType: "E")),
                 Center(child: FinancialDocsScreen(transactionType: "S")),
-                Center(child: FinancialDocsScreen(transactionType: null)),
               ],
             ),
           ),

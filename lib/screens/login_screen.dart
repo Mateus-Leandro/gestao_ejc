@@ -147,7 +147,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
       try {
         String? error = await _authService.logIn(
-          email: _emailController.text,
+          email: _emailController.text.trim(),
           senha: _passwordController.text,
         );
 
