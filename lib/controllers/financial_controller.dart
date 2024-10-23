@@ -1,7 +1,6 @@
 import 'dart:async';
-import 'dart:typed_data';
 import 'package:flutter/cupertino.dart';
-import 'dart:html' as html;
+import 'package:gestao_ejc/functions/function_xlsx.dart';
 import 'package:syncfusion_flutter_xlsio/xlsio.dart';
 import 'package:gestao_ejc/controllers/financial_index_controller.dart';
 import 'package:gestao_ejc/functions/function_date.dart';
@@ -137,12 +136,10 @@ class FinancialController extends ChangeNotifier {
   }
 
   Future<void> generateXlsx(List<FinancialModel> docs, String fileName) async {
+    final FunctionXlsx functionXlsx = getIt<FunctionXlsx>();
     final FunctionDate functionDate = getIt<FunctionDate>();
     final UserService userService = getIt<UserService>();
-    final Workbook workbook = Workbook();
-    workbook.currency = 'R\$';
-    Style globalStyle = workbook.styles.add('style');
-    globalStyle.fontSize = 12;
+    final Workbook workbook = functionXlsx.create();
     final Worksheet inputSheet = workbook.worksheets[0];
     final Worksheet outputSheet = workbook.worksheets.add();
     inputSheet.name = 'Entradas';
@@ -150,7 +147,7 @@ class FinancialController extends ChangeNotifier {
     int inputLine = 0;
     int outputLine = 0;
 
-    List<String> inputTitles = [
+    List<String> title = [
       'Documento',
       'Valor',
       'Descrição',
@@ -159,18 +156,9 @@ class FinancialController extends ChangeNotifier {
       'Criado em',
       'Criado por'
     ];
-    List<String> outputTitles = [
-      'Documento',
-      'Valor',
-      'Descrição',
-      'Destino',
-      'Data da Transação',
-      'Criado em',
-      'Criado por'
-    ];
-    inputSheet.importList(inputTitles, 1, 1, false);
-    outputSheet.importList(outputTitles, 1, 1, false);
-
+    inputSheet.importList(title, 1, 1, false);
+    title[3] = 'Destino';
+    outputSheet.importList(title, 1, 1, false);
     List<List<dynamic>> rows = await Future.wait(docs.map((doc) async {
       return [
         '${doc.numberTransaction}${doc.type}',
@@ -201,21 +189,6 @@ class FinancialController extends ChangeNotifier {
         }
       }
     }
-
-    final List<int> bytes = workbook.saveAsStream();
-    workbook.dispose();
-
-    final blob = html.Blob([Uint8List.fromList(bytes)],
-        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-    final url = html.Url.createObjectUrl(blob);
-
-    final anchor = html.AnchorElement(href: url)
-      ..setAttribute('download', '$fileName.xlsx')
-      ..style.display = 'none';
-
-    html.document.body?.append(anchor);
-    anchor.click();
-    anchor.remove();
-    html.Url.revokeObjectUrl(url);
+    functionXlsx.saveDocument(fileName: '$fileName.xlsx', workbook: workbook);
   }
 }

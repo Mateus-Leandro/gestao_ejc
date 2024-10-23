@@ -9,6 +9,7 @@ import 'package:gestao_ejc/functions/function_date.dart';
 import 'package:gestao_ejc/functions/function_decimal_place.dart';
 import 'package:gestao_ejc/functions/function_mask_decimal.dart';
 import 'package:gestao_ejc/functions/function_screen.dart';
+import 'package:gestao_ejc/functions/function_xlsx.dart';
 import 'package:gestao_ejc/services/auth_service.dart';
 import 'package:gestao_ejc/services/financial_index_service.dart';
 import 'package:gestao_ejc/services/financial_service.dart';
@@ -40,4 +41,6 @@ void setupGetIt() {
   getIt.registerLazySingleton<FunctionMaskDecimal>(() => FunctionMaskDecimal());
   getIt.registerLazySingleton<FunctionDecimalPlace>(
       () => FunctionDecimalPlace());
+  getIt.registerLazySingleton<FunctionXlsx>(
+      () => FunctionXlsx());
 }
