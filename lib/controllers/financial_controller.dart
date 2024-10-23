@@ -22,24 +22,42 @@ class FinancialController extends ChangeNotifier {
 
   Stream<List<FinancialModel>>? get stream => _streamController.stream;
 
-  void init({String? transactionType, String? transactionNumber}) {
+  void init({String? transactionType}) {
     _streamController = StreamController<List<FinancialModel>>();
-    getFinancial(
-        transactionType: transactionType, transactionNumber: transactionNumber);
-  }
-
-  void getFinancial(
-      {String? transactionNumber, String? transactionType}) async {
-    var response = await _financialService.getFinancial(
-        transactionNumber: transactionNumber, transactionType: transactionType);
-    _streamController.sink.add(response);
-    _financialIndexController.getFinancialIndex();
+    getFinancial(transactionType: transactionType);
   }
 
   @override
   void dispose() {
     _streamController.close();
     super.dispose();
+  }
+
+  void getFinancial({String? transactionType, String? searchedText}) async {
+    List<FinancialModel> response =
+        await _financialService.getFinancial(transactionType: transactionType);
+    _streamController.sink.add(
+      searchedText != null
+          ? filterFinancial(
+              listFinancialModel: response,
+              searchedText: searchedText,
+            )
+          : response,
+    );
+    _financialIndexController.getFinancialIndex();
+  }
+
+  List<FinancialModel>? filterFinancial(
+      {required List<FinancialModel> listFinancialModel,
+      required String searchedText}) {
+    return listFinancialModel.where((doc) {
+      return doc.description
+              .toLowerCase()
+              .contains(searchedText.toLowerCase()) ||
+          doc.originOrDestination
+              .toLowerCase()
+              .contains(searchedText.toLowerCase());
+    }).toList();
   }
 
   Future<int?> createFinancial({required FinancialModel financialModel}) async {

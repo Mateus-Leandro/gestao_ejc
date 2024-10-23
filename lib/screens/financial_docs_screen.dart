@@ -19,7 +19,7 @@ class FinancialDocsScreen extends StatefulWidget {
 }
 
 class _FinancialDocsScreenState extends State<FinancialDocsScreen> {
-  final TextEditingController numberTransactionController =
+  final TextEditingController searchTextController =
       TextEditingController();
   final FinancialController _financialController = getIt<FinancialController>();
 
@@ -32,7 +32,7 @@ class _FinancialDocsScreenState extends State<FinancialDocsScreen> {
   @override
   void dispose() {
     super.dispose();
-    numberTransactionController.dispose();
+    searchTextController.dispose();
   }
 
   @override
@@ -41,7 +41,7 @@ class _FinancialDocsScreenState extends State<FinancialDocsScreen> {
         getIt<FinancialController>();
 
     String? type = widget.transactionType;
-    String? doc;
+    String? searchedText;
     return Column(
       children: [
         CustomSearchRow(
@@ -61,15 +61,15 @@ class _FinancialDocsScreenState extends State<FinancialDocsScreen> {
               : const Icon(Icons.add),
           buttonColor: widget.transactionType == null ? Colors.green : null,
           inputType: TextInputType.text,
-          controller: numberTransactionController,
+          controller: searchTextController,
           messageTextField: 'Nº do lançamento',
           functionTextField: () {
-            doc = null;
-            if (numberTransactionController.text.trim().isNotEmpty) {
-              doc = numberTransactionController.text.trim();
+            searchedText = null;
+            if (searchTextController.text.trim().isNotEmpty) {
+              searchedText = searchTextController.text.trim();
             }
             financialController.getFinancial(
-                transactionNumber: doc, transactionType: type);
+                transactionType: type, searchedText: searchedText);
           },
         ),
         Expanded(
