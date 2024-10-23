@@ -13,7 +13,6 @@ class FinancialService {
   late QuerySnapshot snapshot;
 
   Future getFinancial({
-    String? transactionNumber,
     String? transactionType,
     List<DateTime>? rangeDates,
   }) async {
@@ -22,10 +21,6 @@ class FinancialService {
 
       if (transactionType != null) {
         filterTypeQuery(transactionType);
-      }
-
-      if (transactionNumber != null) {
-        filterNumberTransactionQuery(transactionNumber);
       }
 
       if (rangeDates != null) {
@@ -86,23 +81,6 @@ class FinancialService {
   //Filters
   void filterTypeQuery(String transactionType) {
     query = query.where('type', isEqualTo: transactionType);
-  }
-
-  void filterNumberTransactionQuery(String transactionNumber) {
-    query = query.where('numberTransaction',
-        isGreaterThanOrEqualTo: transactionNumber);
-
-    if (transactionNumber.length > 1) {
-      query = query.where('numberTransaction',
-          isLessThan: transactionNumber.substring(
-                  0, transactionNumber.length - 1) +
-              String.fromCharCode(
-                  transactionNumber.codeUnitAt(transactionNumber.length - 1) +
-                      1));
-    } else {
-      query = query.where('numberTransaction',
-          isLessThan: String.fromCharCode(transactionNumber.codeUnitAt(0) + 1));
-    }
   }
 
   void filterRangeDate(
