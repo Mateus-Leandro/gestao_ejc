@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:gestao_ejc/components/custom_delete_button.dart';
 import 'package:gestao_ejc/components/custom_financial_form.dart';
+import 'package:gestao_ejc/components/custom_financial_report_form.dart';
 import 'package:gestao_ejc/components/custom_list_tile.dart';
 import 'package:gestao_ejc/components/custom_search_row.dart';
-import 'package:gestao_ejc/components/custom_xlsx_financial_form.dart';
 import 'package:gestao_ejc/controllers/financial_controller.dart';
 import 'package:gestao_ejc/functions/function_mask_decimal.dart';
 import 'package:gestao_ejc/models/financial_model.dart';
@@ -186,7 +186,7 @@ class _FinancialDocsScreenState extends State<FinancialDocsScreen> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return const CustomXlsxFinancialForm();
+        return const CustomFinancialReportForm();
       },
     );
   }

@@ -8,12 +8,14 @@ import 'package:gestao_ejc/functions/function_call_url.dart';
 import 'package:gestao_ejc/functions/function_date.dart';
 import 'package:gestao_ejc/functions/function_decimal_place.dart';
 import 'package:gestao_ejc/functions/function_mask_decimal.dart';
+import 'package:gestao_ejc/functions/function_reports.dart';
 import 'package:gestao_ejc/functions/function_screen.dart';
-import 'package:gestao_ejc/functions/function_xlsx.dart';
 import 'package:gestao_ejc/services/auth_service.dart';
 import 'package:gestao_ejc/services/financial_index_service.dart';
 import 'package:gestao_ejc/services/financial_service.dart';
+import 'package:gestao_ejc/services/pdf_service.dart';
 import 'package:gestao_ejc/services/user_service.dart';
+import 'package:gestao_ejc/services/xlsx_service.dart';
 import 'package:gestao_ejc/theme/app_theme.dart';
 import 'package:get_it/get_it.dart';
 
@@ -41,6 +43,7 @@ void setupGetIt() {
   getIt.registerLazySingleton<FunctionMaskDecimal>(() => FunctionMaskDecimal());
   getIt.registerLazySingleton<FunctionDecimalPlace>(
       () => FunctionDecimalPlace());
-  getIt.registerLazySingleton<FunctionXlsx>(
-      () => FunctionXlsx());
+  getIt.registerLazySingleton<FunctionReports>(() => FunctionReports());
+  getIt.registerLazySingleton<PdfService>(() => PdfService());
+  getIt.registerLazySingleton<XlsxService>(() => XlsxService());
 }

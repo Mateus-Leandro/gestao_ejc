@@ -54,6 +54,7 @@ dependencies:
   calendar_date_picker2: ^1.1.7
   syncfusion_flutter_xlsio: ^27.1.53
   syncfusion_flutter_pdf: ^27.1.55
+  toggle_switch: ^2.3.0
 
 dev_dependencies:
   flutter_test:

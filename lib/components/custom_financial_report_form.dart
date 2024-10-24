@@ -1,25 +1,28 @@
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:flutter/material.dart';
 import 'package:gestao_ejc/components/custom_text_form_field.dart';
-import 'package:gestao_ejc/controllers/financial_controller.dart';
 import 'package:gestao_ejc/functions/function_date.dart';
 import 'package:gestao_ejc/models/financial_model.dart';
 import 'package:gestao_ejc/services/financial_service.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
+import 'package:gestao_ejc/services/pdf_service.dart';
+import 'package:gestao_ejc/services/xlsx_service.dart';
+import 'package:toggle_switch/toggle_switch.dart';
 
-class CustomXlsxFinancialForm extends StatefulWidget {
-  const CustomXlsxFinancialForm({super.key});
+class CustomFinancialReportForm extends StatefulWidget {
+  const CustomFinancialReportForm({super.key});
 
   @override
-  State<CustomXlsxFinancialForm> createState() =>
-      _CustomXlsxFinancialFormState();
+  State<CustomFinancialReportForm> createState() =>
+      _CustomFinancialReportFormState();
 }
 
-class _CustomXlsxFinancialFormState extends State<CustomXlsxFinancialForm> {
+class _CustomFinancialReportFormState extends State<CustomFinancialReportForm> {
   final TextEditingController _fileNameController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final FinancialService financialService = getIt<FinancialService>();
   final FunctionDate functionDate = getIt<FunctionDate>();
+  String? typeExport;
   List<DateTime?> dates = [null, null];
 
   @override
@@ -77,6 +80,28 @@ class _CustomXlsxFinancialFormState extends State<CustomXlsxFinancialForm> {
                     value: dates,
                     onValueChanged: (newDates) => dates = newDates),
               ),
+              const Padding(
+                padding: EdgeInsets.only(bottom: 8),
+                child: Text('Exportar arquivo em'),
+              ),
+              ToggleSwitch(
+                minWidth: 90.0,
+                initialLabelIndex: 0,
+                cornerRadius: 20.0,
+                activeFgColor: Colors.white,
+                inactiveBgColor: Colors.grey,
+                inactiveFgColor: Colors.white,
+                totalSwitches: 2,
+                labels: const ['Excel', 'PDF'],
+                icons: const [Icons.file_copy, Icons.picture_as_pdf],
+                activeBgColors: const [
+                  [Colors.green],
+                  [Colors.red]
+                ],
+                onToggle: (index) {
+                  typeExport = index == 0 ? 'excel' : 'pdf';
+                },
+              ),
             ],
           ),
         ),
@@ -102,7 +127,8 @@ class _CustomXlsxFinancialFormState extends State<CustomXlsxFinancialForm> {
 
               List<DateTime> rangeDates = [dates[0]!, dates[1]!];
 
-              await generateDoc(rangeDates);
+              await generateDoc(
+                  dates: rangeDates, typeExport: typeExport ?? 'excel');
               Navigator.of(context).pop();
             }
           },
@@ -112,11 +138,23 @@ class _CustomXlsxFinancialFormState extends State<CustomXlsxFinancialForm> {
     );
   }
 
-  Future<void> generateDoc(List<DateTime> dates) async {
+  Future<void> generateDoc(
+      {required List<DateTime> dates, required String typeExport}) async {
+    final PdfService pdfService = getIt<PdfService>();
+    final XlsxService xlsxService = getIt<XlsxService>();
+
     List<FinancialModel> docs =
         await financialService.getFinancial(rangeDates: dates);
-    FinancialController financialController = getIt<FinancialController>();
-    await financialController.generateXlsx(
-        docs, _fileNameController.text.trim());
+
+    List<String> interval =
+        dates.map((date) => functionDate.getDateToString(date)).toList();
+
+    typeExport == 'pdf'
+        ? await pdfService.generateFinancialPdf(
+            docs: docs,
+            fileName: _fileNameController.text.trim(),
+            interval: interval)
+        : await xlsxService.generateFinancialXlsx(
+            docs: docs, fileName: _fileNameController.text.trim());
   }
 }
