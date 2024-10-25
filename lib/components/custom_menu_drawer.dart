@@ -1,30 +1,72 @@
 import 'package:flutter/material.dart';
 import 'package:gestao_ejc/functions/function_image_from_storage.dart';
 import 'package:gestao_ejc/functions/function_screen.dart';
+import 'package:gestao_ejc/services/auth_service.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
 import 'package:gestao_ejc/theme/app_theme.dart';
 
 class CustomMenuDrawer extends StatelessWidget {
   const CustomMenuDrawer({super.key, required this.indexMenuSelected});
+
   final int? indexMenuSelected;
 
   @override
   Widget build(BuildContext context) {
     final FunctionScreen functionScreen = getIt<FunctionScreen>();
     final AppTheme appTheme = getIt<AppTheme>();
-    final Color tileColor = appTheme.colorTile;
-    final Color selectedTileColor = appTheme.colorFocusTile;
-    final Color textColor = appTheme.colorLightText;
+    final AuthService authService = getIt<AuthService>();
 
-    final List<Map<String, dynamic>> menuItems = [
-      {'title': 'Encontros', 'route': '/encounters', 'index': 0},
-      {'title': 'Círculos', 'route': '/circles', 'index': 1},
-      {'title': 'Membros', 'route': '/members', 'index': 2},
-      {'title': 'Exportação', 'route': '/export', 'index': 3},
-      {'title': 'Importação', 'route': '/import', 'index': 4},
-      {'title': 'Financeiro', 'route': '/financial', 'index': 5},
-      {'title': 'Cadastro de Usuários', 'route': '/users', 'index': 6},
+    final tileColor = appTheme.colorTile;
+    final selectedTileColor = appTheme.colorFocusTile;
+    final textColor = appTheme.colorLightText;
+
+    final allMenuOptions = [
+      {
+        'title': 'Encontros',
+        'route': '/encounters',
+        'index': 0,
+        'permission': authService.actualUserModel!.manipulateEncounter
+      },
+      {
+        'title': 'Círculos',
+        'route': '/circles',
+        'index': 1,
+        'permission': authService.actualUserModel!.manipulateCircles
+      },
+      {
+        'title': 'Membros',
+        'route': '/members',
+        'index': 2,
+        'permission': authService.actualUserModel!.manipulateMembers
+      },
+      {
+        'title': 'Exportação',
+        'route': '/export',
+        'index': 3,
+        'permission': authService.actualUserModel!.manipulateExport
+      },
+      {
+        'title': 'Importação',
+        'route': '/import',
+        'index': 4,
+        'permission': authService.actualUserModel!.manipulateImport
+      },
+      {
+        'title': 'Financeiro',
+        'route': '/financial',
+        'index': 5,
+        'permission': authService.actualUserModel!.manipulateFinancial
+      },
+      {
+        'title': 'Cadastro de Usuários',
+        'route': '/users',
+        'index': 6,
+        'permission': authService.actualUserModel!.manipulateUsers
+      },
     ];
+
+    final List<Map<String, dynamic>> userOptions =
+        allMenuOptions.where((item) => item['permission'] == true).toList();
 
     return Drawer(
       backgroundColor: tileColor,
@@ -38,11 +80,12 @@ class CustomMenuDrawer extends StatelessWidget {
               child: TextButton(
                 onPressed: () {
                   functionScreen.call(
-                      context: context,
-                      route: "/",
-                      indexMenu: null,
-                      indexMenuSelected: indexMenuSelected,
-                      popActualScreen: true);
+                    context: context,
+                    route: "/",
+                    indexMenu: null,
+                    indexMenuSelected: indexMenuSelected,
+                    popActualScreen: true,
+                  );
                 },
                 child: const Tooltip(
                   message: "Página inicial",
@@ -53,7 +96,7 @@ class CustomMenuDrawer extends StatelessWidget {
               ),
             ),
           ),
-          for (var item in menuItems) ...[
+          for (var item in userOptions)
             ListTile(
               selectedTileColor: selectedTileColor,
               selectedColor: textColor,
@@ -64,18 +107,16 @@ class CustomMenuDrawer extends StatelessWidget {
               selected: indexMenuSelected == item['index'],
               onTap: () {
                 functionScreen.call(
-                    context: context,
-                    route: item['route'],
-                    indexMenu: item['index'],
-                    indexMenuSelected: indexMenuSelected,
-                    popActualScreen: true);
+                  context: context,
+                  route: item['route'],
+                  indexMenu: item['index'],
+                  indexMenuSelected: indexMenuSelected,
+                  popActualScreen: true,
+                );
               },
             ),
-          ],
-          Spacer(),
-          Divider(
-            color: appTheme.colorDivider,
-          ),
+          const Spacer(),
+          Divider(color: appTheme.colorDivider),
           ListTile(
             tileColor: tileColor,
             selectedColor: textColor,
