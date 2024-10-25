@@ -24,19 +24,26 @@ class FunctionReports {
     'Criado por'
   ];
 
-  Future<PdfDocument> createPdf() async {
+  Future<PdfDocument> createPdf({required String title}) async {
     final PdfDocument document = PdfDocument();
     final ByteData imageData =
         await rootBundle.load('assets/images/logos/logo03.png');
     final Uint8List imageBytes = imageData.buffer.asUint8List();
     final PdfBitmap image = PdfBitmap(imageBytes);
-
     final PdfPageTemplateElement headerTemplate =
-        PdfPageTemplateElement(const Rect.fromLTWH(0, 0, 515, 90));
+        PdfPageTemplateElement(const Rect.fromLTWH(0, 0, 515, 70));
     headerTemplate.graphics.drawImage(
       image,
-      const Rect.fromLTWH(0, 0, 90, 80),
+      const Rect.fromLTWH(0, 0, 70, 60),
     );
+    Size textSize = defaultPdfTitleFont.measureString(title);
+    double x = (headerTemplate.bounds.width - textSize.width) / 2;
+    headerTemplate.graphics.drawString(
+      title,
+      defaultPdfTitleFont,
+      bounds: Rect.fromLTWH(x, 15, textSize.width, textSize.height),
+    );
+
     document.template.top = headerTemplate;
     return document;
   }
@@ -107,6 +114,6 @@ class FunctionReports {
 
   defaultPdfFont({required bool boldFont}) {
     return PdfStandardFont(PdfFontFamily.helvetica, 12,
-        style: boldFont ? PdfFontStyle.bold : null);
+        style: boldFont ? PdfFontStyle.bold : PdfFontStyle.regular);
   }
 }

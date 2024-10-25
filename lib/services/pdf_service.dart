@@ -17,7 +17,7 @@ class PdfService {
       {required List<FinancialModel> docs,
       required String fileName,
       required List<String> interval}) async {
-    final PdfDocument pdfDocument = await functionReports.createPdf();
+    final PdfDocument pdfDocument = await functionReports.createPdf(title: 'Extrato Financeiro');
     List<String> headerTitles = functionReports.financialTitles;
     final PdfGrid financialInputGrid =
         functionReports.createGrid(headerTitles: headerTitles);
@@ -65,18 +65,15 @@ class PdfService {
     final page = document.pages.add();
 
     page.graphics.drawString(
-        'Extrato Financeiro', functionReports.defaultPdfTitleFont,
-        bounds: const Rect.fromLTWH(200, 0, 200, 50));
-    page.graphics.drawString(
         period, functionReports.defaultPdfFont(boldFont: true),
-        bounds: const Rect.fromLTWH(0, 40, 200, 50));
+        bounds: const Rect.fromLTWH(0, 0, 200, 50));
     page.graphics.drawString(
         typeTransactions, functionReports.defaultPdfFont(boldFont: true),
-        bounds: const Rect.fromLTWH(460, 40, 200, 50));
+        bounds: const Rect.fromLTWH(460, 0, 200, 50));
     grid.draw(
       page: page,
       bounds: Rect.fromLTWH(
-          0, 65, page.getClientSize().width, page.getClientSize().height),
+          0, 20, page.getClientSize().width, page.getClientSize().height),
     );
   }
 }
