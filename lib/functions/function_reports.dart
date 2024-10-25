@@ -58,7 +58,7 @@ class FunctionReports {
 
     final url = html.Url.createObjectUrlFromBlob(blob);
     final anchor = html.AnchorElement(href: url)
-      ..setAttribute('download', '${fileName}.pdf')
+      ..setAttribute('download', '$fileName.pdf')
       ..click();
 
     html.Url.revokeObjectUrl(url);

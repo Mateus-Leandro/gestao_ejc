@@ -58,6 +58,6 @@ class XlsxService {
         }
       }
     }
-    functionReports.saveXlsx(fileName: '$fileName.xlsx', workbook: workbook);
+    functionReports.saveXlsx(fileName: fileName, workbook: workbook);
   }
 }
