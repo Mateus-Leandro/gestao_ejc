@@ -64,14 +64,19 @@ class PdfService {
       required PdfGrid grid}) {
     final page = document.pages.add();
 
-    page.graphics.drawString(period, functionReports.defaultPdfFont,
-        bounds: const Rect.fromLTWH(0, 0, 200, 50));
-    page.graphics.drawString(typeTransactions, functionReports.defaultPdfFont,
-        bounds: const Rect.fromLTWH(460, 0, 200, 50));
+    page.graphics.drawString(
+        'Extrato Financeiro', functionReports.defaultPdfTitleFont,
+        bounds: const Rect.fromLTWH(200, 0, 200, 50));
+    page.graphics.drawString(
+        period, functionReports.defaultPdfFont(boldFont: true),
+        bounds: const Rect.fromLTWH(0, 40, 200, 50));
+    page.graphics.drawString(
+        typeTransactions, functionReports.defaultPdfFont(boldFont: true),
+        bounds: const Rect.fromLTWH(460, 40, 200, 50));
     grid.draw(
       page: page,
       bounds: Rect.fromLTWH(
-          0, 25, page.getClientSize().width, page.getClientSize().height),
+          0, 65, page.getClientSize().width, page.getClientSize().height),
     );
   }
 }

@@ -26,7 +26,8 @@ class FunctionReports {
 
   Future<PdfDocument> createPdf() async {
     final PdfDocument document = PdfDocument();
-    final ByteData imageData = await rootBundle.load('images/logos/logo03.png');
+    final ByteData imageData =
+        await rootBundle.load('assets/images/logos/logo03.png');
     final Uint8List imageBytes = imageData.buffer.asUint8List();
     final PdfBitmap image = PdfBitmap(imageBytes);
 
@@ -48,7 +49,8 @@ class FunctionReports {
     return workbook;
   }
 
-  Future<void> savePdf({required PdfDocument document, required String fileName}) async {
+  Future<void> savePdf(
+      {required PdfDocument document, required String fileName}) async {
     List<int> bytes = await document.save();
     document.dispose();
 
@@ -99,5 +101,12 @@ class FunctionReports {
   }
 
   get financialTitlePdfTitle => financialTitles;
-  get defaultPdfFont => PdfStandardFont(PdfFontFamily.helvetica, 12);
+
+  get defaultPdfTitleFont =>
+      PdfStandardFont(PdfFontFamily.helvetica, 14, style: PdfFontStyle.bold);
+
+  defaultPdfFont({required bool boldFont}) {
+    return PdfStandardFont(PdfFontFamily.helvetica, 12,
+        style: boldFont ? PdfFontStyle.bold : null);
+  }
 }
