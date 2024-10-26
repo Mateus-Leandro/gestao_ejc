@@ -73,40 +73,37 @@ class _FinancialDocsScreenState extends State<FinancialDocsScreen> {
           },
         ),
         Expanded(
-          child: Padding(
-            padding: const EdgeInsets.only(top: 15),
-            child: StreamBuilder<List<FinancialModel>>(
-              stream: financialController.stream,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
-
-                if (snapshot.hasError) {
-                  return Center(
-                    child:
-                        Text('Erro ao carregar Lançamentos: ${snapshot.error}'),
-                  );
-                }
-
-                if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return const Center(
-                    child: Text('Nenhum lançamento encontrado.'),
-                  );
-                }
-
-                var financialDocs = snapshot.data!;
-                return ListView.builder(
-                  itemCount: financialDocs.length,
-                  itemBuilder: (context, index) {
-                    var doc = financialDocs[index];
-                    return _buildUserTile(context, doc);
-                  },
+          child: StreamBuilder<List<FinancialModel>>(
+            stream: financialController.stream,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(
+                  child: CircularProgressIndicator(),
                 );
-              },
-            ),
+              }
+
+              if (snapshot.hasError) {
+                return Center(
+                  child:
+                      Text('Erro ao carregar Lançamentos: ${snapshot.error}'),
+                );
+              }
+
+              if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                return const Center(
+                  child: Text('Nenhum lançamento encontrado.'),
+                );
+              }
+
+              var financialDocs = snapshot.data!;
+              return ListView.builder(
+                itemCount: financialDocs.length,
+                itemBuilder: (context, index) {
+                  var doc = financialDocs[index];
+                  return _buildUserTile(context, doc);
+                },
+              );
+            },
           ),
         ),
       ],

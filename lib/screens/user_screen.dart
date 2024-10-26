@@ -64,7 +64,6 @@ class _UserScreenState extends State<UserScreen> {
                   : userNameController.text.trim(),
             ),
           ),
-          const SizedBox(height: 15),
           Expanded(child: _buildUserList(context)),
         ],
       ),

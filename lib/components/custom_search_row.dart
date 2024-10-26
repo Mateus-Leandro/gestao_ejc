@@ -47,6 +47,7 @@ class CustomSearchRow extends StatelessWidget {
           text: messageTextField,
           funtion: functionTextField,
         ),
+        const SizedBox(height: 15)
       ],
     );
   }
