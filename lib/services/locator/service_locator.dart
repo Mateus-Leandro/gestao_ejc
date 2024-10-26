@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:gestao_ejc/controllers/encounter_controller.dart';
 import 'package:gestao_ejc/controllers/financial_controller.dart';
 import 'package:gestao_ejc/controllers/financial_index_controller.dart';
 import 'package:gestao_ejc/controllers/user_controller.dart';
@@ -11,6 +12,7 @@ import 'package:gestao_ejc/functions/function_mask_decimal.dart';
 import 'package:gestao_ejc/functions/function_reports.dart';
 import 'package:gestao_ejc/functions/function_screen.dart';
 import 'package:gestao_ejc/services/auth_service.dart';
+import 'package:gestao_ejc/services/encounter_service.dart';
 import 'package:gestao_ejc/services/financial_index_service.dart';
 import 'package:gestao_ejc/services/financial_service.dart';
 import 'package:gestao_ejc/services/pdf_service.dart';
@@ -46,4 +48,6 @@ void setupGetIt() {
   getIt.registerLazySingleton<FunctionReports>(() => FunctionReports());
   getIt.registerLazySingleton<PdfService>(() => PdfService());
   getIt.registerLazySingleton<XlsxService>(() => XlsxService());
+  getIt.registerLazySingleton<EncounterService>(() => EncounterService());
+  getIt.registerLazySingleton<EncounterController>(() => EncounterController());
 }
