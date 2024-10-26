@@ -96,7 +96,10 @@ class _ModelScreenState extends State<ModelScreen> {
                   color: appTheme.colorInnerFrame,
                   borderRadius: BorderRadius.circular(20),
                 ),
-                child: widget.body,
+                child: Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: widget.body,
+                ),
               ),
             ),
           ),

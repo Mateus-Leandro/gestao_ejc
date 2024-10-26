@@ -35,15 +35,12 @@ class _FinancialScreenState extends State<FinancialScreen> {
     return ModelScreen(
       title: 'Financeiro',
       indexMenuSelected: 5,
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            _buildFinancialSummaryStream(),
-            const SizedBox(height: 16),
-            const Expanded(child: CustomFinancialTabBar()),
-          ],
-        ),
+      body: Column(
+        children: [
+          _buildFinancialSummaryStream(),
+          const SizedBox(height: 16),
+          const Expanded(child: CustomFinancialTabBar()),
+        ],
       ),
     );
   }

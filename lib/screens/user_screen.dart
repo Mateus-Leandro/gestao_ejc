@@ -46,30 +46,27 @@ class _UserScreenState extends State<UserScreen> {
   Widget build(BuildContext context) {
     return ModelScreen(
       title: 'Usuários',
-      body: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: Column(
-          children: [
-            CustomSearchRow(
-              messageButton: 'Novo Usuário',
-              functionButton: () => _showUserForm(null),
-              showButton:
-                  _authService.actualUserModel?.manipulateAdministrator ??
-                      false,
-              iconButton: const Icon(Icons.add),
-              inputType: TextInputType.text,
-              controller: userNameController,
-              messageTextField: 'Nome Usuário',
-              functionTextField: () => _userController.getUsers(
-                userNameController.text.trim().isEmpty
-                    ? null
-                    : userNameController.text.trim(),
-              ),
+      body: Column(
+        children: [
+          CustomSearchRow(
+            messageButton: 'Novo Usuário',
+            functionButton: () => _showUserForm(null),
+            showButton:
+                _authService.actualUserModel?.manipulateAdministrator ??
+                    false,
+            iconButton: const Icon(Icons.add),
+            inputType: TextInputType.text,
+            controller: userNameController,
+            messageTextField: 'Nome Usuário',
+            functionTextField: () => _userController.getUsers(
+              userNameController.text.trim().isEmpty
+                  ? null
+                  : userNameController.text.trim(),
             ),
-            const SizedBox(height: 15),
-            Expanded(child: _buildUserList(context)),
-          ],
-        ),
+          ),
+          const SizedBox(height: 15),
+          Expanded(child: _buildUserList(context)),
+        ],
       ),
       indexMenuSelected: 6,
     );
