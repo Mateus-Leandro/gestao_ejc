@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gestao_ejc/functions/function_call_email_app.dart';
 import 'package:gestao_ejc/functions/function_call_url.dart';
 import 'package:gestao_ejc/screens/model_screen.dart';
@@ -81,15 +82,7 @@ class HomeScreen extends StatelessWidget {
                     onPressed: () {
                       functionCallEmailApp.open(email: emailSuporte);
                     },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Theme.of(context).primaryColor,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 30, vertical: 15),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                    ),
-                    icon: const Icon(Icons.email_outlined, color: Colors.white),
+                    icon: const FaIcon(FontAwesomeIcons.envelope)
                   ),
                 ),
                 Tooltip(
@@ -98,15 +91,7 @@ class HomeScreen extends StatelessWidget {
                     onPressed: () {
                       functionCallUrl.callUrl("https://wa.me/553198954487");
                     },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Theme.of(context).primaryColor,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 30, vertical: 15),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                    ),
-                    icon: const Icon(Icons.phone, color: Colors.green),
+                    icon: const FaIcon(FontAwesomeIcons.whatsapp, color: Colors.green),
                   ),
                 ),
               ],
