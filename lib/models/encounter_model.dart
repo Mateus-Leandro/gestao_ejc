@@ -2,14 +2,14 @@ class EncounterModel {
   final int sequential;
   final DateTime initialDate;
   final DateTime finalDate;
-  final String local;
+  final String location;
   final String themeSongLink;
 
   EncounterModel(
       {required this.sequential,
       required this.initialDate,
       required this.finalDate,
-      required this.local,
+      required this.location,
       required this.themeSongLink});
 
   Map<String, dynamic> toJson() {
@@ -17,7 +17,7 @@ class EncounterModel {
       'sequential': sequential,
       'initialDate': initialDate,
       'finalDate': finalDate,
-      'local': local,
+      'location': location,
       'themeSongLink': themeSongLink
     };
   }
@@ -27,7 +27,7 @@ class EncounterModel {
         sequential: map['sequential'] ?? '',
         initialDate: map['initialDate'] ?? '',
         finalDate: map['finalDate'] ?? '',
-        local: map['local'] ?? '',
+        location: map['location'] ?? '',
         themeSongLink: map['themeSongLink'] ?? '');
   }
 }
