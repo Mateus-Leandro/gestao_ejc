@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:gestao_ejc/screens/encounter_screen.dart';
 import 'package:gestao_ejc/screens/financial_screen.dart';
 import 'package:gestao_ejc/screens/home_screen.dart';
 import 'package:gestao_ejc/screens/login_screen.dart';
@@ -16,7 +17,6 @@ Future<void> main() async {
   );
   setupGetIt();
   runApp(const MyApp());
-
 }
 
 class MyApp extends StatelessWidget {
@@ -47,21 +47,19 @@ class MyApp extends StatelessWidget {
           selectionHandleColor: Colors.blue,
         ),
         inputDecorationTheme: const InputDecorationTheme(
-          enabledBorder: UnderlineInputBorder(
-            borderSide: BorderSide(color: Colors.grey),
-          ),
-          focusedBorder: UnderlineInputBorder(
-            borderSide: BorderSide(color: Color(0xFF001F3F)),
-          ),
-          hintStyle: TextStyle(
-            color: Colors.black38
-          )
-        ),
+            enabledBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: Colors.grey),
+            ),
+            focusedBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: Color(0xFF001F3F)),
+            ),
+            hintStyle: TextStyle(color: Colors.black38)),
       ),
       routes: {
-        '/' : (context) => const GetScreen(),
+        '/': (context) => const GetScreen(),
         '/users': (context) => const UserScreen(),
         '/financial': (context) => const FinancialScreen(),
+        '/encounters': (context) => const EncounterScreen(),
       },
     );
   }
