@@ -96,27 +96,25 @@ class _EncounterScreenState extends State<EncounterScreen> {
               )}'),
               Text('Local: ${encounter.location}'),
               Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(
-                    child: Text('Música Tema: ${encounter.themeSong}'),
+                  Flexible(
+                    child: Text(
+                      'Música: ${encounter.themeSong}',
+                      overflow: TextOverflow
+                          .ellipsis,
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () =>
+                        functionCallUrl.callUrl(encounter.themeSongLink),
+                    icon: const Tooltip(
+                      message: 'Música Tema',
+                      child:
+                          FaIcon(FontAwesomeIcons.spotify, color: Colors.green),
+                    ),
                   ),
                 ],
-              ),
-            ],
-          ),
-          trailing: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              IconButton(
-                onPressed: () =>
-                    functionCallUrl.callUrl(encounter.themeSongLink),
-                icon: const Tooltip(
-                  message: 'Música Tema',
-                  child: FaIcon(FontAwesomeIcons.spotify, color: Colors.green),
-                ),
-              ),
+              )
             ],
           ),
         ),
