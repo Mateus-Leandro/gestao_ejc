@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gestao_ejc/components/custom_date_picker.dart';
+import 'package:gestao_ejc/components/pickers/custom_date_picker.dart';
 import 'package:gestao_ejc/controllers/user_controller.dart';
 import 'package:gestao_ejc/models/user_model.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';

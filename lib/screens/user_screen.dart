@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:gestao_ejc/components/custom_inactivate_user_alert.dart';
-import 'package:gestao_ejc/components/custom_list_tile.dart';
-import 'package:gestao_ejc/components/custom_search_row.dart';
-import 'package:gestao_ejc/components/custom_user_form.dart';
+import 'package:gestao_ejc/components/alerts/custom_inactivate_user_alert.dart';
+import 'package:gestao_ejc/components/utils/custom_list_tile.dart';
+import 'package:gestao_ejc/components/utils/custom_search_row.dart';
+import 'package:gestao_ejc/components/forms/custom_user_form.dart';
 import 'package:gestao_ejc/controllers/user_controller.dart';
 import 'package:gestao_ejc/models/user_model.dart';
 import 'package:gestao_ejc/screens/model_screen.dart';

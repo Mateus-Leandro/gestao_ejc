@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:gestao_ejc/components/custom_list_tile.dart';
-import 'package:gestao_ejc/components/custom_search_row.dart';
+import 'package:gestao_ejc/components/utils/custom_list_tile.dart';
+import 'package:gestao_ejc/components/utils/custom_search_row.dart';
 import 'package:gestao_ejc/controllers/encounter_controller.dart';
 import 'package:gestao_ejc/functions/function_call_url.dart';
 import 'package:gestao_ejc/functions/function_date.dart';
@@ -100,8 +100,7 @@ class _EncounterScreenState extends State<EncounterScreen> {
                   Flexible(
                     child: Text(
                       'Música: ${encounter.themeSong}',
-                      overflow: TextOverflow
-                          .ellipsis,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
                   IconButton(

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:gestao_ejc/components/forms/custom_text_form_field.dart';
 import 'package:gestao_ejc/functions/function_image_from_storage.dart';
-import 'package:gestao_ejc/components/custom_text_form_field.dart';
 import 'package:gestao_ejc/screens/password_reset_modal.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
 import '../services/auth_service.dart';

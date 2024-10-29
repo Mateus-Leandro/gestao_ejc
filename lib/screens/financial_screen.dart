@@ -1,10 +1,13 @@
+import 'package:buttons_tabbar/buttons_tabbar.dart';
 import 'package:flutter/material.dart';
-import 'package:gestao_ejc/components/custom_financial_tab_bar.dart';
+import 'package:gestao_ejc/components/utils/custom_tab_bar.dart';
 import 'package:gestao_ejc/controllers/financial_index_controller.dart';
 import 'package:gestao_ejc/functions/function_mask_decimal.dart';
 import 'package:gestao_ejc/models/financial_index_model.dart';
+import 'package:gestao_ejc/screens/financial_docs_screen.dart';
 import 'package:gestao_ejc/screens/model_screen.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
+import 'package:gestao_ejc/theme/app_theme.dart';
 
 class FinancialScreen extends StatefulWidget {
   const FinancialScreen({super.key});
@@ -17,6 +20,7 @@ class _FinancialScreenState extends State<FinancialScreen> {
   final FinancialIndexController financialIndexController =
       getIt<FinancialIndexController>();
   final FunctionMaskDecimal functionMaskDecimal = getIt<FunctionMaskDecimal>();
+  final AppTheme appTheme = getIt<AppTheme>();
 
   @override
   void initState() {
@@ -39,7 +43,9 @@ class _FinancialScreenState extends State<FinancialScreen> {
         children: [
           _buildFinancialSummaryStream(),
           const SizedBox(height: 16),
-          const Expanded(child: CustomFinancialTabBar()),
+          Expanded(
+            child: _buildFinancialTabBar(),
+          ),
         ],
       ),
     );
@@ -60,6 +66,35 @@ class _FinancialScreenState extends State<FinancialScreen> {
         }
         return _buildFinancialSummaryCard(snapshot.data!);
       },
+    );
+  }
+
+  _buildFinancialTabBar() {
+    return CustomTabBar(
+      buttonsTabBar: ButtonsTabBar(
+        backgroundColor: appTheme.colorBackgroundTabBar,
+        tabs: const [
+          Tab(
+            icon: Icon(Icons.payments_outlined),
+            text: 'Extrato',
+          ),
+          Tab(
+            icon: Icon(Icons.arrow_downward, color: Colors.green),
+            text: 'Entradas',
+          ),
+          Tab(
+            icon: Icon(Icons.arrow_upward, color: Colors.red),
+            text: 'Saídas',
+          ),
+        ],
+      ),
+      tabBarView: const TabBarView(
+        children: [
+          Center(child: FinancialDocsScreen(transactionType: null)),
+          Center(child: FinancialDocsScreen(transactionType: "E")),
+          Center(child: FinancialDocsScreen(transactionType: "S")),
+        ],
+      ), tabLenght: 3,
     );
   }
 

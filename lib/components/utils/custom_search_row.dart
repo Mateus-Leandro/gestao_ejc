@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:gestao_ejc/components/custom_add_button.dart';
-import 'package:gestao_ejc/components/custom_text_field.dart';
+import 'package:gestao_ejc/components/buttons/custom_add_button.dart';
+import 'package:gestao_ejc/components/text_fields/custom_text_field.dart';
 
 class CustomSearchRow extends StatelessWidget {
   final String messageButton;
