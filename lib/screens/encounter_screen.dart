@@ -5,7 +5,9 @@ import 'package:gestao_ejc/components/utils/custom_search_row.dart';
 import 'package:gestao_ejc/controllers/encounter_controller.dart';
 import 'package:gestao_ejc/functions/function_call_url.dart';
 import 'package:gestao_ejc/functions/function_date.dart';
+import 'package:gestao_ejc/functions/function_int_to_roman.dart';
 import 'package:gestao_ejc/models/encounter_model.dart';
+import 'package:gestao_ejc/screens/encounter_info_screen.dart';
 import 'package:gestao_ejc/screens/model_screen.dart';
 import 'package:gestao_ejc/theme/app_theme.dart';
 
@@ -25,6 +27,7 @@ class _EncounterScreenState extends State<EncounterScreen> {
   final FunctionDate functionDate = getIt<FunctionDate>();
   final FunctionCallUrl functionCallUrl = getIt<FunctionCallUrl>();
   final AppTheme appTheme = getIt<AppTheme>();
+  final FunctionIntToRoman functionIntToRoman = getIt<FunctionIntToRoman>();
 
   @override
   void initState() {
@@ -50,7 +53,8 @@ class _EncounterScreenState extends State<EncounterScreen> {
             Expanded(child: _buildEncounterList(context))
           ],
         ),
-        indexMenuSelected: 0);
+        indexMenuSelected: 0,
+        showMenuDrawer: true);
   }
 
   _buildEncounterList(BuildContext context) {
@@ -85,7 +89,8 @@ class _EncounterScreenState extends State<EncounterScreen> {
   _buildEncounterTile(BuildContext context, EncounterModel encounter) {
     return CustomListTile(
         listTile: ListTile(
-          title: Text('${encounter.sequential} - EJC Céu Azul'),
+          title: Text(
+              '${functionIntToRoman.convert(encounter.sequential)} - EJC Céu Azul'),
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -114,6 +119,20 @@ class _EncounterScreenState extends State<EncounterScreen> {
                   ),
                 ],
               )
+            ],
+          ),
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              IconButton(
+                  onPressed: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              EncounterInfoScreen(encounterModel: encounter),
+                        ),
+                      ),
+                  icon: const Icon(Icons.edit))
             ],
           ),
         ),
