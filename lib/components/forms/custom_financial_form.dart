@@ -2,8 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:currency_textfield/currency_textfield.dart';
-import 'package:gestao_ejc/components/custom_date_picker.dart';
-import 'package:gestao_ejc/components/custom_text_form_field.dart';
+import 'package:gestao_ejc/components/pickers/custom_date_picker.dart';
+import 'package:gestao_ejc/components/forms/custom_text_form_field.dart';
 import 'package:gestao_ejc/controllers/financial_controller.dart';
 import 'package:gestao_ejc/controllers/user_controller.dart';
 import 'package:gestao_ejc/functions/function_date.dart';
@@ -107,7 +107,7 @@ class _CustomFinancialFormState extends State<CustomFinancialForm> {
                   },
                   obscure: false,
                   maxLength: 15,
-              capitalizeFirstLetter: true),
+                  capitalizeFirstLetter: true),
               CustomTextFormField(
                   controller: _descriptionController,
                   decoration: const InputDecoration(labelText: 'Descrição'),
@@ -117,7 +117,7 @@ class _CustomFinancialFormState extends State<CustomFinancialForm> {
                         : null;
                   },
                   obscure: false,
-              capitalizeFirstLetter: true),
+                  capitalizeFirstLetter: true),
               CustomTextFormField(
                   controller: _valueController,
                   decoration: const InputDecoration(labelText: 'Valor'),
@@ -177,7 +177,9 @@ class _CustomFinancialFormState extends State<CustomFinancialForm> {
           originOrDestination: _originOrDestinationController.text.trim(),
           transactionDate: _functionDate
               .getTimestampFromString(_transactionDateController.text.trim()),
-          registrationDate: _functionDate.getTimestampFromString(null),
+          registrationDate: editing
+              ? widget.financialModel!.registrationDate
+              : _functionDate.getTimestampFromString(null),
           registrationUser: editing
               ? widget.financialModel!.registrationUser
               : _firestore.doc('users/${_currentUser!.uid}'));

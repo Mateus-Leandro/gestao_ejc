@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:gestao_ejc/components/custom_delete_button.dart';
-import 'package:gestao_ejc/components/custom_financial_form.dart';
-import 'package:gestao_ejc/components/custom_financial_report_form.dart';
-import 'package:gestao_ejc/components/custom_list_tile.dart';
-import 'package:gestao_ejc/components/custom_search_row.dart';
+import 'package:gestao_ejc/components/buttons/custom_delete_button.dart';
+import 'package:gestao_ejc/components/buttons/custom_edit_button.dart';
+import 'package:gestao_ejc/components/forms/custom_financial_form.dart';
+import 'package:gestao_ejc/components/forms/custom_financial_report_form.dart';
+import 'package:gestao_ejc/components/utils/custom_list_tile.dart';
+import 'package:gestao_ejc/components/utils/custom_search_row.dart';
 import 'package:gestao_ejc/controllers/financial_controller.dart';
 import 'package:gestao_ejc/functions/function_mask_decimal.dart';
 import 'package:gestao_ejc/models/financial_model.dart';
@@ -19,8 +20,7 @@ class FinancialDocsScreen extends StatefulWidget {
 }
 
 class _FinancialDocsScreenState extends State<FinancialDocsScreen> {
-  final TextEditingController searchTextController =
-      TextEditingController();
+  final TextEditingController searchTextController = TextEditingController();
   final FinancialController _financialController = getIt<FinancialController>();
 
   @override
@@ -73,40 +73,37 @@ class _FinancialDocsScreenState extends State<FinancialDocsScreen> {
           },
         ),
         Expanded(
-          child: Padding(
-            padding: const EdgeInsets.only(top: 15),
-            child: StreamBuilder<List<FinancialModel>>(
-              stream: financialController.stream,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
-
-                if (snapshot.hasError) {
-                  return Center(
-                    child:
-                        Text('Erro ao carregar Lançamentos: ${snapshot.error}'),
-                  );
-                }
-
-                if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return const Center(
-                    child: Text('Nenhum lançamento encontrado.'),
-                  );
-                }
-
-                var financialDocs = snapshot.data!;
-                return ListView.builder(
-                  itemCount: financialDocs.length,
-                  itemBuilder: (context, index) {
-                    var doc = financialDocs[index];
-                    return _buildUserTile(context, doc);
-                  },
+          child: StreamBuilder<List<FinancialModel>>(
+            stream: financialController.stream,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(
+                  child: CircularProgressIndicator(),
                 );
-              },
-            ),
+              }
+
+              if (snapshot.hasError) {
+                return Center(
+                  child:
+                      Text('Erro ao carregar Lançamentos: ${snapshot.error}'),
+                );
+              }
+
+              if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                return const Center(
+                  child: Text('Nenhum lançamento encontrado.'),
+                );
+              }
+
+              var financialDocs = snapshot.data!;
+              return ListView.builder(
+                itemCount: financialDocs.length,
+                itemBuilder: (context, index) {
+                  var doc = financialDocs[index];
+                  return _buildUserTile(context, doc);
+                },
+              );
+            },
           ),
         ),
       ],
@@ -133,11 +130,9 @@ class _FinancialDocsScreenState extends State<FinancialDocsScreen> {
               if (widget.transactionType != null) ...[
                 Tooltip(
                   message: 'Editar Lançamento',
-                  child: IconButton(
-                    onPressed: () {
-                      _showFinancialForm(doc);
-                    },
-                    icon: const Icon(Icons.edit),
+                  child: CustomEditButton(
+                    form: CustomFinancialForm(
+                        transactionType: doc.type, financialModel: doc),
                   ),
                 ),
                 Tooltip(

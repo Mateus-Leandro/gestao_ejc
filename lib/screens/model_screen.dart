@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:gestao_ejc/components/custom_menu_drawer.dart';
+import 'package:gestao_ejc/components/drawers/custom_menu_drawer.dart';
 import 'package:gestao_ejc/functions/function_date.dart';
 import 'package:gestao_ejc/functions/function_screen.dart';
 import 'package:gestao_ejc/services/auth_service.dart';
@@ -12,12 +12,14 @@ class ModelScreen extends StatefulWidget {
   final String title;
   final Widget body;
   final int? indexMenuSelected;
+  final bool showMenuDrawer;
 
   const ModelScreen({
     super.key,
     required this.title,
     required this.body,
     required this.indexMenuSelected,
+    required this.showMenuDrawer,
   });
 
   @override
@@ -50,7 +52,9 @@ class _ModelScreenState extends State<ModelScreen> {
 
     if (ret == null) {
       return Scaffold(
-        drawer: CustomMenuDrawer(indexMenuSelected: widget.indexMenuSelected),
+        drawer: widget.showMenuDrawer
+            ? CustomMenuDrawer(indexMenuSelected: widget.indexMenuSelected)
+            : null,
         appBar: AppBar(
           foregroundColor: appTheme.colorTextTopBar,
           backgroundColor: appTheme.colorTopBar,
@@ -96,7 +100,10 @@ class _ModelScreenState extends State<ModelScreen> {
                   color: appTheme.colorInnerFrame,
                   borderRadius: BorderRadius.circular(20),
                 ),
-                child: widget.body,
+                child: Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: widget.body,
+                ),
               ),
             ),
           ),
@@ -116,8 +123,8 @@ class _ModelScreenState extends State<ModelScreen> {
               barrierDismissible: false,
               onConfirmBtnTap: () {
                 Navigator.of(context).pop();
-                Navigator.of(context)
-                    .pushNamedAndRemoveUntil('/', (Route<dynamic> route) => false);
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                    '/', (Route<dynamic> route) => false);
                 if (!authService.actualUserModel!.active) {
                   authService.logOut();
                 }

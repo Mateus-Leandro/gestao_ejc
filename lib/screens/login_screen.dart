@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gestao_ejc/functions/function_image_from_storage.dart';
-import 'package:gestao_ejc/components/custom_text_form_field.dart';
+import 'package:gestao_ejc/components/forms/custom_text_form_field.dart';
 import 'package:gestao_ejc/screens/password_reset_modal.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
 import '../services/auth_service.dart';
@@ -38,8 +37,9 @@ class _LoginScreenState extends State<LoginScreen> {
               child: const Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  FunctionImageFromStorage(
-                      imagePath: "images/app/roses/rosa02.png"),
+                  Image(
+                    image: AssetImage('/images/roses/rose02.png'),
+                  ),
                 ],
               ),
             ),
@@ -51,8 +51,15 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  FunctionImageFromStorage(
-                      imagePath: "images/app/logos/logo02.png"),
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12.0),
+                    ),
+                    clipBehavior: Clip.hardEdge,
+                    child: const Image(
+                      image: AssetImage('assets/images/logos/logo02.png'),
+                    ),
+                  ),
                   Container(
                     padding: const EdgeInsets.only(left: 20, right: 20),
                     child: Form(

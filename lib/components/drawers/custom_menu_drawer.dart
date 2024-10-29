@@ -23,7 +23,7 @@ class CustomMenuDrawer extends StatelessWidget {
     final allMenuOptions = [
       {
         'title': 'Encontros',
-        'route': '/encounters',
+        'route': '/encounter',
         'index': 0,
         'permission': authService.actualUserModel!.manipulateEncounter
       },
@@ -89,8 +89,8 @@ class CustomMenuDrawer extends StatelessWidget {
                 },
                 child: const Tooltip(
                   message: "Página inicial",
-                  child: FunctionImageFromStorage(
-                    imagePath: "images/app/logos/logo07.png",
+                  child: Image(
+                    image: AssetImage('images/logos/logo07.png'),
                   ),
                 ),
               ),
