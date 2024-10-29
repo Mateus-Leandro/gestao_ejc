@@ -107,7 +107,7 @@ class _CustomFinancialFormState extends State<CustomFinancialForm> {
                   },
                   obscure: false,
                   maxLength: 15,
-              capitalizeFirstLetter: true),
+                  capitalizeFirstLetter: true),
               CustomTextFormField(
                   controller: _descriptionController,
                   decoration: const InputDecoration(labelText: 'Descrição'),
@@ -117,7 +117,7 @@ class _CustomFinancialFormState extends State<CustomFinancialForm> {
                         : null;
                   },
                   obscure: false,
-              capitalizeFirstLetter: true),
+                  capitalizeFirstLetter: true),
               CustomTextFormField(
                   controller: _valueController,
                   decoration: const InputDecoration(labelText: 'Valor'),
@@ -177,7 +177,9 @@ class _CustomFinancialFormState extends State<CustomFinancialForm> {
           originOrDestination: _originOrDestinationController.text.trim(),
           transactionDate: _functionDate
               .getTimestampFromString(_transactionDateController.text.trim()),
-          registrationDate: _functionDate.getTimestampFromString(null),
+          registrationDate: editing
+              ? widget.financialModel!.registrationDate
+              : _functionDate.getTimestampFromString(null),
           registrationUser: editing
               ? widget.financialModel!.registrationUser
               : _firestore.doc('users/${_currentUser!.uid}'));
