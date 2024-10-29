@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:gestao_ejc/components/alerts/custom_inactivate_user_alert.dart';
+import 'package:gestao_ejc/components/buttons/custom_edit_button.dart';
 import 'package:gestao_ejc/components/utils/custom_list_tile.dart';
 import 'package:gestao_ejc/components/utils/custom_search_row.dart';
 import 'package:gestao_ejc/components/forms/custom_user_form.dart';
@@ -52,8 +53,7 @@ class _UserScreenState extends State<UserScreen> {
             messageButton: 'Novo Usuário',
             functionButton: () => _showUserForm(null),
             showButton:
-                _authService.actualUserModel?.manipulateAdministrator ??
-                    false,
+                _authService.actualUserModel?.manipulateAdministrator ?? false,
             iconButton: const Icon(Icons.add),
             inputType: TextInputType.text,
             controller: userNameController,
@@ -119,9 +119,8 @@ class _UserScreenState extends State<UserScreen> {
                   false) ...[
                 Tooltip(
                   message: 'Editar',
-                  child: IconButton(
-                    onPressed: () => _showUserForm(user),
-                    icon: const Icon(Icons.edit),
+                  child: CustomEditButton(
+                    form: CustomUserForm(userEditing: user),
                   ),
                 ),
                 Tooltip(

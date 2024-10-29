@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gestao_ejc/components/buttons/custom_delete_button.dart';
+import 'package:gestao_ejc/components/buttons/custom_edit_button.dart';
 import 'package:gestao_ejc/components/forms/custom_financial_form.dart';
 import 'package:gestao_ejc/components/forms/custom_financial_report_form.dart';
 import 'package:gestao_ejc/components/utils/custom_list_tile.dart';
@@ -19,8 +20,7 @@ class FinancialDocsScreen extends StatefulWidget {
 }
 
 class _FinancialDocsScreenState extends State<FinancialDocsScreen> {
-  final TextEditingController searchTextController =
-      TextEditingController();
+  final TextEditingController searchTextController = TextEditingController();
   final FinancialController _financialController = getIt<FinancialController>();
 
   @override
@@ -130,11 +130,9 @@ class _FinancialDocsScreenState extends State<FinancialDocsScreen> {
               if (widget.transactionType != null) ...[
                 Tooltip(
                   message: 'Editar Lançamento',
-                  child: IconButton(
-                    onPressed: () {
-                      _showFinancialForm(doc);
-                    },
-                    icon: const Icon(Icons.edit),
+                  child: CustomEditButton(
+                    form: CustomFinancialForm(
+                        transactionType: doc.type, financialModel: doc),
                   ),
                 ),
                 Tooltip(
