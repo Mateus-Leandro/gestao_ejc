@@ -100,6 +100,7 @@ class HomeScreen extends StatelessWidget {
         ],
       ),
       indexMenuSelected: null,
+      showMenuDrawer: true,
     );
   }
 }

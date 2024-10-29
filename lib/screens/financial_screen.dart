@@ -48,6 +48,7 @@ class _FinancialScreenState extends State<FinancialScreen> {
           ),
         ],
       ),
+      showMenuDrawer: true,
     );
   }
 

@@ -68,6 +68,7 @@ class _UserScreenState extends State<UserScreen> {
         ],
       ),
       indexMenuSelected: 6,
+      showMenuDrawer: true,
     );
   }
 
