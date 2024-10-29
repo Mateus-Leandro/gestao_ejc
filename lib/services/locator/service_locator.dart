@@ -8,6 +8,7 @@ import 'package:gestao_ejc/functions/function_call_email_app.dart';
 import 'package:gestao_ejc/functions/function_call_url.dart';
 import 'package:gestao_ejc/functions/function_date.dart';
 import 'package:gestao_ejc/functions/function_decimal_place.dart';
+import 'package:gestao_ejc/functions/function_int_to_roman.dart';
 import 'package:gestao_ejc/functions/function_mask_decimal.dart';
 import 'package:gestao_ejc/functions/function_reports.dart';
 import 'package:gestao_ejc/functions/function_screen.dart';
@@ -50,4 +51,5 @@ void setupGetIt() {
   getIt.registerLazySingleton<XlsxService>(() => XlsxService());
   getIt.registerLazySingleton<EncounterService>(() => EncounterService());
   getIt.registerLazySingleton<EncounterController>(() => EncounterController());
+  getIt.registerLazySingleton<FunctionIntToRoman>(() => FunctionIntToRoman());
 }
