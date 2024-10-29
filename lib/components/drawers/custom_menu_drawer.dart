@@ -23,7 +23,7 @@ class CustomMenuDrawer extends StatelessWidget {
     final allMenuOptions = [
       {
         'title': 'Encontros',
-        'route': '/encounters',
+        'route': '/encounter',
         'index': 0,
         'permission': authService.actualUserModel!.manipulateEncounter
       },

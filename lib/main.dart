@@ -59,7 +59,7 @@ class MyApp extends StatelessWidget {
         '/': (context) => const GetScreen(),
         '/users': (context) => const UserScreen(),
         '/financial': (context) => const FinancialScreen(),
-        '/encounters': (context) => const EncounterScreen(),
+        '/encounter': (context) => const EncounterScreen(),
       },
     );
   }
