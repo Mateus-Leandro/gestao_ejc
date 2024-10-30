@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:gestao_ejc/components/utils/custom_tab_bar.dart';
 import 'package:gestao_ejc/functions/function_int_to_roman.dart';
 import 'package:gestao_ejc/models/encounter_model.dart';
+import 'package:gestao_ejc/screens/encounter_info_screen.dart';
 import 'package:gestao_ejc/screens/model_screen.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
 import 'package:gestao_ejc/theme/app_theme.dart';
@@ -47,9 +48,12 @@ class EncounterTabsScreen extends StatelessWidget {
                     backgroundColor: appTheme.colorBackgroundTabBar,
                     tabs: tabs,
                   ),
-                  tabBarView: const TabBarView(
+                  tabBarView: TabBarView(
                     children: [
-
+                      EncounterInfoScreen(encounterModel: encounterModel),
+                      Container(),
+                      Container(),
+                      Container(),
                     ],
                   ),
                   tabLenght: tabs.length),
