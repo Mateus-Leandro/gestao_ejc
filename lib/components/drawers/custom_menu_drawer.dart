@@ -89,7 +89,7 @@ class CustomMenuDrawer extends StatelessWidget {
                 child: const Tooltip(
                   message: "Página inicial",
                   child: Image(
-                    image: AssetImage('images/logos/logo07.png'),
+                    image: AssetImage('assets/images/logos/logo07.png'),
                   ),
                 ),
               ),
