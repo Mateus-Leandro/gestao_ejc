@@ -1,6 +1,5 @@
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:flutter/material.dart';
-import 'package:gestao_ejc/components/forms/custom_text_form_field.dart';
 import 'package:gestao_ejc/functions/function_date.dart';
 import 'package:gestao_ejc/models/financial_model.dart';
 import 'package:gestao_ejc/services/financial_service.dart';
@@ -51,7 +50,7 @@ class _CustomFinancialReportFormState extends State<CustomFinancialReportForm> {
           key: _formKey,
           child: Column(
             children: [
-              CustomTextFormField(
+              TextFormField(
                 controller: _fileNameController,
                 decoration: const InputDecoration(labelText: 'Nome do arquivo'),
                 validator: (value) {
@@ -60,9 +59,7 @@ class _CustomFinancialReportFormState extends State<CustomFinancialReportForm> {
                   }
                   return null;
                 },
-                obscure: false,
                 maxLength: 15,
-                capitalizeFirstLetter: false,
               ),
               const Padding(
                 padding: EdgeInsets.only(top: 20, bottom: 20),

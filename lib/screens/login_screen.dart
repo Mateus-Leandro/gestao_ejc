@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:gestao_ejc/components/forms/custom_text_form_field.dart';
 import 'package:gestao_ejc/screens/password_reset_modal.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
 import '../services/auth_service.dart';
@@ -67,7 +66,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: Column(
                         children: [
                           const SizedBox(height: 20),
-                          CustomTextFormField(
+                          TextFormField(
                             controller: _emailController,
                             decoration: const InputDecoration(
                               labelText: 'Email',
@@ -77,13 +76,12 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ? 'Informe seu email'
                                   : null;
                             },
-                            obscure: false,
-                            functionSubimitted: (_) {
+                            onFieldSubmitted: (_) {
                               FocusScope.of(context)
                                   .requestFocus(_passwordFocusNode);
                             },
                           ),
-                          CustomTextFormField(
+                          TextFormField(
                               controller: _passwordController,
                               decoration: InputDecoration(
                                 labelText: 'Senha',
@@ -101,8 +99,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                     ? 'Informe sua senha'
                                     : null;
                               },
-                              obscure: !_visiblePassword,
-                              functionSubimitted: (_) {
+                              obscureText: !_visiblePassword,
+                              onFieldSubmitted: (_) {
                                 _login();
                               },
                               focusNode: _passwordFocusNode),
