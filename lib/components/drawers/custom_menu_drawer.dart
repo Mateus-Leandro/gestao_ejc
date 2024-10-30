@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:gestao_ejc/functions/function_image_from_storage.dart';
 import 'package:gestao_ejc/functions/function_screen.dart';
 import 'package:gestao_ejc/services/auth_service.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
@@ -90,7 +89,7 @@ class CustomMenuDrawer extends StatelessWidget {
                 child: const Tooltip(
                   message: "Página inicial",
                   child: Image(
-                    image: AssetImage('images/logos/logo07.png'),
+                    image: AssetImage('assets/images/logos/logo07.png'),
                   ),
                 ),
               ),

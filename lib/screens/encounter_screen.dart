@@ -7,7 +7,7 @@ import 'package:gestao_ejc/functions/function_call_url.dart';
 import 'package:gestao_ejc/functions/function_date.dart';
 import 'package:gestao_ejc/functions/function_int_to_roman.dart';
 import 'package:gestao_ejc/models/encounter_model.dart';
-import 'package:gestao_ejc/screens/encounter_info_screen.dart';
+import 'package:gestao_ejc/screens/encounter_tabs_screen.dart';
 import 'package:gestao_ejc/screens/model_screen.dart';
 import 'package:gestao_ejc/theme/app_theme.dart';
 
@@ -129,10 +129,10 @@ class _EncounterScreenState extends State<EncounterScreen> {
                         context,
                         MaterialPageRoute(
                           builder: (context) =>
-                              EncounterInfoScreen(encounterModel: encounter),
+                              EncounterTabsScreen(encounterModel: encounter),
                         ),
                       ),
-                  icon: const Icon(Icons.edit))
+                  icon: const Icon(Icons.arrow_forward))
             ],
           ),
         ),

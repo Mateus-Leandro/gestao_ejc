@@ -3,10 +3,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:currency_textfield/currency_textfield.dart';
 import 'package:gestao_ejc/components/pickers/custom_date_picker.dart';
-import 'package:gestao_ejc/components/forms/custom_text_form_field.dart';
 import 'package:gestao_ejc/controllers/financial_controller.dart';
 import 'package:gestao_ejc/controllers/user_controller.dart';
 import 'package:gestao_ejc/functions/function_date.dart';
+import 'package:gestao_ejc/functions/function_input_text.dart';
 import 'package:gestao_ejc/models/financial_model.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
 import 'package:gestao_ejc/theme/app_theme.dart';
@@ -35,6 +35,7 @@ class _CustomFinancialFormState extends State<CustomFinancialForm> {
   final _originOrDestinationController = TextEditingController();
   final _descriptionController = TextEditingController();
   final _transactionDateController = TextEditingController();
+  final FunctionInputText functionInputText = getIt<FunctionInputText>();
   final _valueController = CurrencyTextFieldController(
       enableNegative: false,
       currencySymbol: "R\$",
@@ -97,18 +98,22 @@ class _CustomFinancialFormState extends State<CustomFinancialForm> {
                   ],
                 ),
               ),
-              CustomTextFormField(
-                  controller: _originOrDestinationController,
-                  decoration: InputDecoration(labelText: originOrDestination),
-                  validator: (value) {
-                    return value!.isEmpty
-                        ? 'Informe ${widget.transactionType == 'E' ? 'a origem' : 'o destino'} do lançamento.'
-                        : null;
-                  },
-                  obscure: false,
-                  maxLength: 15,
-                  capitalizeFirstLetter: true),
-              CustomTextFormField(
+              TextFormField(
+                controller: _originOrDestinationController,
+                decoration: InputDecoration(labelText: originOrDestination),
+                validator: (value) {
+                  return value!.isEmpty
+                      ? 'Informe ${widget.transactionType == 'E' ? 'a origem' : 'o destino'} do lançamento.'
+                      : null;
+                },
+                maxLength: 15,
+                textCapitalization: TextCapitalization.sentences,
+                onChanged: (value) {
+                  functionInputText.capitalizeFirstLetter(
+                      value: value, controller: _originOrDestinationController);
+                },
+              ),
+              TextFormField(
                   controller: _descriptionController,
                   decoration: const InputDecoration(labelText: 'Descrição'),
                   validator: (value) {
@@ -116,17 +121,20 @@ class _CustomFinancialFormState extends State<CustomFinancialForm> {
                         ? 'Informe a decrição do lançamento'
                         : null;
                   },
-                  obscure: false,
-                  capitalizeFirstLetter: true),
-              CustomTextFormField(
-                  controller: _valueController,
-                  decoration: const InputDecoration(labelText: 'Valor'),
-                  validator: (value) {
-                    return _valueController.doubleValue == 0
-                        ? 'Informe o valor do lançamento'
-                        : null;
-                  },
-                  obscure: false),
+                  textCapitalization: TextCapitalization.sentences,
+                onChanged: (value) {
+                  functionInputText.capitalizeFirstLetter(
+                      value: value, controller: _descriptionController);
+                },),
+              TextFormField(
+                controller: _valueController,
+                decoration: const InputDecoration(labelText: 'Valor'),
+                validator: (value) {
+                  return _valueController.doubleValue == 0
+                      ? 'Informe o valor do lançamento'
+                      : null;
+                },
+              ),
               CustomDatePicker(
                 controller: _transactionDateController,
                 labelText: 'Data do lançamento',
