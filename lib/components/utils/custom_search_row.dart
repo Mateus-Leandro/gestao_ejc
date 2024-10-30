@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gestao_ejc/components/buttons/custom_add_button.dart';
+import 'package:gestao_ejc/components/buttons/custom_icon_button.dart';
 import 'package:gestao_ejc/components/text_fields/custom_text_field.dart';
 
 class CustomSearchRow extends StatelessWidget {
@@ -34,7 +34,7 @@ class CustomSearchRow extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         if (showButton) ...[
-          CustomAddButton(
+          CustomIconButton(
             message: messageButton,
             function: functionButton,
             icon: iconButton,
