@@ -1,10 +1,10 @@
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gestao_ejc/components/buttons/custom_cancel_button.dart';
 import 'package:gestao_ejc/components/buttons/custom_confirmation_button.dart';
 import 'package:gestao_ejc/components/buttons/custom_icon_button.dart';
 import 'package:gestao_ejc/controllers/encounter_controller.dart';
+import 'package:gestao_ejc/functions/function_call_url.dart';
 import 'package:gestao_ejc/functions/function_date.dart';
 import 'package:gestao_ejc/functions/function_int_to_roman.dart';
 import 'package:gestao_ejc/functions/function_music_icon.dart';
@@ -31,7 +31,8 @@ class _EncounterInfoScreenState extends State<EncounterInfoScreen> {
     musicThemeController.text = widget.encounterModel.themeSong;
     musicThemeLinkController.text = widget.encounterModel.themeSongLink;
     musicIcon = functionMusicIcon.getIcon(
-        musicLink: widget.encounterModel.themeSongLink);
+        musicLink: widget.encounterModel.themeSongLink,
+        activeFields: activeFields);
     selectedDates.add(DateTime.fromMillisecondsSinceEpoch(
         widget.encounterModel.initialDate.millisecondsSinceEpoch));
     selectedDates.add(DateTime.fromMillisecondsSinceEpoch(
@@ -48,6 +49,7 @@ class _EncounterInfoScreenState extends State<EncounterInfoScreen> {
   final FunctionDate functionDate = getIt<FunctionDate>();
   final FunctionMusicIcon functionMusicIcon = getIt<FunctionMusicIcon>();
   final EncounterController encounterController = getIt<EncounterController>();
+  final FunctionCallUrl functionCallUrl = getIt<FunctionCallUrl>();
   List<DateTime?> selectedDates = [];
   bool activeFields = false;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -148,13 +150,20 @@ class _EncounterInfoScreenState extends State<EncounterInfoScreen> {
                     decoration: InputDecoration(
                       labelText: 'Link música',
                       labelStyle: TextStyle(fontSize: 20),
-                      suffixIcon: musicIcon,
+                      suffixIcon: IconButton(
+                          onPressed: () => musicThemeLinkController
+                                  .text.isNotEmpty
+                              ? functionCallUrl
+                                  .callUrl(musicThemeLinkController.text.trim())
+                              : null,
+                          icon: musicIcon),
                     ),
                     controller: musicThemeLinkController,
                     enabled: activeFields,
                     onChanged: (value) {
                       setState(() {
-                        musicIcon = functionMusicIcon.getIcon(musicLink: value);
+                        musicIcon = functionMusicIcon.getIcon(
+                            musicLink: value, activeFields: activeFields);
                       });
                     },
                   ),
@@ -207,6 +216,9 @@ class _EncounterInfoScreenState extends State<EncounterInfoScreen> {
   void _activeFields() {
     setState(() {
       activeFields = !activeFields;
+      musicIcon = functionMusicIcon.getIcon(
+          musicLink: musicThemeLinkController.text.trim(),
+          activeFields: activeFields);
     });
   }
 
