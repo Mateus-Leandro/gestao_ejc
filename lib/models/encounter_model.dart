@@ -2,11 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class EncounterModel {
   final int sequential;
-  final Timestamp initialDate;
-  final Timestamp finalDate;
-  final String location;
-  final String themeSong;
-  final String themeSongLink;
+  Timestamp initialDate;
+  Timestamp finalDate;
+  String location;
+  String themeSong;
+  String themeSongLink;
 
   EncounterModel(
       {required this.sequential,
