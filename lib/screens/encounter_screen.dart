@@ -6,6 +6,7 @@ import 'package:gestao_ejc/controllers/encounter_controller.dart';
 import 'package:gestao_ejc/functions/function_call_url.dart';
 import 'package:gestao_ejc/functions/function_date.dart';
 import 'package:gestao_ejc/functions/function_int_to_roman.dart';
+import 'package:gestao_ejc/functions/function_music_icon.dart';
 import 'package:gestao_ejc/models/encounter_model.dart';
 import 'package:gestao_ejc/screens/encounter_tabs_screen.dart';
 import 'package:gestao_ejc/screens/model_screen.dart';
@@ -28,6 +29,7 @@ class _EncounterScreenState extends State<EncounterScreen> {
   final FunctionCallUrl functionCallUrl = getIt<FunctionCallUrl>();
   final AppTheme appTheme = getIt<AppTheme>();
   final FunctionIntToRoman functionIntToRoman = getIt<FunctionIntToRoman>();
+  final FunctionMusicIcon functionMusicIcon = getIt<FunctionMusicIcon>();
 
   @override
   void initState() {
@@ -87,6 +89,8 @@ class _EncounterScreenState extends State<EncounterScreen> {
   }
 
   _buildEncounterTile(BuildContext context, EncounterModel encounter) {
+    Widget musicIcon = functionMusicIcon.getIcon(
+        musicLink: encounter.themeSongLink, activeFields: true);
     return CustomListTile(
         listTile: ListTile(
           title: Text(
@@ -111,10 +115,9 @@ class _EncounterScreenState extends State<EncounterScreen> {
                   IconButton(
                     onPressed: () =>
                         functionCallUrl.callUrl(encounter.themeSongLink),
-                    icon: const Tooltip(
+                    icon: Tooltip(
                       message: 'Música Tema',
-                      child:
-                          FaIcon(FontAwesomeIcons.spotify, color: Colors.green),
+                      child: musicIcon,
                     ),
                   ),
                 ],
