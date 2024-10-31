@@ -1,10 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:gestao_ejc/functions/function_int_to_roman.dart';
 import 'package:gestao_ejc/models/encounter_model.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
 
 class EncounterService {
   final String collection = 'encounter';
   final FirebaseFirestore _firestore = getIt<FirebaseFirestore>();
+  final FunctionIntToRoman functionIntToRoman = getIt<FunctionIntToRoman>();
 
   Future getEncounter() async {
     try {
@@ -24,7 +26,7 @@ class EncounterService {
     try {
       await _firestore
           .collection(collection)
-          .doc(encounter.sequential.toString())
+          .doc(functionIntToRoman.convert(encounter.sequential))
           .set(encounter.toJson());
       return true;
     } catch (e) {
