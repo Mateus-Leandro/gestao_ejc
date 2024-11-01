@@ -1,5 +1,6 @@
 import 'package:buttons_tabbar/buttons_tabbar.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gestao_ejc/components/utils/custom_tab_bar.dart';
 import 'package:gestao_ejc/functions/function_int_to_roman.dart';
 import 'package:gestao_ejc/models/encounter_model.dart';
@@ -17,19 +18,19 @@ class EncounterTabsScreen extends StatelessWidget {
   final AppTheme appTheme = getIt<AppTheme>();
   final List<Tab> tabs = const [
     Tab(
-      icon: Icon(Icons.settings),
-      text: 'Informações',
+      icon: FaIcon(FontAwesomeIcons.gear, color: Colors.blue),
+      text: 'Info',
     ),
     Tab(
-      icon: Icon(Icons.circle_outlined, color: Colors.orange),
+      icon: FaIcon(FontAwesomeIcons.solidCircle, color: Colors.orange),
       text: 'Circulos',
     ),
     Tab(
-      icon: Icon(Icons.group, color: Colors.green),
+      icon: FaIcon(FontAwesomeIcons.peopleGroup, color: Colors.green),
       text: 'Equipes',
     ),
     Tab(
-      icon: Icon(Icons.record_voice_over, color: Colors.red),
+      icon: Icon(FontAwesomeIcons.microphone, color: Colors.red),
       text: 'Palestras',
     ),
   ];
