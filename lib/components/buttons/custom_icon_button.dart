@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
 import 'package:gestao_ejc/theme/app_theme.dart';
 
-class CustomAddButton extends StatelessWidget {
+class CustomIconButton extends StatelessWidget {
   final String message;
   final Function function;
   final Icon icon;
   final Color? colorButton;
 
-  const CustomAddButton(
+  const CustomIconButton(
       {super.key,
       required this.message,
       required this.function,

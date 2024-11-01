@@ -1,5 +1,6 @@
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:flutter/material.dart';
+import 'package:gestao_ejc/components/buttons/custom_cancel_button.dart';
 import 'package:gestao_ejc/functions/function_date.dart';
 import 'package:gestao_ejc/models/financial_model.dart';
 import 'package:gestao_ejc/services/financial_service.dart';
@@ -104,12 +105,7 @@ class _CustomFinancialReportFormState extends State<CustomFinancialReportForm> {
         ),
       ),
       actions: [
-        TextButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          child: const Text('Cancelar'),
-        ),
+        CustomCancelButton(onPressed: () => Navigator.of(context).pop()),
         TextButton(
           onPressed: () async {
             if (_formKey.currentState!.validate()) {

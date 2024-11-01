@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:gestao_ejc/components/buttons/custom_cancel_button.dart';
+import 'package:gestao_ejc/components/buttons/custom_confirmation_button.dart';
 import 'package:gestao_ejc/components/pickers/custom_date_picker.dart';
 import 'package:gestao_ejc/controllers/user_controller.dart';
 import 'package:gestao_ejc/models/user_model.dart';
@@ -116,16 +118,8 @@ class _CustomUserFormState extends State<CustomUserForm> {
               )
             ]
           : [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: const Text('Cancelar'),
-              ),
-              ElevatedButton(
-                onPressed: _saveUser,
-                child: const Text('Salvar'),
-              ),
+              CustomCancelButton(onPressed: () => Navigator.of(context).pop()),
+              CustomConfirmationButton(onPressed: () => _saveUser())
             ],
     );
   }

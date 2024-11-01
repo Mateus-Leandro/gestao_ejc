@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:currency_textfield/currency_textfield.dart';
+import 'package:gestao_ejc/components/buttons/custom_cancel_button.dart';
+import 'package:gestao_ejc/components/buttons/custom_confirmation_button.dart';
 import 'package:gestao_ejc/components/pickers/custom_date_picker.dart';
 import 'package:gestao_ejc/controllers/financial_controller.dart';
 import 'package:gestao_ejc/controllers/user_controller.dart';
@@ -114,18 +116,19 @@ class _CustomFinancialFormState extends State<CustomFinancialForm> {
                 },
               ),
               TextFormField(
-                  controller: _descriptionController,
-                  decoration: const InputDecoration(labelText: 'Descrição'),
-                  validator: (value) {
-                    return value!.isEmpty
-                        ? 'Informe a decrição do lançamento'
-                        : null;
-                  },
-                  textCapitalization: TextCapitalization.sentences,
+                controller: _descriptionController,
+                decoration: const InputDecoration(labelText: 'Descrição'),
+                validator: (value) {
+                  return value!.isEmpty
+                      ? 'Informe a decrição do lançamento'
+                      : null;
+                },
+                textCapitalization: TextCapitalization.sentences,
                 onChanged: (value) {
                   functionInputText.capitalizeFirstLetter(
                       value: value, controller: _descriptionController);
-                },),
+                },
+              ),
               TextFormField(
                 controller: _valueController,
                 decoration: const InputDecoration(labelText: 'Valor'),
@@ -156,16 +159,8 @@ class _CustomFinancialFormState extends State<CustomFinancialForm> {
               )
             ]
           : [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: const Text('Cancelar'),
-              ),
-              ElevatedButton(
-                onPressed: _saveFinancial,
-                child: const Text('Salvar'),
-              ),
+              CustomCancelButton(onPressed: () => Navigator.of(context).pop()),
+              CustomConfirmationButton(onPressed: ()=> _saveFinancial())
             ],
     );
   }
