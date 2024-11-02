@@ -7,11 +7,13 @@ class EncounterService {
   final String collection = 'encounter';
   final FirebaseFirestore _firestore = getIt<FirebaseFirestore>();
   final FunctionIntToRoman functionIntToRoman = getIt<FunctionIntToRoman>();
+  late Query query;
+  late QuerySnapshot snapshot;
 
   Future getEncounter() async {
     try {
-      Query query = _firestore.collection(collection).orderBy('sequential');
-      QuerySnapshot snapshot = await query.get();
+      query = _firestore.collection(collection).orderBy('sequential');
+      snapshot = await query.get();
       return snapshot.docs
           .map((doc) =>
               EncounterModel.fromJson(doc.data() as Map<String, dynamic>))
@@ -45,6 +47,25 @@ class EncounterService {
     } catch (e) {
       print('Erro ao excluir encontro: $e');
       return false;
+    }
+  }
+
+  Future<int> getLastSequentialEncounter() async {
+    int lastEncounter = 0;
+    try {
+      query = _firestore
+          .collection(collection)
+          .orderBy('sequential', descending: true)
+          .limit(1);
+      snapshot = await query.get();
+
+      if (snapshot.docs.isNotEmpty) {
+        lastEncounter = snapshot.docs.first['sequential'] as int;
+      }
+      return lastEncounter;
+    } catch (e) {
+      print('Erro ao buscar ultimo encontro');
+      return 0;
     }
   }
 }

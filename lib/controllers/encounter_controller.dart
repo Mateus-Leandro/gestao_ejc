@@ -23,7 +23,11 @@ class EncounterController extends ChangeNotifier {
     super.dispose();
   }
 
-  Future<bool> saveEncounter({required EncounterModel encounter}) async {
+  Future<bool> saveEncounter(
+      {required EncounterModel encounter, required bool newEncounter}) async {
+    if (newEncounter) {
+      encounter.sequential = await getLastSequentialEncounter() + 1;
+    }
     response = await _encounterService.saveEncounter(encounter: encounter);
     if (response) {
       getEncounter();
@@ -34,6 +38,10 @@ class EncounterController extends ChangeNotifier {
   void getEncounter() async {
     List<EncounterModel>? encounters = await _encounterService.getEncounter();
     _streamController.sink.add(encounters);
+  }
+
+  Future<int> getLastSequentialEncounter() async {
+    return await _encounterService.getLastSequentialEncounter();
   }
 
   void deleteEncounter({required EncounterModel encounter}) async {

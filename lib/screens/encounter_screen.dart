@@ -1,5 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gestao_ejc/components/utils/custom_list_tile.dart';
 import 'package:gestao_ejc/components/utils/custom_search_row.dart';
 import 'package:gestao_ejc/controllers/encounter_controller.dart';
@@ -8,6 +8,7 @@ import 'package:gestao_ejc/functions/function_date.dart';
 import 'package:gestao_ejc/functions/function_int_to_roman.dart';
 import 'package:gestao_ejc/functions/function_music_icon.dart';
 import 'package:gestao_ejc/models/encounter_model.dart';
+import 'package:gestao_ejc/screens/encounter_info_screen.dart';
 import 'package:gestao_ejc/screens/encounter_tabs_screen.dart';
 import 'package:gestao_ejc/screens/model_screen.dart';
 import 'package:gestao_ejc/theme/app_theme.dart';
@@ -45,7 +46,31 @@ class _EncounterScreenState extends State<EncounterScreen> {
           children: [
             CustomSearchRow(
                 messageButton: 'Criar Encontro',
-                functionButton: () {},
+                functionButton: () {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        title: const Text('Novo Encontro'),
+                        content: SingleChildScrollView(
+                          child: EncounterInfoScreen(
+                            encounterModel: EncounterModel(
+                                sequential: 0,
+                                initialDate: Timestamp.now(),
+                                finalDate: Timestamp.now(),
+                                location: '',
+                                themeSong: '',
+                                themeSongLink: ''),
+                            newEncounter: true,
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                },
                 showButton: true,
                 inputType: TextInputType.text,
                 controller: _encounterNameController,

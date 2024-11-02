@@ -51,7 +51,8 @@ class EncounterTabsScreen extends StatelessWidget {
                   ),
                   tabBarView: TabBarView(
                     children: [
-                      EncounterInfoScreen(encounterModel: encounterModel),
+                      EncounterInfoScreen(
+                          encounterModel: encounterModel, newEncounter: false),
                       Container(),
                       Container(),
                       Container(),

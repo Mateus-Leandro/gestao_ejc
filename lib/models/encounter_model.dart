@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class EncounterModel {
-  final int sequential;
+  int sequential;
   Timestamp initialDate;
   Timestamp finalDate;
   String location;

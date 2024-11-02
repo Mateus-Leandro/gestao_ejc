@@ -14,8 +14,10 @@ import 'package:gestao_ejc/theme/app_theme.dart';
 
 class EncounterInfoScreen extends StatefulWidget {
   final EncounterModel encounterModel;
+  final bool newEncounter;
 
-  const EncounterInfoScreen({super.key, required this.encounterModel});
+  const EncounterInfoScreen(
+      {super.key, required this.encounterModel, required this.newEncounter});
 
   @override
   State<EncounterInfoScreen> createState() => _EncounterInfoScreenState();
@@ -30,6 +32,7 @@ class _EncounterInfoScreenState extends State<EncounterInfoScreen> {
     locationController.text = widget.encounterModel.location;
     musicThemeController.text = widget.encounterModel.themeSong;
     musicThemeLinkController.text = widget.encounterModel.themeSongLink;
+    activeFields = widget.newEncounter;
     musicIcon = functionMusicIcon.getIcon(
         musicLink: widget.encounterModel.themeSongLink,
         activeFields: activeFields);
@@ -51,7 +54,7 @@ class _EncounterInfoScreenState extends State<EncounterInfoScreen> {
   final EncounterController encounterController = getIt<EncounterController>();
   final FunctionCallUrl functionCallUrl = getIt<FunctionCallUrl>();
   List<DateTime?> selectedDates = [];
-  bool activeFields = false;
+  late bool activeFields;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   var musicIcon;
 
@@ -89,7 +92,10 @@ class _EncounterInfoScreenState extends State<EncounterInfoScreen> {
                     ),
                   ] else ...[
                     CustomCancelButton(onPressed: () {
-                      locationController.text = widget.encounterModel.location;
+                      widget.newEncounter
+                          ? Navigator.of(context).pop()
+                          : locationController.text =
+                              widget.encounterModel.location;
                       musicThemeLinkController.text =
                           widget.encounterModel.themeSongLink;
                       musicThemeController.text =
@@ -222,11 +228,12 @@ class _EncounterInfoScreenState extends State<EncounterInfoScreen> {
     });
   }
 
-  void _saveEncounter() {
+  void _saveEncounter() async {
     if (selectedDates.length < 2) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-            content: Text('Por favor, selecione as datas do encontro')),
+            content: Text('Por favor, selecione as datas do encontro'),
+            backgroundColor: Colors.red),
       );
       return;
     }
@@ -237,7 +244,14 @@ class _EncounterInfoScreenState extends State<EncounterInfoScreen> {
     widget.encounterModel.location = locationController.text.trim();
     widget.encounterModel.themeSong = musicThemeController.text.trim();
     widget.encounterModel.themeSongLink = musicThemeLinkController.text.trim();
-    encounterController.saveEncounter(encounter: widget.encounterModel);
-    _activeFields();
+    if (await encounterController.saveEncounter(
+        encounter: widget.encounterModel, newEncounter: widget.newEncounter)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            content: Text('Encontro salvo com sucesso!'),
+            backgroundColor: Colors.green),
+      );
+    }
+    widget.newEncounter ? Navigator.of(context).pop() : _activeFields();
   }
 }
