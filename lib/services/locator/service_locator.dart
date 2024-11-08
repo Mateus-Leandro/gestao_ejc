@@ -13,6 +13,7 @@ import 'package:gestao_ejc/functions/function_input_text.dart';
 import 'package:gestao_ejc/functions/function_int_to_roman.dart';
 import 'package:gestao_ejc/functions/function_mask_decimal.dart';
 import 'package:gestao_ejc/functions/function_music_icon.dart';
+import 'package:gestao_ejc/functions/function_pick_image.dart';
 import 'package:gestao_ejc/functions/function_reports.dart';
 import 'package:gestao_ejc/functions/function_screen.dart';
 import 'package:gestao_ejc/services/auth_service.dart';
@@ -61,4 +62,5 @@ void setupGetIt() {
   getIt.registerLazySingleton<FirebaseStorageService>(
       () => FirebaseStorageService());
   getIt.registerLazySingleton<FirebaseStorage>(() => FirebaseStorage.instance);
+  getIt.registerLazySingleton<FunctionPickImage>(() => FunctionPickImage());
 }

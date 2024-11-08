@@ -1,15 +1,19 @@
 import 'dart:typed_data';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:gestao_ejc/components/buttons/custom_cancel_button.dart';
 import 'package:gestao_ejc/components/buttons/custom_confirmation_button.dart';
 import 'package:gestao_ejc/components/buttons/custom_icon_button.dart';
-import 'package:gestao_ejc/components/pickers/custom_image_picker.dart';
+import 'package:gestao_ejc/components/buttons/custom_pick_file_button.dart';
 import 'package:gestao_ejc/controllers/encounter_controller.dart';
 import 'package:gestao_ejc/functions/function_call_url.dart';
 import 'package:gestao_ejc/functions/function_date.dart';
 import 'package:gestao_ejc/functions/function_int_to_roman.dart';
 import 'package:gestao_ejc/functions/function_music_icon.dart';
+import 'package:gestao_ejc/functions/function_pick_image.dart';
 import 'package:gestao_ejc/models/encounter_model.dart';
+import 'package:gestao_ejc/services/firebase_storage_service.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
 import 'package:gestao_ejc/theme/app_theme.dart';
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
@@ -29,7 +33,7 @@ class EncounterInfoScreen extends StatefulWidget {
 }
 
 class _EncounterInfoScreenState extends State<EncounterInfoScreen> {
-  bool _isLoading = false; // Estado de carregamento
+  bool _isLoading = false;
 
   final AppTheme appTheme = getIt<AppTheme>();
   final TextEditingController encounterNameController = TextEditingController();
@@ -43,12 +47,14 @@ class _EncounterInfoScreenState extends State<EncounterInfoScreen> {
   final FunctionMusicIcon functionMusicIcon = getIt<FunctionMusicIcon>();
   final EncounterController encounterController = getIt<EncounterController>();
   final FunctionCallUrl functionCallUrl = getIt<FunctionCallUrl>();
+  final FunctionPickImage functionPickImage = getIt<FunctionPickImage>();
 
   List<DateTime?> selectedDates = [];
   late bool activeFields;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   var musicIcon;
   Uint8List? themeImage;
+  Uint8List? originalThemeImage;
 
   @override
   void initState() {
@@ -86,18 +92,32 @@ class _EncounterInfoScreenState extends State<EncounterInfoScreen> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 if (_isLoading)
-                  Center(child: const CircularProgressIndicator())
+                  const Center(child: CircularProgressIndicator())
                 else
-                  CustomImagePicker(
-                    messageTooltip: 'Selecionar Imagem Tema',
-                    actualImage: themeImage,
-                    onImageSelected: (image) {
-                      setState(() {
-                        themeImage = image;
-                      });
+                  CustomPickFileButton(
+                    onPressed: () {
+                      if (activeFields) {
+                        _pickImage();
+                      }
                     },
-                    isDisabled: !activeFields,
-                  ),
+                    icon: Tooltip(
+                      message: activeFields ? 'Selecionar Imagem Tema' : '',
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(20),
+                        child: Opacity(
+                          opacity: !activeFields ? 0.5 : 1.0,
+                          child: themeImage != null
+                              ? Image.memory(
+                                  themeImage!,
+                                  height: 250,
+                                  width: 250,
+                                  fit: BoxFit.cover,
+                                )
+                              : const Icon(Icons.photo),
+                        ),
+                      ),
+                    ),
+                  )
               ],
             ),
             Padding(
@@ -114,28 +134,30 @@ class _EncounterInfoScreenState extends State<EncounterInfoScreen> {
                       icon: const Icon(Icons.edit),
                     ),
                   ] else ...[
-                    CustomCancelButton(
-                      onPressed: () {
-                        widget.newEncounter
-                            ? Navigator.of(context).pop()
-                            : locationController.text =
-                                widget.encounterModel.location;
-                        musicThemeLinkController.text =
-                            widget.encounterModel.themeSongLink;
-                        musicThemeController.text =
-                            widget.encounterModel.themeSong;
-                        themeImage = null;
-                        _activeFields();
-                      },
-                    ),
-                    const SizedBox(width: 20),
-                    CustomConfirmationButton(
-                      onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          _saveEncounter();
-                        }
-                      },
-                    ),
+                    if (!_isLoading) ...[
+                      CustomCancelButton(
+                        onPressed: () {
+                          widget.newEncounter
+                              ? Navigator.of(context).pop()
+                              : locationController.text =
+                                  widget.encounterModel.location;
+                          musicThemeLinkController.text =
+                              widget.encounterModel.themeSongLink;
+                          musicThemeController.text =
+                              widget.encounterModel.themeSong;
+                          themeImage = originalThemeImage;
+                          _activeFields();
+                        },
+                      ),
+                      const SizedBox(width: 20),
+                      CustomConfirmationButton(
+                        onPressed: () {
+                          if (_formKey.currentState!.validate()) {
+                            _saveEncounter();
+                          }
+                        },
+                      ),
+                    ]
                   ],
                 ],
               ),
@@ -257,6 +279,7 @@ class _EncounterInfoScreenState extends State<EncounterInfoScreen> {
     themeImage = await encounterController.getImageTheme(
         sequential: widget.encounterModel.sequential);
 
+    originalThemeImage = themeImage;
     setState(() {
       _isLoading = false;
     });
@@ -310,5 +333,16 @@ class _EncounterInfoScreenState extends State<EncounterInfoScreen> {
       ),
     );
     _activeFields();
+  }
+
+  Future<void> _pickImage() async {
+    setState(() {
+      _isLoading = true;
+    });
+    themeImage = await functionPickImage.getSingleImage();
+    themeImage ??= originalThemeImage;
+    setState(() {
+      _isLoading = false;
+    });
   }
 }
