@@ -62,19 +62,19 @@ class EncounterController extends ChangeNotifier {
     String? response = await firebaseStorageService.uploadImage(
         image: imageTheme,
         path:
-            'encounters/${functionIntToRoman.convert(sequential)}/themeImage/themeImage.jpeg');
+            'encounters/${functionIntToRoman.convert(sequential)}/themeImage/themeImage.png');
     return response ?? '';
   }
 
   Future<Uint8List?> getImageTheme({required int sequential}) async {
     return await firebaseStorageService.getImage(
         imagePath:
-            'encounters/${functionIntToRoman.convert(sequential)}/themeImage/themeImage.jpeg');
+            'encounters/${functionIntToRoman.convert(sequential)}/themeImage/themeImage.png');
   }
 
   Future<void> removeImageTheme({required int sequential}) async {
     await firebaseStorageService.deleteImage(
         imagePath:
-            'encounters/${functionIntToRoman.convert(sequential)}/themeImage/themeImage.jpeg');
+            'encounters/${functionIntToRoman.convert(sequential)}/themeImage/themeImage.png');
   }
 }
