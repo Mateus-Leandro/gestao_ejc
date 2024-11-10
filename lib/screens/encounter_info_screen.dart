@@ -110,22 +110,28 @@ class _EncounterInfoScreenState extends State<EncounterInfoScreen> {
                           fit: StackFit.loose,
                           children: [
                             ClipRRect(
-                              borderRadius: BorderRadius.circular(20),
-                              child: themeImage != null
-                                  ? Image.memory(
-                                      themeImage!,
-                                      height: 250,
-                                      width: 250,
-                                      fit: BoxFit.cover,
-                                    )
-                                  : const FaIcon(FontAwesomeIcons.solidImage)
-                            ),
+                                borderRadius: BorderRadius.circular(20),
+                                child: themeImage != null
+                                    ? Image.memory(
+                                        themeImage!,
+                                        height: 250,
+                                        width: 250,
+                                        fit: BoxFit.cover,
+                                      )
+                                    : const Card(
+                                        elevation: 5,
+                                        child: Padding(
+                                          padding: EdgeInsets.all(8.0),
+                                          child: Text('Selecionar imagem Tema'),
+                                        ),
+                                      )),
                             if (themeImage != null && activeFields) ...[
                               Padding(
-                                padding: const EdgeInsets.all(8.0),
+                                padding: const EdgeInsets.all(15.0),
                                 child: IconButton(
+                                  iconSize: 35,
                                   icon: const Icon(Icons.close,
-                                      color: Colors.red, size: 35),
+                                      color: Colors.red, size: 30),
                                   onPressed: () {
                                     setState(() {
                                       themeImage = null;
@@ -156,30 +162,28 @@ class _EncounterInfoScreenState extends State<EncounterInfoScreen> {
                       icon: const Icon(Icons.edit),
                     ),
                   ] else ...[
-                    if (!_isLoading) ...[
-                      CustomCancelButton(
-                        onPressed: () {
-                          widget.newEncounter
-                              ? Navigator.of(context).pop()
-                              : locationController.text =
-                                  widget.encounterModel.location;
-                          musicThemeLinkController.text =
-                              widget.encounterModel.themeSongLink;
-                          musicThemeController.text =
-                              widget.encounterModel.themeSong;
-                          themeImage = originalThemeImage;
-                          _activeFields();
-                        },
-                      ),
-                      const SizedBox(width: 20),
-                      CustomConfirmationButton(
-                        onPressed: () {
-                          if (_formKey.currentState!.validate()) {
-                            _saveEncounter();
-                          }
-                        },
-                      ),
-                    ]
+                    CustomCancelButton(
+                      onPressed: () {
+                        widget.newEncounter
+                            ? Navigator.of(context).pop()
+                            : locationController.text =
+                                widget.encounterModel.location;
+                        musicThemeLinkController.text =
+                            widget.encounterModel.themeSongLink;
+                        musicThemeController.text =
+                            widget.encounterModel.themeSong;
+                        themeImage = originalThemeImage;
+                        _activeFields();
+                      },
+                    ),
+                    const SizedBox(width: 20),
+                    CustomConfirmationButton(
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {
+                          _saveEncounter();
+                        }
+                      },
+                    ),
                   ],
                 ],
               ),
