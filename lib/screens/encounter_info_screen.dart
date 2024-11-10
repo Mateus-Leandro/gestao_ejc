@@ -102,18 +102,39 @@ class _EncounterInfoScreenState extends State<EncounterInfoScreen> {
                     },
                     icon: Tooltip(
                       message: activeFields ? 'Selecionar Imagem Tema' : '',
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(20),
-                        child: Opacity(
-                          opacity: !activeFields ? 0.5 : 1.0,
-                          child: themeImage != null
-                              ? Image.memory(
-                                  themeImage!,
-                                  height: 250,
-                                  width: 250,
-                                  fit: BoxFit.cover,
-                                )
-                              : const Icon(Icons.photo),
+                      child: Opacity(
+                        opacity: !activeFields ? 0.5 : 1.0,
+                        child: Stack(
+                          alignment: Alignment.topRight,
+                          fit: StackFit.loose,
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(20),
+                              child: themeImage != null
+                                  ? Image.memory(
+                                      themeImage!,
+                                      height: 250,
+                                      width: 250,
+                                      fit: BoxFit.cover,
+                                    )
+                                  : const Icon(Icons.photo),
+                            ),
+                            if (themeImage != null && activeFields) ...[
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: IconButton(
+                                  icon: const Icon(Icons.close,
+                                      color: Colors.red, size: 35),
+                                  onPressed: () {
+                                    setState(() {
+                                      themeImage = null;
+                                    });
+                                  },
+                                  tooltip: 'Remover Imagem',
+                                ),
+                              ),
+                            ]
+                          ],
                         ),
                       ),
                     ),
