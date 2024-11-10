@@ -2,6 +2,7 @@ import 'dart:typed_data';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gestao_ejc/components/buttons/custom_cancel_button.dart';
 import 'package:gestao_ejc/components/buttons/custom_confirmation_button.dart';
 import 'package:gestao_ejc/components/buttons/custom_icon_button.dart';
@@ -117,7 +118,7 @@ class _EncounterInfoScreenState extends State<EncounterInfoScreen> {
                                       width: 250,
                                       fit: BoxFit.cover,
                                     )
-                                  : const Icon(Icons.photo),
+                                  : const FaIcon(FontAwesomeIcons.solidImage)
                             ),
                             if (themeImage != null && activeFields) ...[
                               Padding(
