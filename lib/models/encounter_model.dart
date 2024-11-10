@@ -1,12 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class EncounterModel {
-  final int sequential;
+  int sequential;
   Timestamp initialDate;
   Timestamp finalDate;
   String location;
   String themeSong;
   String themeSongLink;
+  String urlImageTheme;
 
   EncounterModel(
       {required this.sequential,
@@ -14,7 +15,8 @@ class EncounterModel {
       required this.finalDate,
       required this.location,
       required this.themeSong,
-      required this.themeSongLink});
+      required this.themeSongLink,
+      required this.urlImageTheme});
 
   Map<String, dynamic> toJson() {
     return {
@@ -23,7 +25,8 @@ class EncounterModel {
       'finalDate': finalDate,
       'location': location,
       'themeSong': themeSong,
-      'themeSongLink': themeSongLink
+      'themeSongLink': themeSongLink,
+      'urlImageTheme': urlImageTheme,
     };
   }
 
@@ -34,6 +37,7 @@ class EncounterModel {
         finalDate: map['finalDate'],
         location: map['location'] ?? '',
         themeSong: map['themeSong'] ?? '',
-        themeSongLink: map['themeSongLink'] ?? '');
+        themeSongLink: map['themeSongLink'] ?? '',
+        urlImageTheme: map['urlImageTheme'] ?? '');
   }
 }

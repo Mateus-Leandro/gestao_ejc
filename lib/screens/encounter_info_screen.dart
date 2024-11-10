@@ -1,27 +1,62 @@
-import 'package:calendar_date_picker2/calendar_date_picker2.dart';
+import 'dart:typed_data';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gestao_ejc/components/buttons/custom_cancel_button.dart';
 import 'package:gestao_ejc/components/buttons/custom_confirmation_button.dart';
 import 'package:gestao_ejc/components/buttons/custom_icon_button.dart';
+import 'package:gestao_ejc/components/buttons/custom_pick_file_button.dart';
 import 'package:gestao_ejc/controllers/encounter_controller.dart';
 import 'package:gestao_ejc/functions/function_call_url.dart';
 import 'package:gestao_ejc/functions/function_date.dart';
 import 'package:gestao_ejc/functions/function_int_to_roman.dart';
 import 'package:gestao_ejc/functions/function_music_icon.dart';
+import 'package:gestao_ejc/functions/function_pick_image.dart';
 import 'package:gestao_ejc/models/encounter_model.dart';
+import 'package:gestao_ejc/services/firebase_storage_service.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
 import 'package:gestao_ejc/theme/app_theme.dart';
+import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 
 class EncounterInfoScreen extends StatefulWidget {
   final EncounterModel encounterModel;
+  final bool newEncounter;
 
-  const EncounterInfoScreen({super.key, required this.encounterModel});
+  const EncounterInfoScreen({
+    super.key,
+    required this.encounterModel,
+    required this.newEncounter,
+  });
 
   @override
   State<EncounterInfoScreen> createState() => _EncounterInfoScreenState();
 }
 
 class _EncounterInfoScreenState extends State<EncounterInfoScreen> {
+  bool _isLoading = false;
+
+  final AppTheme appTheme = getIt<AppTheme>();
+  final TextEditingController encounterNameController = TextEditingController();
+  final TextEditingController locationController = TextEditingController();
+  final TextEditingController musicThemeController = TextEditingController();
+  final TextEditingController musicThemeLinkController =
+      TextEditingController();
+
+  final FunctionIntToRoman functionIntToRoman = getIt<FunctionIntToRoman>();
+  final FunctionDate functionDate = getIt<FunctionDate>();
+  final FunctionMusicIcon functionMusicIcon = getIt<FunctionMusicIcon>();
+  final EncounterController encounterController = getIt<EncounterController>();
+  final FunctionCallUrl functionCallUrl = getIt<FunctionCallUrl>();
+  final FunctionPickImage functionPickImage = getIt<FunctionPickImage>();
+
+  List<DateTime?> selectedDates = [];
+  late bool activeFields;
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  var musicIcon;
+  Uint8List? themeImage;
+  Uint8List? originalThemeImage;
+
   @override
   void initState() {
     super.initState();
@@ -30,52 +65,85 @@ class _EncounterInfoScreenState extends State<EncounterInfoScreen> {
     locationController.text = widget.encounterModel.location;
     musicThemeController.text = widget.encounterModel.themeSong;
     musicThemeLinkController.text = widget.encounterModel.themeSongLink;
+    activeFields = widget.newEncounter;
     musicIcon = functionMusicIcon.getIcon(
-        musicLink: widget.encounterModel.themeSongLink,
-        activeFields: activeFields);
+      musicLink: widget.encounterModel.themeSongLink,
+      activeFields: activeFields,
+    );
     selectedDates.add(DateTime.fromMillisecondsSinceEpoch(
         widget.encounterModel.initialDate.millisecondsSinceEpoch));
     selectedDates.add(DateTime.fromMillisecondsSinceEpoch(
         widget.encounterModel.finalDate.millisecondsSinceEpoch));
-  }
 
-  final AppTheme appTheme = getIt<AppTheme>();
-  final TextEditingController encounterNameController = TextEditingController();
-  final TextEditingController locationController = TextEditingController();
-  final TextEditingController musicThemeController = TextEditingController();
-  final TextEditingController musicThemeLinkController =
-      TextEditingController();
-  final FunctionIntToRoman functionIntToRoman = getIt<FunctionIntToRoman>();
-  final FunctionDate functionDate = getIt<FunctionDate>();
-  final FunctionMusicIcon functionMusicIcon = getIt<FunctionMusicIcon>();
-  final EncounterController encounterController = getIt<EncounterController>();
-  final FunctionCallUrl functionCallUrl = getIt<FunctionCallUrl>();
-  List<DateTime?> selectedDates = [];
-  bool activeFields = false;
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  var musicIcon;
+    if (widget.encounterModel.urlImageTheme.isNotEmpty) {
+      _getImageTheme();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(12.0),
+      padding: const EdgeInsets.all(12.0),
       child: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Row(
+            Row(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                SizedBox(
-                  width: 200,
-                  height: 200,
-                  child: FlutterLogo(),
-                ),
+                if (_isLoading)
+                  const Center(child: CircularProgressIndicator())
+                else
+                  CustomPickFileButton(
+                    onPressed: () {
+                      if (activeFields) {
+                        _pickImage();
+                      }
+                    },
+                    icon: Tooltip(
+                      message: activeFields ? 'Selecionar Imagem Tema' : '',
+                      child: Opacity(
+                        opacity: !activeFields ? 0.5 : 1.0,
+                        child: Stack(
+                          alignment: Alignment.topRight,
+                          fit: StackFit.loose,
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(20),
+                              child: themeImage != null
+                                  ? Image.memory(
+                                      themeImage!,
+                                      height: 250,
+                                      width: 250,
+                                      fit: BoxFit.cover,
+                                    )
+                                  : const FaIcon(FontAwesomeIcons.solidImage)
+                            ),
+                            if (themeImage != null && activeFields) ...[
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: IconButton(
+                                  icon: const Icon(Icons.close,
+                                      color: Colors.red, size: 35),
+                                  onPressed: () {
+                                    setState(() {
+                                      themeImage = null;
+                                    });
+                                  },
+                                  tooltip: 'Remover Imagem',
+                                ),
+                              ),
+                            ]
+                          ],
+                        ),
+                      ),
+                    ),
+                  )
               ],
             ),
             Padding(
-              padding: const EdgeInsets.only(top: 20, bottom: 20),
+              padding: const EdgeInsets.symmetric(vertical: 20),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
@@ -88,22 +156,30 @@ class _EncounterInfoScreenState extends State<EncounterInfoScreen> {
                       icon: const Icon(Icons.edit),
                     ),
                   ] else ...[
-                    CustomCancelButton(onPressed: () {
-                      locationController.text = widget.encounterModel.location;
-                      musicThemeLinkController.text =
-                          widget.encounterModel.themeSongLink;
-                      musicThemeController.text =
-                          widget.encounterModel.themeSong;
-                      _activeFields();
-                    }),
-                    const SizedBox(width: 20),
-                    CustomConfirmationButton(
-                      onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          _saveEncounter();
-                        }
-                      },
-                    )
+                    if (!_isLoading) ...[
+                      CustomCancelButton(
+                        onPressed: () {
+                          widget.newEncounter
+                              ? Navigator.of(context).pop()
+                              : locationController.text =
+                                  widget.encounterModel.location;
+                          musicThemeLinkController.text =
+                              widget.encounterModel.themeSongLink;
+                          musicThemeController.text =
+                              widget.encounterModel.themeSong;
+                          themeImage = originalThemeImage;
+                          _activeFields();
+                        },
+                      ),
+                      const SizedBox(width: 20),
+                      CustomConfirmationButton(
+                        onPressed: () {
+                          if (_formKey.currentState!.validate()) {
+                            _saveEncounter();
+                          }
+                        },
+                      ),
+                    ]
                   ],
                 ],
               ),
@@ -115,15 +191,17 @@ class _EncounterInfoScreenState extends State<EncounterInfoScreen> {
                 children: [
                   TextFormField(
                     decoration: const InputDecoration(
-                        labelText: 'Encontro',
-                        labelStyle: TextStyle(fontSize: 20)),
+                      labelText: 'Encontro',
+                      labelStyle: TextStyle(fontSize: 20),
+                    ),
                     controller: encounterNameController,
                     enabled: false,
                   ),
                   TextFormField(
                     decoration: const InputDecoration(
-                        labelText: 'Local',
-                        labelStyle: TextStyle(fontSize: 20)),
+                      labelText: 'Local',
+                      labelStyle: TextStyle(fontSize: 20),
+                    ),
                     controller: locationController,
                     enabled: activeFields,
                     validator: (value) {
@@ -135,8 +213,9 @@ class _EncounterInfoScreenState extends State<EncounterInfoScreen> {
                   ),
                   TextFormField(
                     decoration: const InputDecoration(
-                        labelText: 'Música Tema',
-                        labelStyle: TextStyle(fontSize: 20)),
+                      labelText: 'Música Tema',
+                      labelStyle: TextStyle(fontSize: 20),
+                    ),
                     controller: musicThemeController,
                     enabled: activeFields,
                     validator: (value) {
@@ -151,12 +230,13 @@ class _EncounterInfoScreenState extends State<EncounterInfoScreen> {
                       labelText: 'Link música',
                       labelStyle: TextStyle(fontSize: 20),
                       suffixIcon: IconButton(
-                          onPressed: () => musicThemeLinkController
-                                  .text.isNotEmpty
-                              ? functionCallUrl
-                                  .callUrl(musicThemeLinkController.text.trim())
-                              : null,
-                          icon: musicIcon),
+                        onPressed: () => musicThemeLinkController
+                                .text.isNotEmpty
+                            ? functionCallUrl
+                                .callUrl(musicThemeLinkController.text.trim())
+                            : null,
+                        icon: musicIcon,
+                      ),
                     ),
                     controller: musicThemeLinkController,
                     enabled: activeFields,
@@ -203,14 +283,28 @@ class _EncounterInfoScreenState extends State<EncounterInfoScreen> {
                         ),
                       ),
                     ),
-                  )
+                  ),
                 ],
               ),
-            )
+            ),
           ],
         ),
       ),
     );
+  }
+
+  Future<void> _getImageTheme() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    themeImage = await encounterController.getImageTheme(
+        sequential: widget.encounterModel.sequential);
+
+    originalThemeImage = themeImage;
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   void _activeFields() {
@@ -222,11 +316,13 @@ class _EncounterInfoScreenState extends State<EncounterInfoScreen> {
     });
   }
 
-  void _saveEncounter() {
+  void _saveEncounter() async {
     if (selectedDates.length < 2) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-            content: Text('Por favor, selecione as datas do encontro')),
+          content: Text('Por favor, selecione as datas do encontro'),
+          backgroundColor: Colors.red,
+        ),
       );
       return;
     }
@@ -237,7 +333,38 @@ class _EncounterInfoScreenState extends State<EncounterInfoScreen> {
     widget.encounterModel.location = locationController.text.trim();
     widget.encounterModel.themeSong = musicThemeController.text.trim();
     widget.encounterModel.themeSongLink = musicThemeLinkController.text.trim();
-    encounterController.saveEncounter(encounter: widget.encounterModel);
+
+    if (themeImage != null) {
+      widget.encounterModel.urlImageTheme =
+          await encounterController.saveImageTheme(
+              imageTheme: themeImage!,
+              sequential: widget.encounterModel.sequential);
+    } else {
+      widget.encounterModel.urlImageTheme = '';
+      await encounterController.removeImageTheme(
+          sequential: widget.encounterModel.sequential);
+    }
+
+    await encounterController.saveEncounter(
+        encounter: widget.encounterModel, newEncounter: widget.newEncounter);
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Encontro salvo com sucesso.'),
+        backgroundColor: Colors.green,
+      ),
+    );
     _activeFields();
+  }
+
+  Future<void> _pickImage() async {
+    setState(() {
+      _isLoading = true;
+    });
+    themeImage = await functionPickImage.getSingleImage();
+    themeImage ??= originalThemeImage;
+    setState(() {
+      _isLoading = false;
+    });
   }
 }
