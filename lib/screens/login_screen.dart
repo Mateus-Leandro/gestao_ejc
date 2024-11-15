@@ -15,7 +15,6 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  final FocusNode _passwordFocusNode = FocusNode();
   bool _visiblePassword = false;
   bool _acessing = false;
 
@@ -76,34 +75,33 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ? 'Informe seu email'
                                   : null;
                             },
-                            onFieldSubmitted: (_) {
-                              FocusScope.of(context)
-                                  .requestFocus(_passwordFocusNode);
-                            },
+                            textInputAction: TextInputAction.next,
+                            autofillHints: const [AutofillHints.username],
                           ),
                           TextFormField(
-                              controller: _passwordController,
-                              decoration: InputDecoration(
-                                labelText: 'Senha',
-                                suffixIcon: IconButton(
-                                  icon: Icon(_visiblePassword
-                                      ? Icons.visibility
-                                      : Icons.visibility_off),
-                                  onPressed: () {
-                                    _seePassword();
-                                  },
-                                ),
+                            controller: _passwordController,
+                            decoration: InputDecoration(
+                              labelText: 'Senha',
+                              suffixIcon: IconButton(
+                                icon: Icon(_visiblePassword
+                                    ? Icons.visibility
+                                    : Icons.visibility_off),
+                                onPressed: () {
+                                  _seePassword();
+                                },
                               ),
-                              validator: (value) {
-                                return value!.isEmpty
-                                    ? 'Informe sua senha'
-                                    : null;
-                              },
-                              obscureText: !_visiblePassword,
-                              onFieldSubmitted: (_) {
-                                _login();
-                              },
-                              focusNode: _passwordFocusNode),
+                            ),
+                            validator: (value) {
+                              return value!.isEmpty
+                                  ? 'Informe sua senha'
+                                  : null;
+                            },
+                            obscureText: !_visiblePassword,
+                            onFieldSubmitted: (_) {
+                              _login();
+                            },
+                            autofillHints: const [AutofillHints.password],
+                          ),
                           const SizedBox(height: 30),
                           TextButton(
                             onPressed: () {
