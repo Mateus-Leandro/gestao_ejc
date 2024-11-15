@@ -1,8 +1,5 @@
 import 'dart:typed_data';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gestao_ejc/components/buttons/custom_cancel_button.dart';
 import 'package:gestao_ejc/components/buttons/custom_confirmation_button.dart';
 import 'package:gestao_ejc/components/buttons/custom_icon_button.dart';
@@ -14,7 +11,6 @@ import 'package:gestao_ejc/functions/function_int_to_roman.dart';
 import 'package:gestao_ejc/functions/function_music_icon.dart';
 import 'package:gestao_ejc/functions/function_pick_image.dart';
 import 'package:gestao_ejc/models/encounter_model.dart';
-import 'package:gestao_ejc/services/firebase_storage_service.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
 import 'package:gestao_ejc/theme/app_theme.dart';
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
