@@ -6,6 +6,7 @@ import 'package:gestao_ejc/services/locator/service_locator.dart';
 
 class CircleController extends ChangeNotifier {
   var _streamController;
+  String? response;
   final CircleService _circleService = getIt<CircleService>();
   Stream<List<CircleModel>>? get stream => _streamController.stream;
 
@@ -20,16 +21,26 @@ class CircleController extends ChangeNotifier {
     super.dispose();
   }
 
-  Future<bool> saveCircle(CircleModel circle) async {
-    return await _circleService.saveCircle(circle: circle);
-  }
-
   void getAllCircles() async {
     List<CircleModel?> circles = await _circleService.getAllCircles();
     _streamController.sink.add(circles);
   }
 
-  Future<bool> deleteCircle({required String circleId}) async {
-    return await _circleService.deleteCircle(circleId: circleId);
+  Future<String?> saveCircle(CircleModel circle) async {
+    response = await _circleService.saveCircle(circle: circle);
+    if (response != null) {
+      getAllCircles();
+      return null;
+    }
+    return response;
+  }
+
+  Future<String?> deleteCircle({required String circleId}) async {
+    response = await _circleService.deleteCircle(circleId: circleId);
+    if (response == null) {
+      getAllCircles();
+      return null;
+    }
+    return response;
   }
 }
