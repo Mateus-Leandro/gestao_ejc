@@ -2,6 +2,7 @@ import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:flutter/material.dart';
 import 'package:gestao_ejc/components/buttons/custom_cancel_button.dart';
 import 'package:gestao_ejc/components/buttons/custom_confirmation_button.dart';
+import 'package:gestao_ejc/components/forms/custom_model_form.dart';
 import 'package:gestao_ejc/functions/function_date.dart';
 import 'package:gestao_ejc/models/financial_model.dart';
 import 'package:gestao_ejc/services/financial_service.dart';
@@ -39,72 +40,60 @@ class _CustomFinancialReportFormState extends State<CustomFinancialReportForm> {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title: const Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text('Exportar Extrato'),
-          Divider(),
-        ],
-      ),
-      content: SingleChildScrollView(
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              TextFormField(
-                controller: _fileNameController,
-                decoration: const InputDecoration(labelText: 'Nome do arquivo'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Informe o nome do arquivo a ser salvo.';
-                  }
-                  return null;
-                },
-                maxLength: 15,
-              ),
-              const Padding(
-                padding: EdgeInsets.only(top: 20, bottom: 20),
-                child: Text('Período dos lançamentos'),
-              ),
-              SizedBox(
-                height: 330,
-                width: 310,
-                child: CalendarDatePicker2(
-                    config: CalendarDatePicker2Config(
-                      calendarType: CalendarDatePicker2Type.range,
-                      lastDate: DateTime.now(),
-                      allowSameValueSelection: true,
-                    ),
-                    value: dates,
-                    onValueChanged: (newDates) => dates = newDates),
-              ),
-              const Padding(
-                padding: EdgeInsets.only(bottom: 8),
-                child: Text('Exportar arquivo em'),
-              ),
-              ToggleSwitch(
-                minWidth: 90.0,
-                initialLabelIndex: 0,
-                cornerRadius: 20.0,
-                activeFgColor: Colors.white,
-                inactiveBgColor: Colors.grey,
-                inactiveFgColor: Colors.white,
-                totalSwitches: 2,
-                labels: const ['Excel', 'PDF'],
-                icons: const [Icons.file_copy, Icons.picture_as_pdf],
-                activeBgColors: const [
-                  [Colors.green],
-                  [Colors.red]
-                ],
-                onToggle: (index) {
-                  typeExport = index == 0 ? 'excel' : 'pdf';
-                },
-              ),
-            ],
-          ),
+    return CustomModelForm(
+      title: 'Exportar Extrato',
+      formKey: _formKey,
+      formBody: [
+        TextFormField(
+          controller: _fileNameController,
+          decoration: const InputDecoration(labelText: 'Nome do arquivo'),
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return 'Informe o nome do arquivo a ser salvo.';
+            }
+            return null;
+          },
+          maxLength: 15,
         ),
-      ),
+        const Padding(
+          padding: EdgeInsets.only(top: 20, bottom: 20),
+          child: Text('Período dos lançamentos'),
+        ),
+        SizedBox(
+          height: 330,
+          width: 310,
+          child: CalendarDatePicker2(
+              config: CalendarDatePicker2Config(
+                calendarType: CalendarDatePicker2Type.range,
+                lastDate: DateTime.now(),
+                allowSameValueSelection: true,
+              ),
+              value: dates,
+              onValueChanged: (newDates) => dates = newDates),
+        ),
+        const Padding(
+          padding: EdgeInsets.only(bottom: 8),
+          child: Text('Exportar arquivo em'),
+        ),
+        ToggleSwitch(
+          minWidth: 90.0,
+          initialLabelIndex: 0,
+          cornerRadius: 20.0,
+          activeFgColor: Colors.white,
+          inactiveBgColor: Colors.grey,
+          inactiveFgColor: Colors.white,
+          totalSwitches: 2,
+          labels: const ['Excel', 'PDF'],
+          icons: const [Icons.file_copy, Icons.picture_as_pdf],
+          activeBgColors: const [
+            [Colors.green],
+            [Colors.red]
+          ],
+          onToggle: (index) {
+            typeExport = index == 0 ? 'excel' : 'pdf';
+          },
+        ),
+      ],
       actions: [
         CustomCancelButton(onPressed: () => Navigator.of(context).pop()),
         CustomConfirmationButton(

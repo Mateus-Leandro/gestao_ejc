@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:currency_textfield/currency_textfield.dart';
 import 'package:gestao_ejc/components/buttons/custom_cancel_button.dart';
 import 'package:gestao_ejc/components/buttons/custom_confirmation_button.dart';
+import 'package:gestao_ejc/components/forms/custom_model_form.dart';
 import 'package:gestao_ejc/components/pickers/custom_date_picker.dart';
 import 'package:gestao_ejc/controllers/financial_controller.dart';
 import 'package:gestao_ejc/controllers/user_controller.dart';
@@ -71,84 +72,67 @@ class _CustomFinancialFormState extends State<CustomFinancialForm> {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      title: Column(
-        children: [
-          Text(editing ? 'Editar Financeiro' : 'Criar Financeiro'),
-          const Divider()
-        ],
-      ),
-      content: SingleChildScrollView(
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
+    return CustomModelForm(
+      title: editing ? 'Editar Financeiro' : 'Criar Financeiro',
+      formKey: _formKey,
+      formBody: [
+        Padding(
+          padding: const EdgeInsets.only(bottom: 12),
+          child: Row(
             children: [
-              Padding(
-                padding: const EdgeInsets.only(bottom: 12),
-                child: Row(
-                  // mainAxisSize: MainAxisSize.min,
-                  children: [
-                    if (editing) ...[
-                      Expanded(
-                        child: Text(
-                            'Criado por ${_createdBy ?? ''} em ${_functionDate.getStringFromTimestamp(widget.financialModel!.registrationDate)}'),
-                      ),
-                    ],
-                  ],
+              if (editing) ...[
+                Expanded(
+                  child: Text(
+                      'Criado por ${_createdBy ?? ''} em ${_functionDate.getStringFromTimestamp(widget.financialModel!.registrationDate)}'),
                 ),
-              ),
-              TextFormField(
-                controller: _originOrDestinationController,
-                decoration: InputDecoration(labelText: originOrDestination),
-                validator: (value) {
-                  return value!.isEmpty
-                      ? 'Informe ${widget.transactionType == 'E' ? 'a origem' : 'o destino'} do lançamento.'
-                      : null;
-                },
-                maxLength: 15,
-                textCapitalization: TextCapitalization.sentences,
-                onChanged: (value) {
-                  functionInputText.capitalizeFirstLetter(
-                      value: value, controller: _originOrDestinationController);
-                },
-              ),
-              TextFormField(
-                controller: _descriptionController,
-                decoration: const InputDecoration(labelText: 'Descrição'),
-                validator: (value) {
-                  return value!.isEmpty
-                      ? 'Informe a decrição do lançamento'
-                      : null;
-                },
-                textCapitalization: TextCapitalization.sentences,
-                onChanged: (value) {
-                  functionInputText.capitalizeFirstLetter(
-                      value: value, controller: _descriptionController);
-                },
-              ),
-              TextFormField(
-                controller: _valueController,
-                decoration: const InputDecoration(labelText: 'Valor'),
-                validator: (value) {
-                  return _valueController.doubleValue == 0
-                      ? 'Informe o valor do lançamento'
-                      : null;
-                },
-              ),
-              CustomDatePicker(
-                controller: _transactionDateController,
-                labelText: 'Data do lançamento',
-                lowestDate: DateTime.now().subtract(
-                  const Duration(days: 7),
-                ),
-              ),
+              ],
             ],
           ),
         ),
-      ),
+        TextFormField(
+          controller: _originOrDestinationController,
+          decoration: InputDecoration(labelText: originOrDestination),
+          validator: (value) {
+            return value!.isEmpty
+                ? 'Informe ${widget.transactionType == 'E' ? 'a origem' : 'o destino'} do lançamento.'
+                : null;
+          },
+          maxLength: 15,
+          textCapitalization: TextCapitalization.sentences,
+          onChanged: (value) {
+            functionInputText.capitalizeFirstLetter(
+                value: value, controller: _originOrDestinationController);
+          },
+        ),
+        TextFormField(
+          controller: _descriptionController,
+          decoration: const InputDecoration(labelText: 'Descrição'),
+          validator: (value) {
+            return value!.isEmpty ? 'Informe a decrição do lançamento' : null;
+          },
+          textCapitalization: TextCapitalization.sentences,
+          onChanged: (value) {
+            functionInputText.capitalizeFirstLetter(
+                value: value, controller: _descriptionController);
+          },
+        ),
+        TextFormField(
+          controller: _valueController,
+          decoration: const InputDecoration(labelText: 'Valor'),
+          validator: (value) {
+            return _valueController.doubleValue == 0
+                ? 'Informe o valor do lançamento'
+                : null;
+          },
+        ),
+        CustomDatePicker(
+          controller: _transactionDateController,
+          labelText: 'Data do lançamento',
+          lowestDate: DateTime.now().subtract(
+            const Duration(days: 7),
+          ),
+        ),
+      ],
       actions: _savingFinancial
           ? [
               const Center(
@@ -160,7 +144,7 @@ class _CustomFinancialFormState extends State<CustomFinancialForm> {
             ]
           : [
               CustomCancelButton(onPressed: () => Navigator.of(context).pop()),
-              CustomConfirmationButton(onPressed: ()=> _saveFinancial())
+              CustomConfirmationButton(onPressed: () => _saveFinancial())
             ],
     );
   }
