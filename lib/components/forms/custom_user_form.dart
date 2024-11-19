@@ -97,27 +97,19 @@ class _CustomUserFormState extends State<CustomUserForm> {
         const SizedBox(height: 10),
         _buildPermissionCheckboxes()
       ],
-      actions: [
-        _buildTextField(
-            false, _nameController, 'Nome', TextInputType.text, null, true),
-        const SizedBox(height: 10),
-        CustomDatePicker(
-          controller: _birthdayController,
-          labelText: 'Data de nascimento',
-        ),
-        const SizedBox(height: 10),
-        _buildTextField(false, _emailController, 'Email',
-            TextInputType.emailAddress, null, widget.userEditing == null),
-        const SizedBox(height: 10),
-        _buildTextField(true, _passwordController, 'Senha', TextInputType.text,
-            null, widget.userEditing == null),
-        const SizedBox(height: 10),
-        _buildTextField(true, _confirmePasswordController, 'Confirme a senha',
-            TextInputType.text, _validatePassword, widget.userEditing == null),
-        const Text('Permissões', style: TextStyle(fontSize: 16)),
-        const SizedBox(height: 10),
-        _buildPermissionCheckboxes(),
-      ],
+      actions: _savingUser
+          ? [
+              const Center(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 10),
+                  child: CircularProgressIndicator(),
+                ),
+              )
+            ]
+          : [
+              CustomCancelButton(onPressed: () => Navigator.of(context).pop()),
+              CustomConfirmationButton(onPressed: () => _saveUser())
+            ],
     );
   }
 
