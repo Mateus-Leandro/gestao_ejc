@@ -26,9 +26,9 @@ class CircleController extends ChangeNotifier {
     _streamController.sink.add(circles);
   }
 
-  Future<String?> saveCircle(CircleModel circle) async {
+  Future<String?> saveCircle({required CircleModel circle}) async {
     response = await _circleService.saveCircle(circle: circle);
-    if (response != null) {
+    if (response == null) {
       getAllCircles();
       return null;
     }

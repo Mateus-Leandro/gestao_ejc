@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:gestao_ejc/components/buttons/custom_delete_button.dart';
 import 'package:gestao_ejc/components/buttons/custom_edit_button.dart';
+import 'package:gestao_ejc/components/forms/custom_circle_form.dart';
 import 'package:gestao_ejc/components/utils/custom_list_tile.dart';
 import 'package:gestao_ejc/components/utils/custom_search_row.dart';
 import 'package:gestao_ejc/controllers/circle_controller.dart';
+import 'package:gestao_ejc/functions/function_color.dart';
 import 'package:gestao_ejc/models/circle_model.dart';
 import 'package:gestao_ejc/services/auth_service.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
@@ -31,6 +33,7 @@ class _CircleScreenState extends State<CircleScreen> {
   TextEditingController circleController = TextEditingController();
   final CircleController _circleController = getIt<CircleController>();
   final AuthService _authService = getIt<AuthService>();
+  final FunctionColor _functionColor = getIt<FunctionColor>();
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -40,7 +43,7 @@ class _CircleScreenState extends State<CircleScreen> {
         children: [
           CustomSearchRow(
             messageButton: 'Criar Circulo',
-            functionButton: () {},
+            functionButton: () => _showCircleForm(null),
             showButton: true,
             inputType: TextInputType.text,
             controller: circleController,
@@ -92,9 +95,7 @@ class _CircleScreenState extends State<CircleScreen> {
               Text(
                 circle.name,
                 style: TextStyle(
-                  color: Color(
-                    int.parse(circle.colorHex.replaceFirst('#', '0xff')),
-                  ),
+                  color: _functionColor.getFromHexadecimal(circle.colorHex),
                 ),
               ),
             ],
@@ -113,7 +114,9 @@ class _CircleScreenState extends State<CircleScreen> {
                   false) ...[
                 Tooltip(
                   message: 'Editar Círculo',
-                  child: CustomEditButton(form: Container()),
+                  child: CustomEditButton(
+                    form: CustomCircleForm(circleModel: circle),
+                  ),
                 ),
                 Tooltip(
                   message: 'Excluir Círculo',
@@ -128,5 +131,14 @@ class _CircleScreenState extends State<CircleScreen> {
           ),
         ),
         defaultBackgroundColor: Colors.white);
+  }
+
+  void _showCircleForm(CircleModel? circleModel) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return const CustomCircleForm(circleModel: null);
+      },
+    );
   }
 }

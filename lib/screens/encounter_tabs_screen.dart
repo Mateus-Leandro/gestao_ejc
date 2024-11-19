@@ -54,7 +54,7 @@ class EncounterTabsScreen extends StatelessWidget {
                     children: [
                       EncounterInfoScreen(
                           encounterModel: encounterModel, newEncounter: false),
-                      CircleScreen(),
+                      Container(),
                       Container(),
                       Container(),
                     ],
