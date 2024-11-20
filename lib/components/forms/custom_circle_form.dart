@@ -39,7 +39,7 @@ class _CustomCircleFormState extends State<CustomCircleForm> {
     if (widget.circleModel != null) {
       selectedColor =
           _functionColor.getFromHexadecimal(widget.circleModel!.colorHex);
-      selectedColorName = widget.circleModel!.id;
+      selectedColorName = widget.circleModel!.name;
       selectedColorHex = widget.circleModel!.colorHex;
       _minMembersController.text = widget.circleModel!.minMembers.toString();
       _maxMembersController.text = widget.circleModel!.maxMembers.toString();
@@ -119,7 +119,7 @@ class _CustomCircleFormState extends State<CustomCircleForm> {
 
   void _saveCircle() async {
     CircleModel circle = CircleModel(
-      id: selectedColorName,
+      id: selectedColorName.toLowerCase(),
       name: selectedColorName,
       colorHex: selectedColorHex,
       minMembers: int.parse(_minMembersController.text.trim()),
