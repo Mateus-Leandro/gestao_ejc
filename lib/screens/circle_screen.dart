@@ -94,8 +94,17 @@ class _CircleScreenState extends State<CircleScreen> {
             children: [
               Text(
                 circle.name,
-                style: TextStyle(
-                  color: _functionColor.getFromHexadecimal(circle.colorHex),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 5),
+                child: Container(
+                  height: 20,
+                  width: 20,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.black),
+                    color: _functionColor.getFromHexadecimal(circle.colorHex),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
                 ),
               ),
             ],

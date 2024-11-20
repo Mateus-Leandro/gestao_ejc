@@ -47,6 +47,7 @@ class _CustomColorDrawerState extends State<CustomColorDrawer> {
               children: [
                 Container(
                   decoration: BoxDecoration(
+                    border: Border.all(color: Colors.black),
                     color: color.value,
                     borderRadius: BorderRadius.circular(20),
                   ),
