@@ -9,10 +9,11 @@ class CircleController extends ChangeNotifier {
   String? response;
   final CircleService _circleService = getIt<CircleService>();
   Stream<List<CircleModel>>? get stream => _streamController.stream;
+  List<CircleModel?>? circles;
 
   void init() {
     _streamController = StreamController<List<CircleModel>>();
-    getAllCircles();
+    getCircles(null);
   }
 
   @override
@@ -21,15 +22,15 @@ class CircleController extends ChangeNotifier {
     super.dispose();
   }
 
-  void getAllCircles() async {
-    List<CircleModel?> circles = await _circleService.getAllCircles();
+  void getCircles(String? circleName) async {
+    circles = await _circleService.getCircles(circleName?.toLowerCase());
     _streamController.sink.add(circles);
   }
 
   Future<String?> saveCircle({required CircleModel circle}) async {
     response = await _circleService.saveCircle(circle: circle);
     if (response == null) {
-      getAllCircles();
+      getCircles(null);
       return null;
     }
     return response;
@@ -38,7 +39,7 @@ class CircleController extends ChangeNotifier {
   Future<String?> deleteCircle({required String circleId}) async {
     response = await _circleService.deleteCircle(circleId: circleId);
     if (response == null) {
-      getAllCircles();
+      getCircles(null);
       return null;
     }
     return response;

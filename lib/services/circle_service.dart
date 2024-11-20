@@ -23,9 +23,18 @@ class CircleService {
     }
   }
 
-  Future getAllCircles() async {
+  Future getCircles(String? circleName) async {
     try {
-      snapshot = await _firestore.collection(collection).get();
+      query = _firestore.collection(collection);
+      if (circleName != null) {
+        query = query.where('id', isGreaterThanOrEqualTo: circleName).where(
+              'id',
+              isLessThan: circleName.substring(0, circleName.length - 1) +
+                  String.fromCharCode(
+                      circleName.codeUnitAt(circleName.length - 1) + 1),
+            );
+      }
+      snapshot = await query.get();
       return snapshot.docs
           .map(
             (doc) => CircleModel.fromJson(doc.data() as Map<String, dynamic>),

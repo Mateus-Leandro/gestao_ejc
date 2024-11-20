@@ -30,7 +30,7 @@ class _CircleScreenState extends State<CircleScreen> {
     super.dispose();
   }
 
-  TextEditingController circleController = TextEditingController();
+  TextEditingController circleNameController = TextEditingController();
   final CircleController _circleController = getIt<CircleController>();
   final AuthService _authService = getIt<AuthService>();
   final FunctionColor _functionColor = getIt<FunctionColor>();
@@ -46,9 +46,13 @@ class _CircleScreenState extends State<CircleScreen> {
             functionButton: () => _showCircleForm(null),
             showButton: true,
             inputType: TextInputType.text,
-            controller: circleController,
+            controller: circleNameController,
             messageTextField: 'Pesquisar Círculo',
-            functionTextField: () {},
+            functionTextField: () => _circleController.getCircles(
+              circleNameController.text.trim().isEmpty
+                  ? null
+                  : circleNameController.text.trim(),
+            ),
             iconButton: const Icon(Icons.add),
           ),
           Expanded(child: _buildCircleList(context))
