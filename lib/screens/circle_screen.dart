@@ -96,11 +96,8 @@ class _CircleScreenState extends State<CircleScreen> {
         listTile: ListTile(
           title: Row(
             children: [
-              Text(
-                circle.name,
-              ),
               Padding(
-                padding: const EdgeInsets.only(left: 5),
+                padding: const EdgeInsets.only(right: 5),
                 child: Container(
                   height: 20,
                   width: 20,
@@ -110,6 +107,9 @@ class _CircleScreenState extends State<CircleScreen> {
                     borderRadius: BorderRadius.circular(20),
                   ),
                 ),
+              ),
+              Text(
+                circle.name,
               ),
             ],
           ),
