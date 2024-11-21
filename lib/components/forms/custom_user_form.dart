@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gestao_ejc/components/buttons/custom_cancel_button.dart';
 import 'package:gestao_ejc/components/buttons/custom_confirmation_button.dart';
+import 'package:gestao_ejc/components/forms/custom_model_form.dart';
 import 'package:gestao_ejc/components/pickers/custom_date_picker.dart';
 import 'package:gestao_ejc/controllers/user_controller.dart';
 import 'package:gestao_ejc/models/user_model.dart';
@@ -41,9 +42,9 @@ class _CustomUserFormState extends State<CustomUserForm> {
   void initState() {
     super.initState();
     if (widget.userEditing != null) {
-      _nameController.text = widget.userEditing!.name ?? '';
-      _emailController.text = widget.userEditing!.email ?? '';
-      _birthdayController.text = widget.userEditing!.birthday ?? '';
+      _nameController.text = widget.userEditing!.name;
+      _emailController.text = widget.userEditing!.email;
+      _birthdayController.text = widget.userEditing!.birthday;
       _passwordController.text = "***********";
       _confirmePasswordController.text = "***********";
       manipulateAdministrator = widget.userEditing!.manipulateAdministrator;
@@ -70,44 +71,32 @@ class _CustomUserFormState extends State<CustomUserForm> {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-      ),
-      title: Text(widget.userEditing == null
+    return CustomModelForm(
+      title: widget.userEditing == null
           ? 'Adicionar Novo Usuário'
-          : 'Editar Usuário'),
-      content: SingleChildScrollView(
-        child: Form(
-          key: _formKey,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _buildTextField(false, _nameController, 'Nome',
-                  TextInputType.text, null, true),
-              const SizedBox(height: 10),
-              CustomDatePicker(controller: _birthdayController, labelText: 'Data de nascimento',),
-              const SizedBox(height: 10),
-              _buildTextField(false, _emailController, 'Email',
-                  TextInputType.emailAddress, null, widget.userEditing == null),
-              const SizedBox(height: 10),
-              _buildTextField(true, _passwordController, 'Senha',
-                  TextInputType.text, null, widget.userEditing == null),
-              const SizedBox(height: 10),
-              _buildTextField(
-                  true,
-                  _confirmePasswordController,
-                  'Confirme a senha',
-                  TextInputType.text,
-                  _validatePassword,
-                  widget.userEditing == null),
-              const Text('Permissões', style: TextStyle(fontSize: 16)),
-              const SizedBox(height: 10),
-              _buildPermissionCheckboxes(),
-            ],
-          ),
+          : 'Editar Usuário',
+      formKey: _formKey,
+      formBody: [
+        _buildTextField(
+            false, _nameController, 'Nome', TextInputType.text, null, true),
+        const SizedBox(height: 10),
+        CustomDatePicker(
+          controller: _birthdayController,
+          labelText: 'Data de nascimento',
         ),
-      ),
+        const SizedBox(height: 10),
+        _buildTextField(false, _emailController, 'Email',
+            TextInputType.emailAddress, null, widget.userEditing == null),
+        const SizedBox(height: 10),
+        _buildTextField(true, _passwordController, 'Senha', TextInputType.text,
+            null, widget.userEditing == null),
+        const SizedBox(height: 10),
+        _buildTextField(true, _confirmePasswordController, 'Confirme a senha',
+            TextInputType.text, _validatePassword, widget.userEditing == null),
+        const Text('Permissões', style: TextStyle(fontSize: 16)),
+        const SizedBox(height: 10),
+        _buildPermissionCheckboxes()
+      ],
       actions: _savingUser
           ? [
               const Center(

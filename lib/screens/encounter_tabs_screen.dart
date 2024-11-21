@@ -4,6 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gestao_ejc/components/utils/custom_tab_bar.dart';
 import 'package:gestao_ejc/functions/function_int_to_roman.dart';
 import 'package:gestao_ejc/models/encounter_model.dart';
+import 'package:gestao_ejc/screens/circle_screen.dart';
 import 'package:gestao_ejc/screens/encounter_info_screen.dart';
 import 'package:gestao_ejc/screens/model_screen.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
