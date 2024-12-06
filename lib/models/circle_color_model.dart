@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class CircleColors {
+class CircleColorModel {
   final Map<String, Color> _colors = const {
     "Amarelo": Color(0xFFFFFF00),
     "Azul": Color(0xFF0000FF),

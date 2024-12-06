@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gestao_ejc/functions/function_color.dart';
-import 'package:gestao_ejc/models/circle_colors.dart';
+import 'package:gestao_ejc/models/circle_color_model.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
 
 class CustomColorDrawer extends StatefulWidget {
@@ -22,7 +22,7 @@ class CustomColorDrawer extends StatefulWidget {
 class _CustomColorDrawerState extends State<CustomColorDrawer> {
   late Color _currentColor;
   final FunctionColor functionColor = getIt<FunctionColor>();
-  final CircleColors _circleColors = CircleColors();
+  final CircleColorModel _circleColors = CircleColorModel();
   String? colorName;
 
   @override
