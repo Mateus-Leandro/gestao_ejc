@@ -10,7 +10,7 @@ class EncounterService {
   late Query query;
   late QuerySnapshot snapshot;
 
-  Future getEncounter() async {
+  Future<List<EncounterModel>> getEncounter() async {
     try {
       query = _firestore.collection(collection).orderBy('sequential');
       snapshot = await query.get();
@@ -19,34 +19,29 @@ class EncounterService {
               EncounterModel.fromJson(doc.data() as Map<String, dynamic>))
           .toList();
     } catch (e) {
-      print('Erro ao pesquisar encontros $e');
-      return null;
+      rethrow;
     }
   }
 
-  Future<bool> saveEncounter({required EncounterModel encounter}) async {
+  Future<void> saveEncounter({required EncounterModel encounter}) async {
     try {
       await _firestore
           .collection(collection)
           .doc(functionIntToRoman.convert(encounter.sequential))
           .set(encounter.toJson());
-      return true;
     } catch (e) {
-      print('Erro ao salvar encontro: $e');
-      return false;
+      rethrow;
     }
   }
 
-  Future<bool> deleteEncounter({required EncounterModel encounter}) async {
+  Future<void> deleteEncounter({required EncounterModel encounter}) async {
     try {
       await _firestore
           .collection(collection)
           .doc(encounter.sequential.toString())
           .delete();
-      return true;
     } catch (e) {
-      print('Erro ao excluir encontro: $e');
-      return false;
+      rethrow;
     }
   }
 
@@ -64,8 +59,7 @@ class EncounterService {
       }
       return lastEncounter;
     } catch (e) {
-      print('Erro ao buscar ultimo encontro');
-      return 0;
+      rethrow;
     }
   }
 }

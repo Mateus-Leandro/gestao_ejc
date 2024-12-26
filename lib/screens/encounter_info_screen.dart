@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:gestao_ejc/components/SnackBars/custom_snack_bar.dart';
 import 'package:gestao_ejc/components/buttons/custom_cancel_button.dart';
 import 'package:gestao_ejc/components/buttons/custom_confirmation_button.dart';
 import 'package:gestao_ejc/components/buttons/custom_icon_button.dart';
@@ -318,11 +319,10 @@ class _EncounterInfoScreenState extends State<EncounterInfoScreen> {
 
   void _saveEncounter() async {
     if (selectedDates.length < 2) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Por favor, selecione as datas do encontro'),
-          backgroundColor: Colors.red,
-        ),
+      CustomSnackBar.show(
+        context: context,
+        message: 'Seleciona as datas do encontro',
+        colorBar: Colors.red,
       );
       return;
     }
@@ -344,16 +344,16 @@ class _EncounterInfoScreenState extends State<EncounterInfoScreen> {
       await encounterController.removeImageTheme(
           sequential: widget.encounterModel.sequential);
     }
-
-    await encounterController.saveEncounter(
-        encounter: widget.encounterModel, newEncounter: widget.newEncounter);
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Encontro salvo com sucesso.'),
-        backgroundColor: Colors.green,
-      ),
-    );
+    try {
+      await encounterController.saveEncounter(
+          encounter: widget.encounterModel, newEncounter: widget.newEncounter);
+    } catch (e) {
+      CustomSnackBar.show(
+        context: context,
+        message: 'Erro ao salvar encontro: $e',
+        colorBar: Colors.red,
+      );
+    }
     _activeFields();
   }
 
