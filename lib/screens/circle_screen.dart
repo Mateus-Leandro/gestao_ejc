@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gestao_ejc/components/SnackBars/custom_snack_bar.dart';
 import 'package:gestao_ejc/components/buttons/custom_delete_button.dart';
 import 'package:gestao_ejc/components/forms/custom_circle_form.dart';
 import 'package:gestao_ejc/components/utils/custom_list_tile.dart';
@@ -121,8 +122,8 @@ class _CircleScreenState extends State<CircleScreen> {
                   message: 'Excluir Círculo',
                   child: CustomDeleteButton(
                     alertMessage: 'Excluir Círculo',
-                    deleteFunction: () async => await _circleController
-                        .deleteCircle(circleId: circle.id),
+                    deleteFunction: () async =>
+                        _deleteCircle(circleId: circle.id),
                   ),
                 ),
               ],
@@ -139,5 +140,17 @@ class _CircleScreenState extends State<CircleScreen> {
         return const CustomCircleForm();
       },
     );
+  }
+
+  Future<void> _deleteCircle({required String circleId}) async {
+    try {
+      await _circleController.deleteCircle(circleId: circleId);
+    } catch (e) {
+      CustomSnackBar.show(
+        context: context,
+        message: 'Erro ao excluir círculo: $e',
+        colorBar: Colors.red,
+      );
+    }
   }
 }

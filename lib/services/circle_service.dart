@@ -9,21 +9,18 @@ class CircleService {
   late QuerySnapshot snapshot;
   var response;
 
-  Future<String?> saveCircle({required CircleModel circle}) async {
+  Future<void> saveCircle({required CircleModel circle}) async {
     try {
       await _firestore
           .collection(collection)
           .doc(circle.id)
           .set(circle.toJson());
-      return null;
     } catch (e) {
-      response = 'Erro ao salvar circulo $e';
-      print(response);
-      return response;
+      rethrow;
     }
   }
 
-  Future getCircles(String? circleName) async {
+  Future<List<CircleModel>> getCircles(String? circleName) async {
     try {
       query = _firestore.collection(collection);
       if (circleName != null) {
@@ -41,19 +38,15 @@ class CircleService {
           )
           .toList();
     } catch (e) {
-      print('Erro ao pesquisar circulos $e');
-      return null;
+      rethrow;
     }
   }
 
-  Future<String?> deleteCircle({required String circleId}) async {
+  Future<void> deleteCircle({required String circleId}) async {
     try {
       await _firestore.collection(collection).doc(circleId).delete();
-      return null;
     } catch (e) {
-      var response = 'Erro ao excluir círculo $e';
-      print(response);
-      return response;
+      rethrow;
     }
   }
 }

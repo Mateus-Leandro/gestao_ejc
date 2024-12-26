@@ -6,7 +6,6 @@ import 'package:gestao_ejc/services/locator/service_locator.dart';
 
 class CircleController extends ChangeNotifier {
   var _streamController;
-  String? response;
   final CircleService _circleService = getIt<CircleService>();
   Stream<List<CircleModel>>? get stream => _streamController.stream;
   List<CircleModel?>? circles;
@@ -23,25 +22,29 @@ class CircleController extends ChangeNotifier {
   }
 
   void getCircles(String? circleName) async {
-    circles = await _circleService.getCircles(circleName?.toLowerCase());
-    _streamController.sink.add(circles);
+    try {
+      circles = await _circleService.getCircles(circleName?.toLowerCase());
+      _streamController.sink.add(circles);
+    } catch (e) {
+      throw 'Erro ao buscar círculos: $e';
+    }
   }
 
-  Future<String?> saveCircle({required CircleModel circle}) async {
-    response = await _circleService.saveCircle(circle: circle);
-    if (response == null) {
+  Future<void> saveCircle({required CircleModel circle}) async {
+    try {
+      await _circleService.saveCircle(circle: circle);
       getCircles(null);
-      return null;
+    } catch (e) {
+      throw 'Erro ao salvar círculo: $e';
     }
-    return response;
   }
 
-  Future<String?> deleteCircle({required String circleId}) async {
-    response = await _circleService.deleteCircle(circleId: circleId);
-    if (response == null) {
+  Future<void> deleteCircle({required String circleId}) async {
+    try {
+      await _circleService.deleteCircle(circleId: circleId);
       getCircles(null);
-      return null;
+    } catch (e) {
+      throw 'Erro ao deletar círculo: $e';
     }
-    return response;
   }
 }
