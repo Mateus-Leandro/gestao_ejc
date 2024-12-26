@@ -47,15 +47,17 @@ class _PasswordResetModalState extends State<PasswordResetModal> {
             if (_formKey.currentState!.validate()) {
               try {
                 _authController.resetPassword(email: _emailController.text);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  CustomSnackBar(
-                      message:
-                          'Enviado email de redefinição de senha para: ${_emailController.text}',
-                      colorBar: Colors.green),
+                CustomSnackBar.show(
+                  context: context,
+                  message:
+                      'Enviado email de redefinição de senha para: ${_emailController.text}',
+                  colorBar: Colors.green,
                 );
               } catch (e) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  CustomSnackBar(message: e.toString(), colorBar: Colors.red),
+                CustomSnackBar.show(
+                  context: context,
+                  message: e.toString(),
+                  colorBar: Colors.red,
                 );
               }
             }

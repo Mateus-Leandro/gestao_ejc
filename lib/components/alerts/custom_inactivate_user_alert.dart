@@ -34,13 +34,15 @@ class CustomInactivateUserAlert extends StatelessWidget {
             try {
               await _userController.changeUserState(user: user);
               Navigator.of(context).pop();
-              CustomSnackBar(
+              CustomSnackBar.show(
+                context: context,
                 message:
                     'Sucesso ao ${action.toLowerCase()} usuário ${user.name}!',
                 colorBar: Colors.green,
               );
             } catch (e) {
-              CustomSnackBar(
+              CustomSnackBar.show(
+                context: context,
                 message: 'Erro ao ${action.toLowerCase()} usuário: $e!',
                 colorBar: Colors.red,
               );

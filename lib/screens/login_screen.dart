@@ -154,8 +154,10 @@ class _LoginScreenState extends State<LoginScreen> {
           senha: _passwordController.text,
         );
       } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          CustomSnackBar(message: e.toString(), colorBar: Colors.red),
+        CustomSnackBar.show(
+          context: context,
+          message: e.toString(),
+          colorBar: Colors.red,
         );
       }
       if (mounted) {

@@ -227,14 +227,19 @@ class _CustomUserFormState extends State<CustomUserForm> {
           newUser: newUser,
           password: password,
         );
-        CustomSnackBar(
+        CustomSnackBar.show(
+          context: context,
           message:
               'Usuário ${newUser.name} ${widget.userEditing == null ? 'cadastrado' : 'atualizado'} com sucesso!',
           colorBar: Colors.green,
         );
         Navigator.of(context).pop();
       } catch (e) {
-        CustomSnackBar(message: e.toString(), colorBar: Colors.red);
+        CustomSnackBar.show(
+          context: context,
+          message: e.toString(),
+          colorBar: Colors.red,
+        );
       }
 
       setState(() {

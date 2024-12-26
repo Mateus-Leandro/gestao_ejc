@@ -31,9 +31,8 @@ class FunctionScreen {
       Navigator.of(context)
           .pushNamedAndRemoveUntil('/', (Route<dynamic> route) => false);
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        CustomSnackBar(message: e.toString(), colorBar: Colors.red),
-      );
+      CustomSnackBar.show(
+          context: context, message: e.toString(), colorBar: Colors.red);
     }
   }
 }

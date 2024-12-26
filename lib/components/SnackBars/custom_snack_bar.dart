@@ -2,11 +2,10 @@ import 'package:flutter/material.dart';
 
 class CustomSnackBar extends SnackBar {
   CustomSnackBar({
-    Key? key,
+    super.key,
     required String message,
     required Color colorBar,
   }) : super(
-          key: key,
           content: Text(
             message,
             style: const TextStyle(color: Colors.white),
