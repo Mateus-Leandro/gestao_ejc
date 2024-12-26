@@ -9,7 +9,7 @@ class CircleMemberService {
   late QuerySnapshot snapshot;
   var response;
 
-  Future getCircleMembers() async {
+  Future<List<CircleMemberModel>> getCircleMembers() async {
     try {
       snapshot = await _firestore.collection(collection).get();
       return snapshot.docs
@@ -19,33 +19,31 @@ class CircleMemberService {
           )
           .toList();
     } catch (e) {
-      throw 'Erro ao retornar membros';
+      rethrow;
     }
   }
 
-  Future<bool> saveCircleMember(
+  Future<void> saveCircleMember(
       {required CircleMemberModel circleMember}) async {
     try {
       await _firestore
           .collection(collection)
           .doc(circleMember.idCircleMember)
           .set(circleMember.toJson());
-      return true;
     } catch (e) {
-      throw 'Erro ao salvar membro: $e';
+      rethrow;
     }
   }
 
-  Future<bool> deleteCircleMember(
+  Future<void> deleteCircleMember(
       {required CircleMemberModel circleMember}) async {
     try {
       await _firestore
           .collection(collection)
           .doc(circleMember.idCircleMember)
           .delete();
-      return true;
     } catch (e) {
-      throw 'Erro ao deleter membro $e';
+      rethrow;
     }
   }
 }

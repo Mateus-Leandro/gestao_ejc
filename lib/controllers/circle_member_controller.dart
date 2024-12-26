@@ -23,29 +23,31 @@ class CircleMemberController extends ChangeNotifier {
   }
 
   void getCircleMembers() async {
-    circleMembers = await _circleMemberService.getCircleMembers();
-    _streamcontroller.sink.add(circleMembers);
-  }
-
-  Future<bool> saveCircleMember(
-      {required CircleMemberModel circleMember}) async {
-    if (await _circleMemberService.saveCircleMember(
-        circleMember: circleMember)) {
-      getCircleMembers();
-      return true;
-    } else {
-      return false;
+    try {
+      circleMembers = await _circleMemberService.getCircleMembers();
+      _streamcontroller.sink.add(circleMembers);
+    } catch (e) {
+      throw 'Erro ao buscar membros do círculo: $e';
     }
   }
 
-  Future<bool> deleteCircleMember(
+  Future<void> saveCircleMember(
       {required CircleMemberModel circleMember}) async {
-    if (await _circleMemberService.deleteCircleMember(
-        circleMember: circleMember)) {
+    try {
+      await _circleMemberService.saveCircleMember(circleMember: circleMember);
       getCircleMembers();
-      return true;
-    } else {
-      return false;
+    } catch (e) {
+      throw 'Erro ao salvar membro do círculo: $e';
+    }
+  }
+
+  Future<void> deleteCircleMember(
+      {required CircleMemberModel circleMember}) async {
+    try {
+      await _circleMemberService.deleteCircleMember(circleMember: circleMember);
+      getCircleMembers();
+    } catch (e) {
+      throw 'Erro ao remover membro do círculo: $e';
     }
   }
 }
