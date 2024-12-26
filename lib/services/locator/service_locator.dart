@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:gestao_ejc/controllers/auth_controller.dart';
 import 'package:gestao_ejc/controllers/circle_controller.dart';
 import 'package:gestao_ejc/controllers/circle_member_controller.dart';
 import 'package:gestao_ejc/controllers/encounter_controller.dart';
@@ -74,4 +75,5 @@ void setupGetIt() {
   getIt.registerLazySingleton<CircleMemberController>(
       () => CircleMemberController());
   getIt.registerLazySingleton<CircleMemberService>(() => CircleMemberService());
+  getIt.registerLazySingleton<AuthController>(() => AuthController());
 }

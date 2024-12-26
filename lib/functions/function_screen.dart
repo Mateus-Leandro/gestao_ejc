@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:gestao_ejc/services/auth_service.dart';
+import 'package:gestao_ejc/components/SnackBars/custom_snack_bar.dart';
+import 'package:gestao_ejc/controllers/auth_controller.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
 
 class FunctionScreen {
@@ -23,15 +24,16 @@ class FunctionScreen {
     return null;
   }
 
-  String? callLogOut({required BuildContext context}) {
-    final authService = getIt<AuthService>();
+  void callLogOut({required BuildContext context}) {
+    final authController = getIt<AuthController>();
     try {
-      authService.logOut();
+      authController.logOut();
       Navigator.of(context)
           .pushNamedAndRemoveUntil('/', (Route<dynamic> route) => false);
-      return null;
     } catch (e) {
-      return "Erro ao realizar logout: ${e}";
+      ScaffoldMessenger.of(context).showSnackBar(
+        CustomSnackBar(message: e.toString(), colorBar: Colors.red),
+      );
     }
   }
 }

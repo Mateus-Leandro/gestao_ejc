@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:gestao_ejc/components/SnackBars/custom_snack_bar.dart';
 import 'package:gestao_ejc/controllers/user_controller.dart';
 import 'package:gestao_ejc/models/user_model.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
-import 'package:gestao_ejc/theme/app_theme.dart';
 import 'package:quickalert/models/quickalert_animtype.dart';
 import 'package:quickalert/models/quickalert_type.dart';
 import 'package:quickalert/widgets/quickalert_dialog.dart';
@@ -15,7 +15,6 @@ class CustomInactivateUserAlert extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final UserController _userController = getIt<UserController>();
-    final AppTheme _appTheme = getIt<AppTheme>();
     final String action = user.active ? 'Inativar' : 'Ativar';
 
     return IconButton(
@@ -32,20 +31,18 @@ class CustomInactivateUserAlert extends StatelessWidget {
           confirmBtnColor: action == 'Inativar' ? Colors.red : Colors.green,
           showCancelBtn: true,
           onConfirmBtnTap: () async {
-            String? result = await _userController.changeUserState(user: user);
-            Navigator.of(context).pop();
-            if (result == null) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                    content: Text(
-                        'Sucesso ao ${action.toLowerCase()} usuário ${user.name}!'),
-                    backgroundColor: _appTheme.colorSnackBarSucess),
+            try {
+              await _userController.changeUserState(user: user);
+              Navigator.of(context).pop();
+              CustomSnackBar(
+                message:
+                    'Sucesso ao ${action.toLowerCase()} usuário ${user.name}!',
+                colorBar: Colors.green,
               );
-            } else {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                    content: Text('Erro: $result'),
-                    backgroundColor: _appTheme.colorSnackBarErro),
+            } catch (e) {
+              CustomSnackBar(
+                message: 'Erro ao ${action.toLowerCase()} usuário: $e!',
+                colorBar: Colors.red,
               );
             }
           },
