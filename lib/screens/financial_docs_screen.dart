@@ -140,9 +140,7 @@ class _FinancialDocsScreenState extends State<FinancialDocsScreen> {
                   child: CustomDeleteButton(
                     alertMessage: 'Excluir lançamento?',
                     deleteFunction: () async =>
-                        await _financialController.deleteFinancial(
-                      financialModel: doc,
-                    ),
+                        await _deleteFinancial(doc: doc),
                   ),
                 ),
               ],
@@ -183,6 +181,12 @@ class _FinancialDocsScreenState extends State<FinancialDocsScreen> {
       builder: (BuildContext context) {
         return const CustomFinancialReportForm();
       },
+    );
+  }
+
+  Future<void> _deleteFinancial({required FinancialModel doc}) async {
+    await _financialController.deleteFinancial(
+      financialModel: doc,
     );
   }
 }

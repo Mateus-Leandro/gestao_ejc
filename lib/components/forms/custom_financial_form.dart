@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:currency_textfield/currency_textfield.dart';
+import 'package:gestao_ejc/components/SnackBars/custom_snack_bar.dart';
 import 'package:gestao_ejc/components/buttons/custom_cancel_button.dart';
 import 'package:gestao_ejc/components/buttons/custom_confirmation_button.dart';
 import 'package:gestao_ejc/components/forms/custom_model_form.dart';
@@ -171,14 +172,21 @@ class _CustomFinancialFormState extends State<CustomFinancialForm> {
               ? widget.financialModel!.registrationUser
               : _firestore.doc('users/${_currentUser!.uid}'));
       int? result;
-
-      if (editing) {
-        result = await _financialController.updateFinancial(
-            financialModel: widget.financialModel!,
-            newFinancialModel: newFinancialModel);
-      } else {
-        result = await _financialController.createFinancial(
-            financialModel: newFinancialModel);
+      try {
+        if (editing) {
+          result = await _financialController.updateFinancial(
+              financialModel: widget.financialModel!,
+              newFinancialModel: newFinancialModel);
+        } else {
+          result = await _financialController.createFinancial(
+              financialModel: newFinancialModel);
+        }
+      } catch (e) {
+        CustomSnackBar.show(
+          context: context,
+          message: e.toString(),
+          colorBar: Colors.red,
+        );
       }
 
       setState(() {
