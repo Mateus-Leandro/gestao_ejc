@@ -24,22 +24,19 @@ class FinancialIndexService {
             totalOutputValue: 0);
       }
     } catch (e) {
-      String messageErro = 'Erro ao buscar index financeiro: $e';
-      print(messageErro);
-      throw Exception(messageErro);
+      rethrow;
     }
   }
 
-  Future<String?> saveFinancialIndex(
+  Future<void> saveFinancialIndex(
       FinancialIndexModel financialIndexModel) async {
     try {
       await _firestore
           .collection(collection)
           .doc(doc)
           .set(financialIndexModel.toJson());
-      return null;
     } catch (e) {
-      return 'Erro ao salvar index financeiro: $e';
+      rethrow;
     }
   }
 }

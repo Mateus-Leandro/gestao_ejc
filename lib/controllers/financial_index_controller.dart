@@ -21,8 +21,12 @@ class FinancialIndexController extends ChangeNotifier {
   }
 
   void getFinancialIndex() async {
-    var response = await _financialIndexService.getFinancialIndex();
-    _streamController?.sink.add(response);
+    try {
+      var response = await _financialIndexService.getFinancialIndex();
+      _streamController?.sink.add(response);
+    } catch (e) {
+      throw 'Erro ao obter indice financeiro: $e';
+    }
   }
 
   @override
@@ -31,14 +35,16 @@ class FinancialIndexController extends ChangeNotifier {
     super.dispose();
   }
 
-  Future<String?> saveFinancialIndex(
+  Future<void> saveFinancialIndex(
       {required FinancialIndexModel financialIndexModel}) async {
-    financialIndexModel.totalOutputValue =
-    functionDecimalPlace.fixDecimal(value: financialIndexModel.totalOutputValue);
-    financialIndexModel.totalInputValue =
-    functionDecimalPlace.fixDecimal(value: financialIndexModel.totalInputValue);
-    String? result =
-        await _financialIndexService.saveFinancialIndex(financialIndexModel);
-    return result;
+    financialIndexModel.totalOutputValue = functionDecimalPlace.fixDecimal(
+        value: financialIndexModel.totalOutputValue);
+    financialIndexModel.totalInputValue = functionDecimalPlace.fixDecimal(
+        value: financialIndexModel.totalInputValue);
+    try {
+      await _financialIndexService.saveFinancialIndex(financialIndexModel);
+    } catch (e) {
+      throw 'Erro ao salvar indice financeiro: $e';
+    }
   }
 }
