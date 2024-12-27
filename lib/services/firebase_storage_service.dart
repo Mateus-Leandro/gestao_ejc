@@ -13,8 +13,7 @@ class FirebaseStorageService {
       Uint8List? imageData = await ref.getData();
       return imageData;
     } catch (e) {
-      print('Erro ao obter a imagem: $e');
-      return null;
+      rethrow;
     }
   }
 
@@ -30,23 +29,30 @@ class FirebaseStorageService {
       String downloadUrl = await ref.getDownloadURL();
       return downloadUrl;
     } catch (e) {
-      print('Erro ao fazer upload da imagem: $e');
-      return null;
+      rethrow;
     }
   }
 
   Future<void> deleteImage({required String imagePath}) async {
-    await _firebaseStorage.ref().child(imagePath).delete();
+    try {
+      await _firebaseStorage.ref().child(imagePath).delete();
+    } catch (e) {
+      rethrow;
+    }
   }
 
-    Uint8List? compressAndResizeImage(Uint8List imageData){
-    final image = img.decodeImage(imageData);
+  Uint8List? compressAndResizeImage(Uint8List imageData) {
+    try {
+      final image = img.decodeImage(imageData);
 
-    if (image == null) return null;
+      if (image == null) return null;
 
-    final resized = img.copyResize(image, width: 1024, height: 1024);
-    final compressed = img.encodePng(resized);
+      final resized = img.copyResize(image, width: 1024, height: 1024);
+      final compressed = img.encodePng(resized);
 
-    return Uint8List.fromList(compressed);
+      return Uint8List.fromList(compressed);
+    } catch (e) {
+      rethrow;
+    }
   }
 }

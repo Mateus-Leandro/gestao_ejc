@@ -70,22 +70,34 @@ class EncounterController extends ChangeNotifier {
 
   Future<String> saveImageTheme(
       {required int sequential, required Uint8List imageTheme}) async {
-    String? urlDownload = await firebaseStorageService.uploadImage(
-        image: imageTheme,
-        path:
-            'encounters/${functionIntToRoman.convert(sequential)}/themeImage/themeImage.png');
-    return urlDownload ?? '';
+    try {
+      String? urlDownload = await firebaseStorageService.uploadImage(
+          image: imageTheme,
+          path:
+              'encounters/${functionIntToRoman.convert(sequential)}/themeImage/themeImage.png');
+      return urlDownload ?? '';
+    } catch (e) {
+      throw 'Erro ao salvar imagem do encontro: $e';
+    }
   }
 
   Future<Uint8List?> getImageTheme({required int sequential}) async {
-    return await firebaseStorageService.getImage(
-        imagePath:
-            'encounters/${functionIntToRoman.convert(sequential)}/themeImage/themeImage.png');
+    try {
+      return await firebaseStorageService.getImage(
+          imagePath:
+              'encounters/${functionIntToRoman.convert(sequential)}/themeImage/themeImage.png');
+    } catch (e) {
+      throw 'Erro ao obter imagem do encontro: $e';
+    }
   }
 
   Future<void> removeImageTheme({required int sequential}) async {
-    await firebaseStorageService.deleteImage(
-        imagePath:
-            'encounters/${functionIntToRoman.convert(sequential)}/themeImage/themeImage.png');
+    try {
+      await firebaseStorageService.deleteImage(
+          imagePath:
+              'encounters/${functionIntToRoman.convert(sequential)}/themeImage/themeImage.png');
+    } catch (e) {
+      throw 'Erro ao remover imagem do encontro: $e';
+    }
   }
 }
