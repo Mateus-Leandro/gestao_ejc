@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:gestao_ejc/components/utils/custom_list_tile.dart';
 import 'package:gestao_ejc/components/utils/custom_search_row.dart';
 import 'package:gestao_ejc/controllers/circle_member_controller.dart';
+import 'package:gestao_ejc/controllers/member_controller.dart';
 import 'package:gestao_ejc/functions/function_color.dart';
 import 'package:gestao_ejc/models/circle_member_model.dart';
+import 'package:gestao_ejc/models/member_model.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
 
 class CircleMembersScreen extends StatefulWidget {
@@ -17,6 +19,7 @@ class _CircleMembersScreenState extends State<CircleMembersScreen> {
   @override
   void initState() {
     _circleMemberController.init();
+    _getMembers();
     super.initState();
   }
 
@@ -30,6 +33,9 @@ class _CircleMembersScreenState extends State<CircleMembersScreen> {
       getIt<CircleMemberController>();
   final TextEditingController memberNameController = TextEditingController();
   final FunctionColor _functionColor = getIt<FunctionColor>();
+  final MemberController _memberController = getIt<MemberController>();
+  bool loadingMembers = true;
+  List<MemberModel> members = [];
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -54,6 +60,10 @@ class _CircleMembersScreenState extends State<CircleMembersScreen> {
   }
 
   Widget _buildCircleMembersList(BuildContext context) {
+    if (loadingMembers) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
     return StreamBuilder(
         stream: _circleMemberController.stream,
         builder: (context, snapshot) {
@@ -86,7 +96,9 @@ class _CircleMembersScreenState extends State<CircleMembersScreen> {
         });
   }
 
-  Widget _builCircleTile(BuildContext context, CircleMemberModel member) {
+  Widget _builCircleTile(BuildContext context, CircleMemberModel circleMember) {
+    MemberModel? memberReference = members
+        .firstWhere((element) => element.id == circleMember.idCircleMember);
     return CustomListTile(
         listTile: ListTile(
           title: Row(
@@ -99,19 +111,19 @@ class _CircleMembersScreenState extends State<CircleMembersScreen> {
                   decoration: BoxDecoration(
                     border: Border.all(color: Colors.black),
                     color: _functionColor
-                        .getFromHexadecimal(member.hexColorCircle),
+                        .getFromHexadecimal(circleMember.hexColorCircle),
                     borderRadius: BorderRadius.circular(20),
                   ),
                 ),
               ),
-              const Padding(
-                padding: EdgeInsets.only(left: 15),
+              Padding(
+                padding: const EdgeInsets.only(left: 15),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Nome Membro'),
-                    Text('Tipo: encontrista/moita/...')
+                    Text(memberReference.name),
+                    Text('Tipo: ${circleMember.type}')
                   ],
                 ),
               )
@@ -119,5 +131,12 @@ class _CircleMembersScreenState extends State<CircleMembersScreen> {
           ),
         ),
         defaultBackgroundColor: Colors.white);
+  }
+
+  void _getMembers() async {
+    members = await _memberController.getMembers();
+    setState(() {
+      loadingMembers = false;
+    });
   }
 }
