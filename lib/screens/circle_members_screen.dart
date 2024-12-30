@@ -122,8 +122,15 @@ class _CircleMembersScreenState extends State<CircleMembersScreen> {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(memberReference.name),
-                    Text('Tipo: ${circleMember.type}')
+                    Text(
+                      memberReference.name,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      circleMember.type,
+                    )
                   ],
                 ),
               )
