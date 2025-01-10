@@ -4,7 +4,7 @@ import 'package:gestao_ejc/models/circle_color_model.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
 
 class CustomColorDrawer extends StatefulWidget {
-  final Color initialColor;
+  final Color? initialColor;
   final ValueChanged<List> colorSelected;
   final String tooltipMessage;
 
@@ -20,7 +20,7 @@ class CustomColorDrawer extends StatefulWidget {
 }
 
 class _CustomColorDrawerState extends State<CustomColorDrawer> {
-  late Color _currentColor;
+  late Color? _currentColor;
   final FunctionColor functionColor = getIt<FunctionColor>();
   final CircleColorModel _circleColors = CircleColorModel();
   String? colorName;

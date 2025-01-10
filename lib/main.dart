@@ -62,11 +62,6 @@ class MyApp extends StatelessWidget {
         '/users': (context) => const UserScreen(),
         '/financial': (context) => const FinancialScreen(),
         '/encounter': (context) => const EncounterScreen(),
-        '/circles': (context) => const ModelScreen(
-            title: 'Círculos',
-            body: CircleScreen(),
-            indexMenuSelected: 1,
-            showMenuDrawer: true),
       },
     );
   }
