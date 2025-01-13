@@ -45,8 +45,8 @@ class CircleTabsScreen extends StatelessWidget {
             Expanded(
               child: TabBarView(
                 children: [
-                  const _KeepAliveWrapper(
-                    child: CircleScreen(),
+                  _KeepAliveWrapper(
+                    child: CircleScreen(encounter: encounterModel),
                   ),
                   _KeepAliveWrapper(
                     child: Container(),

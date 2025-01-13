@@ -1,12 +1,18 @@
 import 'dart:async';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:gestao_ejc/functions/function_int_to_roman.dart';
 import 'package:gestao_ejc/models/circle_model.dart';
 import 'package:gestao_ejc/services/circle_service.dart';
+import 'package:gestao_ejc/services/firebase_storage_service.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
 
 class CircleController extends ChangeNotifier {
   var _streamController;
   final CircleService _circleService = getIt<CircleService>();
+  final FirebaseStorageService firebaseStorageService =
+      getIt<FirebaseStorageService>();
+  final FunctionIntToRoman functionIntToRoman = getIt<FunctionIntToRoman>();
   Stream<List<CircleModel>>? get stream => _streamController.stream;
   List<CircleModel?>? circles;
 
@@ -45,6 +51,22 @@ class CircleController extends ChangeNotifier {
       getCircles(null);
     } catch (e) {
       throw 'Erro ao deletar círculo: $e';
+    }
+  }
+
+  Future<String?> saveCircleImage(
+      {required Uint8List image,
+      required int sequentialEncounter,
+      required String circleId,
+      required String fileName}) async {
+    try {
+      String? url = await firebaseStorageService.uploadImage(
+          image: image,
+          path:
+              'encounters/${functionIntToRoman.convert(sequentialEncounter)}/circles/$circleId/$fileName.png');
+      return url ?? '';
+    } catch (e) {
+      throw 'Erro ao salvar imagem: $e';
     }
   }
 }

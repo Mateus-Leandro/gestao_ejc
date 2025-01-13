@@ -7,11 +7,13 @@ import 'package:gestao_ejc/components/utils/custom_search_row.dart';
 import 'package:gestao_ejc/controllers/circle_controller.dart';
 import 'package:gestao_ejc/functions/function_color.dart';
 import 'package:gestao_ejc/models/circle_model.dart';
+import 'package:gestao_ejc/models/encounter_model.dart';
 import 'package:gestao_ejc/services/auth_service.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
 
 class CircleScreen extends StatefulWidget {
-  const CircleScreen({super.key});
+  final EncounterModel encounter;
+  const CircleScreen({super.key, required this.encounter});
 
   @override
   State<CircleScreen> createState() => _CircleScreenState();
@@ -137,7 +139,9 @@ class _CircleScreenState extends State<CircleScreen> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return const CustomCircleForm();
+        return CustomCircleForm(
+          encounter: widget.encounter,
+        );
       },
     );
   }

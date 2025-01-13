@@ -8,37 +8,38 @@ import 'package:gestao_ejc/components/buttons/custom_pick_file_button.dart';
 import 'package:gestao_ejc/components/drawers/custom_color_drawer.dart';
 import 'package:gestao_ejc/components/forms/custom_model_form.dart';
 import 'package:gestao_ejc/controllers/circle_controller.dart';
-import 'package:gestao_ejc/functions/function_color.dart';
 import 'package:gestao_ejc/functions/function_pick_image.dart';
 import 'package:gestao_ejc/models/circle_model.dart';
+import 'package:gestao_ejc/models/encounter_model.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
 import 'package:uuid/uuid.dart';
 
 class CustomCircleForm extends StatefulWidget {
   final CircleModel? editingCircle;
+  final EncounterModel encounter;
 
-  const CustomCircleForm({
-    super.key,
-    this.editingCircle
-  });
+  const CustomCircleForm(
+      {super.key, this.editingCircle, required this.encounter});
 
   @override
   State<CustomCircleForm> createState() => _CustomCircleFormState();
 }
 
 class _CustomCircleFormState extends State<CustomCircleForm> {
-  late String selectedColorHex;
+  String? selectedColorHex;
   final formKey = GlobalKey<FormState>();
   final CircleController _circleController = getIt<CircleController>();
-  final FunctionColor _functionColor = getIt<FunctionColor>();
   final FunctionPickImage functionPickImage = getIt<FunctionPickImage>();
   final TextEditingController _circleNameController = TextEditingController();
+  bool _colorSelectionError = false;
   bool _isLoadingThemeImage = false;
   bool _isLoadingCircleImage = false;
   Uint8List? themeImage;
   Uint8List? originalThemeImage;
   Uint8List? circleImage;
   Uint8List? originalCircleImage;
+  String? urlThemeImage = '';
+  String? urlCircleImage = '';
 
   @override
   void initState() {
@@ -62,7 +63,11 @@ class _CustomCircleFormState extends State<CustomCircleForm> {
         ),
         CustomConfirmationButton(
           onPressed: () {
-            if (formKey.currentState!.validate()) {
+            setState(() {
+              _colorSelectionError = selectedColorHex == null;
+            });
+
+            if (formKey.currentState!.validate() && !_colorSelectionError) {
               _saveCircle();
             }
           },
@@ -72,13 +77,34 @@ class _CustomCircleFormState extends State<CustomCircleForm> {
   }
 
   void _saveCircle() async {
-    CircleModel circle = CircleModel(
-      id: widget.editingCircle?.id ?? const Uuid().v4(),
-      name: _circleNameController.text.trim(),
-      colorHex: selectedColorHex,
-    );
-
     try {
+      final String circleId = widget.editingCircle?.id ?? const Uuid().v4();
+      if (themeImage != null) {
+        urlThemeImage = await _circleController.saveCircleImage(
+          image: themeImage!,
+          sequentialEncounter: widget.encounter.sequential,
+          circleId: circleId,
+          fileName: 'themeImage',
+        );
+      }
+
+      if (themeImage != null) {
+        urlCircleImage = await _circleController.saveCircleImage(
+          image: circleImage!,
+          sequentialEncounter: widget.encounter.sequential,
+          circleId: circleId,
+          fileName: 'circleImage',
+        );
+      }
+
+      CircleModel circle = CircleModel(
+        id: circleId,
+        name: _circleNameController.text.trim(),
+        colorHex: selectedColorHex!,
+        urlThemeImage: urlThemeImage,
+        urlCircleImage: urlCircleImage,
+      );
+
       await _circleController.saveCircle(circle: circle);
       CustomSnackBar.show(
         context: context,
@@ -104,15 +130,30 @@ class _CustomCircleFormState extends State<CustomCircleForm> {
         colorSelected: (newColor) {
           setState(() {
             selectedColorHex = newColor[2];
+            _colorSelectionError = false;
           });
         },
         tooltipMessage: 'Selecione a cor do círculo',
       ),
-      TextField(
+      if (_colorSelectionError)
+        const Padding(
+          padding: EdgeInsets.symmetric(vertical: 3),
+          child: Text(
+            'Por favor, selecione uma cor para o círculo!',
+            style: TextStyle(color: Colors.red, fontSize: 13),
+          ),
+        ),
+      TextFormField(
         controller: _circleNameController,
         decoration: const InputDecoration(
           labelText: 'Nome do círculo',
         ),
+        validator: (circleName) {
+          if (circleName == null || circleName.isEmpty) {
+            return 'Informe o nome do círculo';
+          }
+          return null;
+        },
       ),
       Padding(
         padding: const EdgeInsets.only(top: 15),
@@ -159,8 +200,8 @@ class _CustomCircleFormState extends State<CustomCircleForm> {
                                                 elevation: 5,
                                                 child: Padding(
                                                   padding: EdgeInsets.all(8.0),
-                                                  child:
-                                                      Text('Selecionar imagem tema'),
+                                                  child: Text(
+                                                      'Selecionar imagem tema'),
                                                 ),
                                               ),
                                   ),
@@ -224,7 +265,8 @@ class _CustomCircleFormState extends State<CustomCircleForm> {
                                                 elevation: 5,
                                                 child: Padding(
                                                   padding: EdgeInsets.all(8.0),
-                                                  child: Text('Selecionar imagem do círculo'),
+                                                  child: Text(
+                                                      'Selecionar imagem do círculo'),
                                                 ),
                                               ),
                                   ),
