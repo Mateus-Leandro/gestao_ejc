@@ -83,4 +83,18 @@ class CircleController extends ChangeNotifier {
       throw 'Erro ao obter imagem do círculo: $e';
     }
   }
+
+  Future<void> removeCircleImage({
+    required int sequentialEncounter,
+    required String circleId,
+    required String fileName,
+  }) async {
+    try {
+      await firebaseStorageService.deleteImage(
+          imagePath:
+              'encounters/${functionIntToRoman.convert(sequentialEncounter)}/circles/$circleId/$fileName.png');
+    } catch (e) {
+      throw 'Erro ao remover imagem do círculo: $e';
+    }
+  }
 }

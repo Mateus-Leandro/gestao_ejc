@@ -88,6 +88,7 @@ class _CustomCircleFormState extends State<CustomCircleForm> {
   void _saveCircle() async {
     try {
       final String circleId = widget.editingCircle?.id ?? const Uuid().v4();
+
       if (themeImage != null) {
         urlThemeImage = await _circleController.saveCircleImage(
           image: themeImage!,
@@ -95,15 +96,31 @@ class _CustomCircleFormState extends State<CustomCircleForm> {
           circleId: circleId,
           fileName: 'themeImage',
         );
+      } else {
+        if (originalThemeImage != null) {
+          await _circleController.removeCircleImage(
+            sequentialEncounter: widget.encounter.sequential,
+            circleId: circleId,
+            fileName: 'themeImage',
+          );
+        }
       }
 
-      if (themeImage != null) {
+      if (circleImage != null) {
         urlCircleImage = await _circleController.saveCircleImage(
           image: circleImage!,
           sequentialEncounter: widget.encounter.sequential,
           circleId: circleId,
           fileName: 'circleImage',
         );
+      } else {
+        if (originalCircleImage != null) {
+          await _circleController.removeCircleImage(
+            sequentialEncounter: widget.encounter.sequential,
+            circleId: circleId,
+            fileName: 'circleImage',
+          );
+        }
       }
 
       CircleModel circle = CircleModel(
@@ -123,7 +140,7 @@ class _CustomCircleFormState extends State<CustomCircleForm> {
     } catch (e) {
       CustomSnackBar.show(
         context: context,
-        message: e.toString(),
+        message: 'Erro ao salvar círculo: $e',
         colorBar: Colors.red,
       );
     } finally {
@@ -340,17 +357,23 @@ class _CustomCircleFormState extends State<CustomCircleForm> {
       _isLoadingCircleImage = true;
     });
 
-    originalThemeImage = await _circleController.getCircleImage(
-      circleId: widget.editingCircle!.id,
-      fileName: 'themeImage',
-      sequentialEncounter: widget.encounter.sequential,
-    );
+    originalThemeImage = null;
+    if (widget.editingCircle!.urlThemeImage!.isNotEmpty) {
+      originalThemeImage = await _circleController.getCircleImage(
+        circleId: widget.editingCircle!.id,
+        fileName: 'themeImage',
+        sequentialEncounter: widget.encounter.sequential,
+      );
+    }
 
-    originalCircleImage = await _circleController.getCircleImage(
-      circleId: widget.editingCircle!.id,
-      fileName: 'circleImage',
-      sequentialEncounter: widget.encounter.sequential,
-    );
+    originalCircleImage = null;
+    if (widget.editingCircle!.urlCircleImage!.isNotEmpty) {
+      originalCircleImage = await _circleController.getCircleImage(
+        circleId: widget.editingCircle!.id,
+        fileName: 'circleImage',
+        sequentialEncounter: widget.encounter.sequential,
+      );
+    }
 
     themeImage = originalThemeImage;
     circleImage = originalCircleImage;
