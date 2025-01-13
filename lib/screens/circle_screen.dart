@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gestao_ejc/components/SnackBars/custom_snack_bar.dart';
 import 'package:gestao_ejc/components/buttons/custom_delete_button.dart';
+import 'package:gestao_ejc/components/buttons/custom_edit_button.dart';
 import 'package:gestao_ejc/components/forms/custom_circle_form.dart';
 import 'package:gestao_ejc/components/utils/custom_list_tile.dart';
 import 'package:gestao_ejc/components/utils/custom_search_row.dart';
@@ -120,6 +121,15 @@ class _CircleScreenState extends State<CircleScreen> {
             children: [
               if (_authService.actualUserModel?.manipulateAdministrator ??
                   false) ...[
+                Tooltip(
+                  message: 'Editar Círculo',
+                  child: CustomEditButton(
+                    form: CustomCircleForm(
+                      encounter: widget.encounter,
+                      editingCircle: circle,
+                    ),
+                  ),
+                ),
                 Tooltip(
                   message: 'Excluir Círculo',
                   child: CustomDeleteButton(

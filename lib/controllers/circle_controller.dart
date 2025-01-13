@@ -69,4 +69,18 @@ class CircleController extends ChangeNotifier {
       throw 'Erro ao salvar imagem: $e';
     }
   }
+
+  Future<Uint8List?> getCircleImage({
+    required int sequentialEncounter,
+    required String circleId,
+    required String fileName,
+  }) async {
+    try {
+      return await firebaseStorageService.getImage(
+          imagePath:
+              'encounters/${functionIntToRoman.convert(sequentialEncounter)}/circles/$circleId/$fileName.png');
+    } catch (e) {
+      throw 'Erro ao obter imagem do círculo: $e';
+    }
+  }
 }

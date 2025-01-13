@@ -8,6 +8,7 @@ import 'package:gestao_ejc/components/buttons/custom_pick_file_button.dart';
 import 'package:gestao_ejc/components/drawers/custom_color_drawer.dart';
 import 'package:gestao_ejc/components/forms/custom_model_form.dart';
 import 'package:gestao_ejc/controllers/circle_controller.dart';
+import 'package:gestao_ejc/functions/function_color.dart';
 import 'package:gestao_ejc/functions/function_pick_image.dart';
 import 'package:gestao_ejc/models/circle_model.dart';
 import 'package:gestao_ejc/models/encounter_model.dart';
@@ -31,9 +32,11 @@ class _CustomCircleFormState extends State<CustomCircleForm> {
   final CircleController _circleController = getIt<CircleController>();
   final FunctionPickImage functionPickImage = getIt<FunctionPickImage>();
   final TextEditingController _circleNameController = TextEditingController();
+  final FunctionColor _functionColor = getIt<FunctionColor>();
   bool _colorSelectionError = false;
   bool _isLoadingThemeImage = false;
   bool _isLoadingCircleImage = false;
+  Color? initialColor;
   Uint8List? themeImage;
   Uint8List? originalThemeImage;
   Uint8List? circleImage;
@@ -44,6 +47,12 @@ class _CustomCircleFormState extends State<CustomCircleForm> {
   @override
   void initState() {
     super.initState();
+    if (widget.editingCircle != null) {
+      _circleNameController.text = widget.editingCircle?.name ?? '';
+      selectedColorHex = widget.editingCircle!.colorHex;
+      initialColor = _functionColor.getFromHexadecimal(selectedColorHex!);
+      _loadImages();
+    }
   }
 
   @override
@@ -126,7 +135,7 @@ class _CustomCircleFormState extends State<CustomCircleForm> {
     return [
       const Text('Cor do círculo'),
       CustomColorDrawer(
-        initialColor: null,
+        initialColor: initialColor,
         colorSelected: (newColor) {
           setState(() {
             selectedColorHex = newColor[2];
@@ -321,6 +330,33 @@ class _CustomCircleFormState extends State<CustomCircleForm> {
     circleImage = await functionPickImage.getSingleImage();
     circleImage ??= originalCircleImage;
     setState(() {
+      _isLoadingCircleImage = false;
+    });
+  }
+
+  Future<void> _loadImages() async {
+    setState(() {
+      _isLoadingThemeImage = true;
+      _isLoadingCircleImage = true;
+    });
+
+    originalThemeImage = await _circleController.getCircleImage(
+      circleId: widget.editingCircle!.id,
+      fileName: 'themeImage',
+      sequentialEncounter: widget.encounter.sequential,
+    );
+
+    originalCircleImage = await _circleController.getCircleImage(
+      circleId: widget.editingCircle!.id,
+      fileName: 'circleImage',
+      sequentialEncounter: widget.encounter.sequential,
+    );
+
+    themeImage = originalThemeImage;
+    circleImage = originalCircleImage;
+
+    setState(() {
+      _isLoadingThemeImage = false;
       _isLoadingCircleImage = false;
     });
   }
