@@ -63,7 +63,7 @@ class _CustomCircleFormState extends State<CustomCircleForm> {
   @override
   Widget build(BuildContext context) {
     return CustomModelForm(
-      title: 'Criar Círculo',
+      title: widget.editingCircle != null ? 'Editar Círculo' : 'Criar Círculo',
       formKey: formKey,
       formBody: _buildFormBody(),
       actions: [
