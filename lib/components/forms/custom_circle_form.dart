@@ -52,6 +52,8 @@ class _CustomCircleFormState extends State<CustomCircleForm> {
       _circleNameController.text = widget.editingCircle?.name ?? '';
       selectedColorHex = widget.editingCircle!.colorHex;
       initialColor = _functionColor.getFromHexadecimal(selectedColorHex!);
+      urlThemeImage = widget.editingCircle!.urlThemeImage;
+      urlCircleImage = widget.editingCircle!.urlCircleImage;
       _loadImages();
     }
   }
