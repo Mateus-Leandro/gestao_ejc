@@ -36,6 +36,7 @@ class _CustomCircleFormState extends State<CustomCircleForm> {
   bool _colorSelectionError = false;
   bool _isLoadingThemeImage = false;
   bool _isLoadingCircleImage = false;
+  bool _isLoadingSaveCircle = false;
   Color? initialColor;
   Uint8List? themeImage;
   Uint8List? originalThemeImage;
@@ -67,20 +68,28 @@ class _CustomCircleFormState extends State<CustomCircleForm> {
       formKey: formKey,
       formBody: _buildFormBody(),
       actions: [
-        CustomCancelButton(
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        CustomConfirmationButton(
-          onPressed: () {
-            setState(() {
-              _colorSelectionError = selectedColorHex == null;
-            });
+        if (_isLoadingSaveCircle) ...[
+          const Text('Salvando círculo, aguarde...'),
+          const CircularProgressIndicator()
+        ] else ...[
+          CustomCancelButton(
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          CustomConfirmationButton(
+            onPressed: () {
+              setState(() {
+                _colorSelectionError = selectedColorHex == null;
+              });
 
-            if (formKey.currentState!.validate() && !_colorSelectionError) {
-              _saveCircle();
-            }
-          },
-        ),
+              if (formKey.currentState!.validate() && !_colorSelectionError) {
+                setState(() {
+                  _isLoadingSaveCircle = true;
+                });
+                _saveCircle();
+              }
+            },
+          ),
+        ]
       ],
     );
   }
