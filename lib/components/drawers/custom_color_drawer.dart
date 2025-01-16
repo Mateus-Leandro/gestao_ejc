@@ -7,12 +7,14 @@ class CustomColorDrawer extends StatefulWidget {
   final Color? initialColor;
   final ValueChanged<List> colorSelected;
   final String tooltipMessage;
+  final bool allowSelection;
 
   const CustomColorDrawer({
     Key? key,
     required this.initialColor,
     required this.colorSelected,
     required this.tooltipMessage,
+    required this.allowSelection,
   }) : super(key: key);
 
   @override
@@ -60,21 +62,23 @@ class _CustomColorDrawerState extends State<CustomColorDrawer> {
             ),
           );
         }).toList(),
-        onChanged: (color) {
-          if (color != null) {
-            setState(() {
-              _currentColor = color;
-            });
-            colorName = _circleColors.currentColors.entries
-                .firstWhere((element) => element.value == color)
-                .key;
-            widget.colorSelected([
-              colorName,
-              color,
-              functionColor.convertToHexadecimal(color),
-            ]);
-          }
-        },
+        onChanged: widget.allowSelection
+            ? (color) {
+                if (color != null) {
+                  setState(() {
+                    _currentColor = color;
+                  });
+                  colorName = _circleColors.currentColors.entries
+                      .firstWhere((element) => element.value == color)
+                      .key;
+                  widget.colorSelected([
+                    colorName,
+                    color,
+                    functionColor.convertToHexadecimal(color),
+                  ]);
+                }
+              }
+            : null,
       ),
     );
   }

@@ -18,9 +18,10 @@ import 'package:uuid/uuid.dart';
 class CustomCircleForm extends StatefulWidget {
   final CircleModel? editingCircle;
   final EncounterModel encounter;
+  final List<CircleModel>? circles;
 
   const CustomCircleForm(
-      {super.key, this.editingCircle, required this.encounter});
+      {super.key, this.editingCircle, required this.encounter, this.circles});
 
   @override
   State<CustomCircleForm> createState() => _CustomCircleFormState();
@@ -170,7 +171,9 @@ class _CustomCircleFormState extends State<CustomCircleForm> {
             _colorSelectionError = false;
           });
         },
-        tooltipMessage: 'Selecione a cor do círculo',
+        tooltipMessage:
+            widget.editingCircle == null ? 'Selecione a cor do círculo' : '',
+        allowSelection: widget.editingCircle == null,
       ),
       if (_colorSelectionError)
         const Padding(
