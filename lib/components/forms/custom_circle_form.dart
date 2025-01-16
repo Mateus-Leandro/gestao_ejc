@@ -97,16 +97,15 @@ class _CustomCircleFormState extends State<CustomCircleForm> {
   void _saveCircle() async {
     try {
       final String circleId = widget.editingCircle?.id ?? const Uuid().v4();
-
-      if (themeImage != null) {
-        urlThemeImage = await _circleController.saveCircleImage(
-          image: themeImage!,
-          sequentialEncounter: widget.encounter.sequential,
-          circleId: circleId,
-          fileName: 'themeImage',
-        );
-      } else {
-        if (originalThemeImage != null) {
+      if (themeImage != originalThemeImage) {
+        if (themeImage != null) {
+          urlThemeImage = await _circleController.saveCircleImage(
+            image: themeImage!,
+            sequentialEncounter: widget.encounter.sequential,
+            circleId: circleId,
+            fileName: 'themeImage',
+          );
+        } else {
           await _circleController.removeCircleImage(
             sequentialEncounter: widget.encounter.sequential,
             circleId: circleId,
@@ -115,15 +114,15 @@ class _CustomCircleFormState extends State<CustomCircleForm> {
         }
       }
 
-      if (circleImage != null) {
-        urlCircleImage = await _circleController.saveCircleImage(
-          image: circleImage!,
-          sequentialEncounter: widget.encounter.sequential,
-          circleId: circleId,
-          fileName: 'circleImage',
-        );
-      } else {
-        if (originalCircleImage != null) {
+      if (circleImage != originalCircleImage) {
+        if (circleImage != null) {
+          urlCircleImage = await _circleController.saveCircleImage(
+            image: circleImage!,
+            sequentialEncounter: widget.encounter.sequential,
+            circleId: circleId,
+            fileName: 'circleImage',
+          );
+        } else {
           await _circleController.removeCircleImage(
             sequentialEncounter: widget.encounter.sequential,
             circleId: circleId,
@@ -134,6 +133,7 @@ class _CustomCircleFormState extends State<CustomCircleForm> {
 
       CircleModel circle = CircleModel(
         id: circleId,
+        sequentialEncounter: widget.encounter.sequential,
         name: _circleNameController.text.trim(),
         colorHex: selectedColorHex!,
         urlThemeImage: urlThemeImage,
