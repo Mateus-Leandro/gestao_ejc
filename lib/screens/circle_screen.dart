@@ -147,6 +147,7 @@ class _CircleScreenState extends State<CircleScreen> {
 
   void _showCircleForm(CircleModel? circleModel) {
     showDialog(
+      barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
         return CustomCircleForm(
