@@ -37,6 +37,7 @@ class _CircleScreenState extends State<CircleScreen> {
   final CircleController _circleController = getIt<CircleController>();
   final AuthService _authService = getIt<AuthService>();
   final FunctionColor _functionColor = getIt<FunctionColor>();
+  List<CircleModel> circles = [];
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -82,7 +83,7 @@ class _CircleScreenState extends State<CircleScreen> {
           return const Center(child: Text('Nenhum círculo encontrado.'));
         }
 
-        var circles = snapshot.data!;
+        circles = snapshot.data!;
         return ListView.builder(
           itemCount: circles.length,
           itemBuilder: (context, index) {
@@ -127,6 +128,7 @@ class _CircleScreenState extends State<CircleScreen> {
                     form: CustomCircleForm(
                       encounter: widget.encounter,
                       editingCircle: circle,
+                      circles: circles,
                     ),
                   ),
                 ),
@@ -152,6 +154,7 @@ class _CircleScreenState extends State<CircleScreen> {
       builder: (BuildContext context) {
         return CustomCircleForm(
           encounter: widget.encounter,
+          circles: circles,
         );
       },
     );

@@ -34,7 +34,7 @@ class _CustomCircleFormState extends State<CustomCircleForm> {
   final FunctionPickImage functionPickImage = getIt<FunctionPickImage>();
   final TextEditingController _circleNameController = TextEditingController();
   final FunctionColor _functionColor = getIt<FunctionColor>();
-  bool _colorSelectionError = false;
+  String? _colorSelectionError;
   bool _isLoadingThemeImage = false;
   bool _isLoadingCircleImage = false;
   bool _isLoadingSaveCircle = false;
@@ -81,10 +81,12 @@ class _CustomCircleFormState extends State<CustomCircleForm> {
           CustomConfirmationButton(
             onPressed: () {
               setState(() {
-                _colorSelectionError = selectedColorHex == null;
+                if (selectedColorHex == null) {
+                  _colorSelectionError = 'Necessário selecionar cor do círculo';
+                }
               });
-
-              if (formKey.currentState!.validate() && !_colorSelectionError) {
+              if (formKey.currentState!.validate() &&
+                  _colorSelectionError == null) {
                 setState(() {
                   _isLoadingSaveCircle = true;
                 });
@@ -166,21 +168,30 @@ class _CustomCircleFormState extends State<CustomCircleForm> {
       CustomColorDrawer(
         initialColor: initialColor,
         colorSelected: (newColor) {
-          setState(() {
-            selectedColorHex = newColor[2];
-            _colorSelectionError = false;
-          });
+          setState(
+            () {
+              selectedColorHex = newColor[2];
+              _colorSelectionError = null;
+              if (widget.editingCircle == null &&
+                  widget.circles!.any(
+                    (circle) => circle.colorHex == newColor[2],
+                  )) {
+                _colorSelectionError =
+                    'Cor já utilizada em outro círculo do encontro!';
+              }
+            },
+          );
         },
         tooltipMessage:
             widget.editingCircle == null ? 'Selecione a cor do círculo' : '',
         allowSelection: widget.editingCircle == null,
       ),
-      if (_colorSelectionError)
-        const Padding(
-          padding: EdgeInsets.symmetric(vertical: 3),
+      if (_colorSelectionError != null)
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 3),
           child: Text(
-            'Por favor, selecione uma cor para o círculo!',
-            style: TextStyle(color: Colors.red, fontSize: 13),
+            _colorSelectionError!,
+            style: const TextStyle(color: Colors.red, fontSize: 13),
           ),
         ),
       TextFormField(
