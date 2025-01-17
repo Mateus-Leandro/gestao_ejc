@@ -16,9 +16,9 @@ class CircleController extends ChangeNotifier {
   Stream<List<CircleModel>>? get stream => _streamController.stream;
   List<CircleModel?>? circles;
 
-  void init() {
+  void init({required int sequentialEncounter}) {
     _streamController = StreamController<List<CircleModel>>();
-    getCircles(null);
+    getCircles(circleName: null, sequentialEncounter: sequentialEncounter);
   }
 
   @override
@@ -27,9 +27,11 @@ class CircleController extends ChangeNotifier {
     super.dispose();
   }
 
-  void getCircles(String? circleName) async {
+  void getCircles(
+      {required String? circleName, required int sequentialEncounter}) async {
     try {
-      circles = await _circleService.getCircles(circleName?.toLowerCase());
+      circles = await _circleService.getCircles(
+          circleName?.toLowerCase(), sequentialEncounter);
       _streamController.sink.add(circles);
     } catch (e) {
       throw 'Erro ao buscar círculos: $e';
@@ -39,16 +41,18 @@ class CircleController extends ChangeNotifier {
   Future<void> saveCircle({required CircleModel circle}) async {
     try {
       await _circleService.saveCircle(circle: circle);
-      getCircles(null);
+      getCircles(
+          circleName: null, sequentialEncounter: circle.sequentialEncounter);
     } catch (e) {
       throw 'Erro ao salvar círculo: $e';
     }
   }
 
-  Future<void> deleteCircle({required String circleId}) async {
+  Future<void> deleteCircle({required CircleModel circle}) async {
     try {
-      await _circleService.deleteCircle(circleId: circleId);
-      getCircles(null);
+      await _circleService.deleteCircle(circleId: circle.id);
+      getCircles(
+          circleName: null, sequentialEncounter: circle.sequentialEncounter);
     } catch (e) {
       throw 'Erro ao deletar círculo: $e';
     }

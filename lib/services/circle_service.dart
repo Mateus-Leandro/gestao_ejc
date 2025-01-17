@@ -20,7 +20,8 @@ class CircleService {
     }
   }
 
-  Future<List<CircleModel>> getCircles(String? circleName) async {
+  Future<List<CircleModel>> getCircles(
+      String? circleName, int sequentialEncounter) async {
     try {
       query = _firestore.collection(collection);
       if (circleName != null) {
@@ -31,6 +32,8 @@ class CircleService {
                       circleName.codeUnitAt(circleName.length - 1) + 1),
             );
       }
+      query =
+          query.where('sequentialEncounter', isEqualTo: sequentialEncounter);
       snapshot = await query.get();
       return snapshot.docs
           .map(

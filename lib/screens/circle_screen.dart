@@ -23,7 +23,7 @@ class CircleScreen extends StatefulWidget {
 class _CircleScreenState extends State<CircleScreen> {
   @override
   void initState() {
-    _circleController.init();
+    _circleController.init(sequentialEncounter: widget.encounter.sequential);
     super.initState();
   }
 
@@ -53,10 +53,10 @@ class _CircleScreenState extends State<CircleScreen> {
             controller: circleNameController,
             messageTextField: 'Pesquisar Círculo',
             functionTextField: () => _circleController.getCircles(
-              circleNameController.text.trim().isEmpty
-                  ? null
-                  : circleNameController.text.trim(),
-            ),
+                circleName: circleNameController.text.trim().isEmpty
+                    ? null
+                    : circleNameController.text.trim(),
+                sequentialEncounter: widget.encounter.sequential),
             iconButton: const Icon(Icons.add),
           ),
           Expanded(child: _buildCircleList(context))
@@ -136,8 +136,7 @@ class _CircleScreenState extends State<CircleScreen> {
                   message: 'Excluir Círculo',
                   child: CustomDeleteButton(
                     alertMessage: 'Excluir Círculo',
-                    deleteFunction: () async =>
-                        _deleteCircle(circleId: circle.id),
+                    deleteFunction: () async => _deleteCircle(circle: circle),
                   ),
                 ),
               ],
@@ -160,9 +159,9 @@ class _CircleScreenState extends State<CircleScreen> {
     );
   }
 
-  Future<void> _deleteCircle({required String circleId}) async {
+  Future<void> _deleteCircle({required CircleModel circle}) async {
     try {
-      await _circleController.deleteCircle(circleId: circleId);
+      await _circleController.deleteCircle(circle: circle);
     } catch (e) {
       CustomSnackBar.show(
         context: context,
