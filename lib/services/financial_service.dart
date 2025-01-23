@@ -36,12 +36,11 @@ class FinancialService {
               FinancialModel.fromJson(doc.data() as Map<String, dynamic>))
           .toList();
     } catch (e) {
-      print('Erro ao buscar Lançamentos financeiros: $e');
-      throw Exception('Erro ao buscar Lançamentos financeiros: $e');
+      rethrow;
     }
   }
 
-  Future<String?> saveFinancial(FinancialModel financialModel) async {
+  Future<void> saveFinancial(FinancialModel financialModel) async {
     try {
       await _firestore
           .collection(collection)
@@ -49,26 +48,20 @@ class FinancialService {
               financialModel.type + financialModel.numberTransaction.toString())
           .set(financialModel.toJson());
       financialModel.numberTransaction;
-      return null;
     } catch (e) {
-      String message = 'Erro ao salvar Lançamento financeiro: $e';
-      print(message);
-      return message;
+      rethrow;
     }
   }
 
-  Future<String?> deleteFinancial(FinancialModel financialModel) async {
+  Future<void> deleteFinancial(FinancialModel financialModel) async {
     try {
       await _firestore
           .collection(collection)
           .doc(
               financialModel.type + financialModel.numberTransaction.toString())
           .delete();
-      return null;
     } catch (e) {
-      String message = 'Erro ao excluir Lançamento financeiro: $e';
-      print(message);
-      return message;
+      rethrow;
     }
   }
 
@@ -85,12 +78,10 @@ class FinancialService {
 
   void filterRangeDate(
       {required DateTime initialDate, required DateTime finalDate}) {
-
     query = query.where('transactionDate',
         isGreaterThanOrEqualTo:
             functionDate.getTimestampFromDateTime(initialDate));
     query = query.where('transactionDate',
-        isLessThanOrEqualTo:
-            functionDate.getTimestampFromDateTime(finalDate));
+        isLessThanOrEqualTo: functionDate.getTimestampFromDateTime(finalDate));
   }
 }

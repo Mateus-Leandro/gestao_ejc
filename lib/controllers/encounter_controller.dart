@@ -29,52 +29,75 @@ class EncounterController extends ChangeNotifier {
     super.dispose();
   }
 
-  Future<bool> saveEncounter(
+  Future<void> saveEncounter(
       {required EncounterModel encounter, required bool newEncounter}) async {
-    if (newEncounter) {
-      encounter.sequential = await getLastSequentialEncounter() + 1;
-    }
-    response = await _encounterService.saveEncounter(encounter: encounter);
-    if (response) {
+    try {
+      if (newEncounter) {
+        encounter.sequential = await getLastSequentialEncounter() + 1;
+      }
+      await _encounterService.saveEncounter(encounter: encounter);
       getEncounter();
+    } catch (e) {
+      throw 'Erro so salvar encontro: $e';
     }
-    return response;
   }
 
   void getEncounter() async {
-    List<EncounterModel>? encounters = await _encounterService.getEncounter();
-    _streamController.sink.add(encounters);
+    try {
+      List<EncounterModel>? encounters = await _encounterService.getEncounter();
+      _streamController.sink.add(encounters);
+    } catch (e) {
+      throw 'Erro ao buscar encontros: $e';
+    }
   }
 
   Future<int> getLastSequentialEncounter() async {
-    return await _encounterService.getLastSequentialEncounter();
+    try {
+      return await _encounterService.getLastSequentialEncounter();
+    } catch (e) {
+      throw 'Erro ao buscar numero do ultimo encontro: $e';
+    }
   }
 
-  void deleteEncounter({required EncounterModel encounter}) async {
-    response = await _encounterService.deleteEncounter(encounter: encounter);
-    if (response) {
+  Future<void> deleteEncounter({required EncounterModel encounter}) async {
+    try {
+      await _encounterService.deleteEncounter(encounter: encounter);
       getEncounter();
+    } catch (e) {
+      throw 'Erro ao deletar encontro: $e';
     }
   }
 
   Future<String> saveImageTheme(
       {required int sequential, required Uint8List imageTheme}) async {
-    String? response = await firebaseStorageService.uploadImage(
-        image: imageTheme,
-        path:
-            'encounters/${functionIntToRoman.convert(sequential)}/themeImage/themeImage.png');
-    return response ?? '';
+    try {
+      String? urlDownload = await firebaseStorageService.uploadImage(
+          image: imageTheme,
+          path:
+              'encounters/${functionIntToRoman.convert(sequential)}/themeImage/themeImage.png');
+      return urlDownload ?? '';
+    } catch (e) {
+      throw 'Erro ao salvar imagem do encontro: $e';
+    }
   }
 
   Future<Uint8List?> getImageTheme({required int sequential}) async {
-    return await firebaseStorageService.getImage(
-        imagePath:
-            'encounters/${functionIntToRoman.convert(sequential)}/themeImage/themeImage.png');
+    try {
+      return await firebaseStorageService.getImage(
+          imagePath:
+              'encounters/${functionIntToRoman.convert(sequential)}/themeImage/themeImage.png');
+    } catch (e) {
+      throw 'Erro ao obter imagem do encontro: $e';
+    }
   }
 
   Future<void> removeImageTheme({required int sequential}) async {
-    await firebaseStorageService.deleteImage(
-        imagePath:
-            'encounters/${functionIntToRoman.convert(sequential)}/themeImage/themeImage.png');
+    try {
+      await firebaseStorageService.deleteImage(
+          imagePath:
+              'encounters/${functionIntToRoman.convert(sequential)}/themeImage/themeImage.png');
+    } catch (e) {
+      throw 'Erro ao remover imagem do encontro: $e';
+    }
   }
 }

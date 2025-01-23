@@ -26,8 +26,7 @@ class UserService {
           .map((doc) => UserModel.fromJson(doc.data() as Map<String, dynamic>))
           .toList();
     } catch (e) {
-      print("Erro ao buscar usuários: $e");
-      return [];
+      rethrow;
     }
   }
 
@@ -41,20 +40,18 @@ class UserService {
         return null;
       }
     } catch (e) {
-      print('Erro ao buscar nome do usuário: $e');
-      return null;
+      rethrow;
     }
   }
 
-  Future<String?> saveUser(UserModel newUser) async {
+  Future<void> saveUser(UserModel newUser) async {
     try {
       await _firestore
           .collection('users')
           .doc(newUser.id)
           .set(newUser.toJson());
-      return null;
     } catch (e) {
-      return 'Erro ao salvar usuário: $e';
+      rethrow;
     }
   }
 }

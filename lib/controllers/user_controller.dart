@@ -37,26 +37,25 @@ class UserController extends ChangeNotifier {
     super.dispose();
   }
 
-  Future<String?> saveUser(
-      {required UserModel newUser, String? password}) async {
-    String? result;
-
-    if (password == null) {
-      result = await _userService.saveUser(newUser);
-    } else {
-      result = await _authService.createUser(user: newUser, password: password);
-    }
-
-    if (result == null) {
+  Future<void> saveUser({required UserModel newUser, String? password}) async {
+    try {
+      if (password == null) {
+        await _userService.saveUser(newUser);
+      } else {
+        await _authService.createUser(user: newUser, password: password);
+      }
       getUsers(null);
-      return null;
-    } else {
-      return result;
+    } catch (e) {
+      throw 'Erro ao ${password == null ? 'salvar' : 'criar'} usuário: $e';
     }
   }
 
-  Future<String?> changeUserState({required UserModel user}) async {
+  Future<void> changeUserState({required UserModel user}) async {
     user.active = !user.active;
-    return await saveUser(newUser: user, password: null);
+    try {
+      await saveUser(newUser: user, password: null);
+    } catch (e) {
+      throw 'Erro ao alterar status do usuário: $e';
+    }
   }
 }

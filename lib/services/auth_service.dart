@@ -11,7 +11,7 @@ class AuthService {
   final FirebaseFirestore _firestore = getIt<FirebaseFirestore>();
   UserModel? actualUserModel;
 
-  Future<String?> logIn({required String email, required String senha}) async {
+  Future logIn({required String email, required String senha}) async {
     try {
       await _firebaseAuth.signInWithEmailAndPassword(
           email: email, password: senha);
@@ -20,12 +20,11 @@ class AuthService {
         await saveActualUserModel(idUser: user.uid);
       }
     } on FirebaseAuthException catch (e) {
-      return erroAuth(e);
+      throw erroAuth(e);
     }
-    return null;
   }
 
-  Future<String?> createUser(
+  Future<void> createUser(
       {required UserModel user, required String password}) async {
     try {
       UserCredential userCredential =
@@ -39,30 +38,28 @@ class AuthService {
         _userService.saveUser(user);
       }
     } on FirebaseAuthException catch (e) {
-      return erroAuth(e);
+      throw erroAuth(e);
     }
-    return null;
   }
 
-  Future<String?> resetPassword({required String email}) async {
+  Future resetPassword({required String email}) async {
     try {
       await _firebaseAuth.sendPasswordResetEmail(email: email);
     } on FirebaseAuthException catch (e) {
-      return erroAuth(e);
+      throw erroAuth(e);
     }
     return null;
   }
 
-  Future<String?> logOut() async {
+  Future logOut() async {
     try {
       await _firebaseAuth.signOut();
     } on FirebaseAuthException catch (e) {
-      return e.code;
+      throw erroAuth(e);
     }
-    return null;
   }
 
-  Future<String?> erroAuth(FirebaseAuthException e) async {
+  String erroAuth(FirebaseAuthException e) {
     switch (e.code) {
       case 'user-not-found':
         return 'Usuário não encontrado';
@@ -73,7 +70,7 @@ class AuthService {
       case 'email-already-in-use':
         return 'O email já está em uso.';
       case 'invalid-credential':
-        return 'Credenciais inválidas.';
+        return 'Credenciais inválidas';
       case 'weak-password':
         return 'Senha fraca';
       default:
@@ -82,21 +79,21 @@ class AuthService {
   }
 
   Future<UserModel?> get getActualUserModel async {
-    final User? user = _firebaseAuth.currentUser;
-    if (user == null) {
-      return null;
-    }
-    if (actualUserModel == null) {
-      String? errorMessage = await saveActualUserModel(idUser: user.uid);
-      if (errorMessage != null) {
-        print(errorMessage);
-        return null;
+    try {
+      final User? user = _firebaseAuth.currentUser;
+      if (user == null) {
+        throw Exception('Usuário não encontrado');
       }
+
+      await saveActualUserModel(idUser: user.uid);
+
+      return actualUserModel;
+    } catch (e) {
+      throw ('Erro ao retornar usuário atual: $e');
     }
-    return actualUserModel;
   }
 
-  Future<String?> saveActualUserModel({required String idUser}) async {
+  Future saveActualUserModel({required String idUser}) async {
     try {
       DocumentSnapshot snapshot =
           await _firestore.collection('users').doc(idUser).get();
@@ -105,34 +102,30 @@ class AuthService {
             UserModel.fromJson(snapshot.data() as Map<String, dynamic>);
         return null;
       } else {
-        return "Documento não encontrado ou sem dados.";
+        Exception("Documento não encontrado ou sem dados.");
       }
     } catch (e) {
-      return "Erro ao buscar usuário: $e";
+      throw "Erro ao buscar usuário: $e";
     }
   }
 
-  String? userHasPermission(
+  bool userHasPermission(
       {required BuildContext context, required UserModel user}) {
     String? actualRoute = ModalRoute.of(context)?.settings.name;
     if (!user.active) {
-      return 'Usuário inativo!';
+      return false;
     }
     switch (actualRoute) {
       case '/users':
-        if (user.manipulateUsers == true) {
-          return null;
-        } else {
-          return 'Sem permissão de acesso aos usuários.';
-        }
-        case '/financial':
-        if (user.manipulateFinancial == true) {
-          return null;
-        } else {
-          return 'Sem permissão de acesso ao financeiro.';
-        }
+        return user.manipulateUsers;
+      case '/financial':
+        return user.manipulateFinancial;
+      case '/encounters':
+        return user.manipulateEncounter;
+      case '/circles':
+        return user.manipulateCircles;
       default:
-        return null;
+        return true;
     }
   }
 }

@@ -1,10 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:gestao_ejc/controllers/auth_controller.dart';
 import 'package:gestao_ejc/controllers/circle_controller.dart';
+import 'package:gestao_ejc/controllers/circle_member_controller.dart';
 import 'package:gestao_ejc/controllers/encounter_controller.dart';
 import 'package:gestao_ejc/controllers/financial_controller.dart';
 import 'package:gestao_ejc/controllers/financial_index_controller.dart';
+import 'package:gestao_ejc/controllers/member_controller.dart';
 import 'package:gestao_ejc/controllers/user_controller.dart';
 import 'package:gestao_ejc/functions/function_call_email_app.dart';
 import 'package:gestao_ejc/functions/function_call_url.dart';
@@ -19,11 +22,13 @@ import 'package:gestao_ejc/functions/function_pick_image.dart';
 import 'package:gestao_ejc/functions/function_reports.dart';
 import 'package:gestao_ejc/functions/function_screen.dart';
 import 'package:gestao_ejc/services/auth_service.dart';
+import 'package:gestao_ejc/services/circle_member_service.dart';
 import 'package:gestao_ejc/services/circle_service.dart';
 import 'package:gestao_ejc/services/encounter_service.dart';
 import 'package:gestao_ejc/services/financial_index_service.dart';
 import 'package:gestao_ejc/services/financial_service.dart';
 import 'package:gestao_ejc/services/firebase_storage_service.dart';
+import 'package:gestao_ejc/services/member_service.dart';
 import 'package:gestao_ejc/services/pdf_service.dart';
 import 'package:gestao_ejc/services/user_service.dart';
 import 'package:gestao_ejc/services/xlsx_service.dart';
@@ -69,4 +74,10 @@ void setupGetIt() {
   getIt.registerLazySingleton<CircleService>(() => CircleService());
   getIt.registerLazySingleton<CircleController>(() => CircleController());
   getIt.registerLazySingleton<FunctionColor>(() => FunctionColor());
+  getIt.registerLazySingleton<CircleMemberController>(
+      () => CircleMemberController());
+  getIt.registerLazySingleton<CircleMemberService>(() => CircleMemberService());
+  getIt.registerLazySingleton<AuthController>(() => AuthController());
+  getIt.registerLazySingleton<MemberController>(() => MemberController());
+  getIt.registerLazySingleton<MemberService>(() => MemberService());
 }

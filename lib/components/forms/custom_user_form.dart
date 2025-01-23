@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gestao_ejc/components/SnackBars/custom_snack_bar.dart';
 import 'package:gestao_ejc/components/buttons/custom_cancel_button.dart';
 import 'package:gestao_ejc/components/buttons/custom_confirmation_button.dart';
 import 'package:gestao_ejc/components/forms/custom_model_form.dart';
@@ -221,40 +222,39 @@ class _CustomUserFormState extends State<CustomUserForm> {
       String? password =
           widget.userEditing == null ? _passwordController.text.trim() : null;
 
-      String? result = await _userController.saveUser(
-        newUser: newUser,
-        password: password,
-      );
+      try {
+        await _userController.saveUser(
+          newUser: newUser,
+          password: password,
+        );
+        CustomSnackBar.show(
+          context: context,
+          message:
+              'Usuário ${newUser.name} ${widget.userEditing == null ? 'cadastrado' : 'atualizado'} com sucesso!',
+          colorBar: Colors.green,
+        );
+        Navigator.of(context).pop();
+      } catch (e) {
+        CustomSnackBar.show(
+          context: context,
+          message: e.toString(),
+          colorBar: Colors.red,
+        );
+      }
 
       setState(() {
         _savingUser = false;
       });
-
-      if (result == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-              content: Text(
-                  'Usuário ${newUser.name} ${widget.userEditing == null ? 'cadastrado' : 'atualizado'} com sucesso!'),
-              backgroundColor: _appTheme.colorSnackBarSucess),
-        );
-        Navigator.of(context).pop();
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-              content: Text('Erro: $result'),
-              backgroundColor: _appTheme.colorSnackBarErro),
-        );
-      }
     }
   }
+}
 
-  Widget _buildCheckbox(String label, bool value, Function(bool?) onChanged,
-      {bool disabled = false}) {
-    return Row(
-      children: [
-        Checkbox(value: value, onChanged: disabled ? null : onChanged),
-        Text(label),
-      ],
-    );
-  }
+Widget _buildCheckbox(String label, bool value, Function(bool?) onChanged,
+    {bool disabled = false}) {
+  return Row(
+    children: [
+      Checkbox(value: value, onChanged: disabled ? null : onChanged),
+      Text(label),
+    ],
+  );
 }

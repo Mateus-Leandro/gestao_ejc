@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:gestao_ejc/functions/function_color.dart';
-import 'package:gestao_ejc/models/circle_colors.dart';
+import 'package:gestao_ejc/models/circle_color_model.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
 
 class CustomColorDrawer extends StatefulWidget {
-  final Color initialColor;
+  final Color? initialColor;
   final ValueChanged<List> colorSelected;
   final String tooltipMessage;
+  final bool allowSelection;
 
   const CustomColorDrawer({
     Key? key,
     required this.initialColor,
     required this.colorSelected,
     required this.tooltipMessage,
+    required this.allowSelection,
   }) : super(key: key);
 
   @override
@@ -20,9 +22,9 @@ class CustomColorDrawer extends StatefulWidget {
 }
 
 class _CustomColorDrawerState extends State<CustomColorDrawer> {
-  late Color _currentColor;
+  late Color? _currentColor;
   final FunctionColor functionColor = getIt<FunctionColor>();
-  final CircleColors _circleColors = CircleColors();
+  final CircleColorModel _circleColors = CircleColorModel();
   String? colorName;
 
   @override
@@ -60,21 +62,23 @@ class _CustomColorDrawerState extends State<CustomColorDrawer> {
             ),
           );
         }).toList(),
-        onChanged: (color) {
-          if (color != null) {
-            setState(() {
-              _currentColor = color;
-            });
-            colorName = _circleColors.currentColors.entries
-                .firstWhere((element) => element.value == color)
-                .key;
-            widget.colorSelected([
-              colorName,
-              color,
-              functionColor.convertToHexadecimal(color),
-            ]);
-          }
-        },
+        onChanged: widget.allowSelection
+            ? (color) {
+                if (color != null) {
+                  setState(() {
+                    _currentColor = color;
+                  });
+                  colorName = _circleColors.currentColors.entries
+                      .firstWhere((element) => element.value == color)
+                      .key;
+                  widget.colorSelected([
+                    colorName,
+                    color,
+                    functionColor.convertToHexadecimal(color),
+                  ]);
+                }
+              }
+            : null,
       ),
     );
   }

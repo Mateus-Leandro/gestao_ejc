@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gestao_ejc/components/SnackBars/custom_snack_bar.dart';
 import 'package:gestao_ejc/components/buttons/custom_delete_button.dart';
 import 'package:gestao_ejc/components/buttons/custom_edit_button.dart';
 import 'package:gestao_ejc/components/forms/custom_circle_form.dart';
@@ -7,11 +8,13 @@ import 'package:gestao_ejc/components/utils/custom_search_row.dart';
 import 'package:gestao_ejc/controllers/circle_controller.dart';
 import 'package:gestao_ejc/functions/function_color.dart';
 import 'package:gestao_ejc/models/circle_model.dart';
+import 'package:gestao_ejc/models/encounter_model.dart';
 import 'package:gestao_ejc/services/auth_service.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
 
 class CircleScreen extends StatefulWidget {
-  const CircleScreen({super.key});
+  final EncounterModel encounter;
+  const CircleScreen({super.key, required this.encounter});
 
   @override
   State<CircleScreen> createState() => _CircleScreenState();
@@ -20,7 +23,7 @@ class CircleScreen extends StatefulWidget {
 class _CircleScreenState extends State<CircleScreen> {
   @override
   void initState() {
-    _circleController.init();
+    _circleController.init(sequentialEncounter: widget.encounter.sequential);
     super.initState();
   }
 
@@ -34,6 +37,7 @@ class _CircleScreenState extends State<CircleScreen> {
   final CircleController _circleController = getIt<CircleController>();
   final AuthService _authService = getIt<AuthService>();
   final FunctionColor _functionColor = getIt<FunctionColor>();
+  List<CircleModel> circles = [];
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -49,10 +53,10 @@ class _CircleScreenState extends State<CircleScreen> {
             controller: circleNameController,
             messageTextField: 'Pesquisar Círculo',
             functionTextField: () => _circleController.getCircles(
-              circleNameController.text.trim().isEmpty
-                  ? null
-                  : circleNameController.text.trim(),
-            ),
+                circleName: circleNameController.text.trim().isEmpty
+                    ? null
+                    : circleNameController.text.trim(),
+                sequentialEncounter: widget.encounter.sequential),
             iconButton: const Icon(Icons.add),
           ),
           Expanded(child: _buildCircleList(context))
@@ -79,7 +83,7 @@ class _CircleScreenState extends State<CircleScreen> {
           return const Center(child: Text('Nenhum círculo encontrado.'));
         }
 
-        var circles = snapshot.data!;
+        circles = snapshot.data!;
         return ListView.builder(
           itemCount: circles.length,
           itemBuilder: (context, index) {
@@ -113,13 +117,6 @@ class _CircleScreenState extends State<CircleScreen> {
               ),
             ],
           ),
-          subtitle: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                  'Membros - Mín: ${circle.minMembers} Máx: ${circle.maxMembers} '),
-            ],
-          ),
           trailing: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -128,15 +125,18 @@ class _CircleScreenState extends State<CircleScreen> {
                 Tooltip(
                   message: 'Editar Círculo',
                   child: CustomEditButton(
-                    form: CustomCircleForm(circleModel: circle),
+                    form: CustomCircleForm(
+                      encounter: widget.encounter,
+                      editingCircle: circle,
+                      circles: circles,
+                    ),
                   ),
                 ),
                 Tooltip(
                   message: 'Excluir Círculo',
                   child: CustomDeleteButton(
                     alertMessage: 'Excluir Círculo',
-                    deleteFunction: () async => await _circleController
-                        .deleteCircle(circleId: circle.id),
+                    deleteFunction: () async => _deleteCircle(circle: circle),
                   ),
                 ),
               ],
@@ -148,10 +148,26 @@ class _CircleScreenState extends State<CircleScreen> {
 
   void _showCircleForm(CircleModel? circleModel) {
     showDialog(
+      barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
-        return const CustomCircleForm(circleModel: null);
+        return CustomCircleForm(
+          encounter: widget.encounter,
+          circles: circles,
+        );
       },
     );
+  }
+
+  Future<void> _deleteCircle({required CircleModel circle}) async {
+    try {
+      await _circleController.deleteCircle(circle: circle);
+    } catch (e) {
+      CustomSnackBar.show(
+        context: context,
+        message: 'Erro ao excluir círculo: $e',
+        colorBar: Colors.red,
+      );
+    }
   }
 }

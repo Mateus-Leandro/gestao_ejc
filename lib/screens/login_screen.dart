@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:gestao_ejc/components/SnackBars/custom_snack_bar.dart';
+import 'package:gestao_ejc/controllers/auth_controller.dart';
 import 'package:gestao_ejc/screens/password_reset_modal.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
-import '../services/auth_service.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -11,7 +12,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final AuthService _authService = getIt<AuthService>();
+  final AuthController _authController = getIt<AuthController>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
@@ -147,32 +148,22 @@ class _LoginScreenState extends State<LoginScreen> {
           _acessing = true;
         });
       }
-
       try {
-        String? error = await _authService.logIn(
+        await _authController.logIn(
           email: _emailController.text.trim(),
           senha: _passwordController.text,
         );
-
-        if (error != null) {
-          final snackBar = SnackBar(
-            content: Text(error),
-            backgroundColor: Colors.red,
-          );
-          ScaffoldMessenger.of(context).showSnackBar(snackBar);
-        }
       } catch (e) {
-        const snackBar = SnackBar(
-          content: Text('Ocorreu um erro ao tentar fazer login.'),
-          backgroundColor: Colors.red,
+        CustomSnackBar.show(
+          context: context,
+          message: e.toString(),
+          colorBar: Colors.red,
         );
-        ScaffoldMessenger.of(context).showSnackBar(snackBar);
-      } finally {
-        if (mounted) {
-          setState(() {
-            _acessing = false;
-          });
-        }
+      }
+      if (mounted) {
+        setState(() {
+          _acessing = false;
+        });
       }
     }
   }

@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gestao_ejc/components/drawers/custom_menu_drawer.dart';
+import 'package:gestao_ejc/controllers/auth_controller.dart';
 import 'package:gestao_ejc/functions/function_date.dart';
 import 'package:gestao_ejc/functions/function_screen.dart';
 import 'package:gestao_ejc/services/auth_service.dart';
@@ -29,6 +30,7 @@ class ModelScreen extends StatefulWidget {
 class _ModelScreenState extends State<ModelScreen> {
   String dateString = getIt<FunctionDate>().getActualDateToString();
   final User user = getIt<FirebaseAuth>().currentUser!;
+  final AuthController authController = getIt<AuthController>();
   final AuthService authService = getIt<AuthService>();
   final FunctionScreen functionScreen = getIt<FunctionScreen>();
   final AppTheme appTheme = getIt<AppTheme>();
@@ -47,10 +49,10 @@ class _ModelScreenState extends State<ModelScreen> {
       return const Center(child: CircularProgressIndicator());
     }
 
-    String? ret = authService.userHasPermission(
+    bool hasPermission = authController.userHasPermission(
         context: context, user: authService.actualUserModel!);
 
-    if (ret == null) {
+    if (hasPermission) {
       return Scaffold(
         drawer: widget.showMenuDrawer
             ? CustomMenuDrawer(indexMenuSelected: widget.indexMenuSelected)
@@ -118,7 +120,7 @@ class _ModelScreenState extends State<ModelScreen> {
               context: context,
               type: QuickAlertType.error,
               title: 'Acesso Negado',
-              text: '${ret} Entre em contato com a equipe dirigente!',
+              text: 'Entre em contato com a equipe dirigente!',
               confirmBtnText: 'OK',
               barrierDismissible: false,
               onConfirmBtnTap: () {
@@ -126,7 +128,7 @@ class _ModelScreenState extends State<ModelScreen> {
                 Navigator.of(context).pushNamedAndRemoveUntil(
                     '/', (Route<dynamic> route) => false);
                 if (!authService.actualUserModel!.active) {
-                  authService.logOut();
+                  functionScreen.callLogOut(context: context);
                 }
               },
             );
@@ -138,7 +140,6 @@ class _ModelScreenState extends State<ModelScreen> {
   }
 
   Future<void> _initializeActualUserModel() async {
-    AuthService authService = getIt<AuthService>();
     await authService.getActualUserModel;
     if (mounted) {
       setState(() {});

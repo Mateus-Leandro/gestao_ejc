@@ -1,5 +1,6 @@
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:flutter/material.dart';
+import 'package:gestao_ejc/components/SnackBars/custom_snack_bar.dart';
 import 'package:gestao_ejc/components/buttons/custom_cancel_button.dart';
 import 'package:gestao_ejc/components/buttons/custom_confirmation_button.dart';
 import 'package:gestao_ejc/components/forms/custom_model_form.dart';
@@ -124,9 +125,16 @@ class _CustomFinancialReportFormState extends State<CustomFinancialReportForm> {
       {required List<DateTime> dates, required String typeExport}) async {
     final PdfService pdfService = getIt<PdfService>();
     final XlsxService xlsxService = getIt<XlsxService>();
-
-    List<FinancialModel> docs =
-        await financialService.getFinancial(rangeDates: dates);
+    List<FinancialModel> docs = [];
+    try {
+      docs = await financialService.getFinancial(rangeDates: dates);
+    } catch (e) {
+      CustomSnackBar.show(
+        context: context,
+        message: e.toString(),
+        colorBar: Colors.red,
+      );
+    }
 
     List<String> interval =
         dates.map((date) => functionDate.getDateToString(date)).toList();

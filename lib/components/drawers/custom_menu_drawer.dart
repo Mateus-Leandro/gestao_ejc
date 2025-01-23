@@ -27,12 +27,6 @@ class CustomMenuDrawer extends StatelessWidget {
         'permission': authService.actualUserModel!.manipulateEncounter
       },
       {
-        'title': 'Círculos',
-        'route': '/circles',
-        'index': 1,
-        'permission': authService.actualUserModel!.manipulateCircles
-      },
-      {
         'title': 'Membros',
         'route': '/members',
         'index': 2,
