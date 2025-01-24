@@ -5,6 +5,7 @@ import 'package:gestao_ejc/functions/function_int_to_roman.dart';
 import 'package:gestao_ejc/models/encounter_model.dart';
 import 'package:gestao_ejc/screens/circle_members_screen.dart';
 import 'package:gestao_ejc/screens/circle_screen.dart';
+import 'package:gestao_ejc/screens/question_screen.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
 import 'package:gestao_ejc/theme/app_theme.dart';
 
@@ -49,7 +50,7 @@ class CircleTabsScreen extends StatelessWidget {
                     child: CircleScreen(encounter: encounterModel),
                   ),
                   _KeepAliveWrapper(
-                    child: Container(),
+                    child: QuestionScreen(encounter: encounterModel),
                   ),
                   const _KeepAliveWrapper(child: CircleMembersScreen()),
                 ],
