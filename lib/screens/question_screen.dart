@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gestao_ejc/components/SnackBars/custom_snack_bar.dart';
 import 'package:gestao_ejc/components/buttons/custom_delete_button.dart';
+import 'package:gestao_ejc/components/buttons/custom_edit_button.dart';
+import 'package:gestao_ejc/components/forms/custom_question_form.dart';
 import 'package:gestao_ejc/components/utils/custom_list_tile.dart';
 import 'package:gestao_ejc/components/utils/custom_search_row.dart';
 import 'package:gestao_ejc/controllers/question_controller.dart';
@@ -43,7 +45,8 @@ class _QuestionScreenState extends State<QuestionScreen> {
         children: [
           CustomSearchRow(
             messageButton: 'Criar Pergunta',
-            functionButton: () => (),
+            functionButton: () =>
+                _showQuestionForm(encounter: widget.encounter),
             showButton: true,
             inputType: TextInputType.text,
             controller: questionTextController,
@@ -80,20 +83,22 @@ class _QuestionScreenState extends State<QuestionScreen> {
           itemCount: questions.length,
           itemBuilder: (context, index) {
             var question = questions[index];
-            return _buildQuestionTile(context, question);
+            return _buildQuestionTile(context, question, index);
           },
         );
       },
     );
   }
 
-  Widget _buildQuestionTile(BuildContext context, QuestionModel question) {
+  Widget _buildQuestionTile(
+      BuildContext context, QuestionModel question, int index) {
     return CustomListTile(
         listTile: ListTile(
           title: Row(
             children: [
               Text(
                 question.question,
+                style: const TextStyle(fontWeight: FontWeight.bold),
               ),
             ],
           ),
@@ -102,6 +107,15 @@ class _QuestionScreenState extends State<QuestionScreen> {
             children: [
               if (_authService.actualUserModel?.manipulateAdministrator ??
                   false) ...[
+                Tooltip(
+                  message: 'Editar Pergunta',
+                  child: CustomEditButton(
+                    form: CustomQuestionForm(
+                      encounter: widget.encounter,
+                      editingQuestion: question,
+                    ),
+                  ),
+                ),
                 Tooltip(
                   message: 'Excluir Pergunta',
                   child: CustomDeleteButton(
@@ -127,5 +141,16 @@ class _QuestionScreenState extends State<QuestionScreen> {
         colorBar: Colors.red,
       );
     }
+  }
+
+  void _showQuestionForm(
+      {required EncounterModel encounter, QuestionModel? question}) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return CustomQuestionForm(
+            encounter: encounter, editingQuestion: question);
+      },
+    );
   }
 }
