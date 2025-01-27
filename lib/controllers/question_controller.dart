@@ -45,6 +45,7 @@ class QuestionController extends ChangeNotifier {
   Future<void> deleteQuestion({required QuestionModel question}) async {
     try {
       await _questionService.deleteQuestion(question: question);
+      getQuestions(sequentialEncounter: question.sequentialEncounter);
     } catch (e) {
       throw 'Erro ao deletar pergunta: $e';
     }
