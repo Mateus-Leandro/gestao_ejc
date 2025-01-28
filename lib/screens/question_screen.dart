@@ -96,11 +96,80 @@ class _QuestionScreenState extends State<QuestionScreen> {
         listTile: ListTile(
           title: Row(
             children: [
-              Text(
-                question.question,
-                style: const TextStyle(fontWeight: FontWeight.bold),
+              Flexible(
+                child: Text(
+                  question.question,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
               ),
             ],
+          ),
+          subtitle: Flexible(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: [
+                      Container(
+                        height: 20,
+                        width: 20,
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.black),
+                          color: Colors.red,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                      ),
+                      const Padding(
+                        padding: const EdgeInsets.only(left: 15),
+                        child: Text('Resposta do círculo vermelho'),
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: [
+                      Container(
+                        height: 20,
+                        width: 20,
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.black),
+                          color: Colors.blue,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                      ),
+                      const Padding(
+                        padding: const EdgeInsets.only(left: 15),
+                        child: Text('Resposta do círculo azul'),
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: [
+                      Container(
+                        height: 20,
+                        width: 20,
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.black),
+                          color: Colors.green,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                      ),
+                      const Padding(
+                        padding: const EdgeInsets.only(left: 15),
+                        child: Text('Resposta do círculo verde'),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
           trailing: Row(
             mainAxisSize: MainAxisSize.min,
