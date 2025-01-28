@@ -39,7 +39,8 @@ class _CustomQuestionFormState extends State<CustomQuestionForm> {
   @override
   Widget build(BuildContext context) {
     return CustomModelForm(
-      title: 'Nova Pergunta',
+      title:
+          widget.editingQuestion != null ? 'Editar pergunta' : 'Nova Pergunta',
       formKey: _formKey,
       formBody: _buildFormBody(),
       actions: _buildFormAction(),
