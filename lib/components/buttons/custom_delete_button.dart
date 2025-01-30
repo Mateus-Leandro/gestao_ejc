@@ -8,11 +8,13 @@ import 'package:quickalert/widgets/quickalert_dialog.dart';
 class CustomDeleteButton extends StatelessWidget {
   final String alertMessage;
   final Future Function() deleteFunction;
+  final Icon? iconButton;
 
   const CustomDeleteButton({
     super.key,
     required this.alertMessage,
     required this.deleteFunction,
+    this.iconButton,
   });
 
   @override
@@ -52,10 +54,11 @@ class CustomDeleteButton extends StatelessWidget {
           },
         );
       },
-      icon: const Icon(
-        Icons.delete_forever,
-        color: Colors.red,
-      ),
+      icon: iconButton ??
+          const Icon(
+            Icons.delete_forever,
+            color: Colors.red,
+          ),
     );
   }
 }
