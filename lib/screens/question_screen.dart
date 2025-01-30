@@ -5,7 +5,10 @@ import 'package:gestao_ejc/components/buttons/custom_edit_button.dart';
 import 'package:gestao_ejc/components/forms/custom_question_form.dart';
 import 'package:gestao_ejc/components/utils/custom_list_tile.dart';
 import 'package:gestao_ejc/components/utils/custom_search_row.dart';
+import 'package:gestao_ejc/controllers/answer_controller.dart';
 import 'package:gestao_ejc/controllers/question_controller.dart';
+import 'package:gestao_ejc/functions/function_color.dart';
+import 'package:gestao_ejc/models/answer_model.dart';
 import 'package:gestao_ejc/models/encounter_model.dart';
 import 'package:gestao_ejc/models/question_model.dart';
 import 'package:gestao_ejc/services/auth_service.dart';
@@ -23,6 +26,7 @@ class _QuestionScreenState extends State<QuestionScreen> {
   @override
   void initState() {
     _questionController.init(sequentialEncounter: widget.encounter.sequential);
+    _loadAnswers();
     super.initState();
   }
 
@@ -33,9 +37,13 @@ class _QuestionScreenState extends State<QuestionScreen> {
   }
 
   final QuestionController _questionController = getIt<QuestionController>();
+  final AnswerController _answerController = getIt<AnswerController>();
   TextEditingController questionTextController = TextEditingController();
   final AuthService _authService = getIt<AuthService>();
   List<QuestionModel> questions = [];
+  List<AnswerModel> answers = [];
+  bool isLoadingAnswers = true;
+  FunctionColor _functionColor = getIt<FunctionColor>();
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -104,95 +112,80 @@ class _QuestionScreenState extends State<QuestionScreen> {
               ),
             ],
           ),
-          subtitle: Flexible(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    children: [
-                      Container(
-                        height: 20,
-                        width: 20,
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.black),
-                          color: Colors.red,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                      ),
-                      const Padding(
-                        padding: const EdgeInsets.only(left: 15),
-                        child: Text('Resposta do círculo vermelho'),
-                      ),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    children: [
-                      Container(
-                        height: 20,
-                        width: 20,
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.black),
-                          color: Colors.blue,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                      ),
-                      const Padding(
-                        padding: const EdgeInsets.only(left: 15),
-                        child: Text('Resposta do círculo azul'),
-                      ),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    children: [
-                      Container(
-                        height: 20,
-                        width: 20,
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.black),
-                          color: Colors.green,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                      ),
-                      const Padding(
-                        padding: const EdgeInsets.only(left: 15),
-                        child: Text('Resposta do círculo verde'),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-          trailing: Row(
-            mainAxisSize: MainAxisSize.min,
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (_authService.actualUserModel?.manipulateAdministrator ??
-                  false) ...[
-                Tooltip(
-                  message: 'Editar Pergunta',
-                  child: CustomEditButton(
-                    form: CustomQuestionForm(
-                      encounter: widget.encounter,
-                      editingQuestion: question,
+              if (isLoadingAnswers) ...[
+                const Center(
+                  child: CircularProgressIndicator(),
+                )
+              ] else ...[
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 8.0),
+                      child: Tooltip(
+                        message: 'Responder pergunta',
+                        child: IconButton(
+                            onPressed: () {}, icon: const Icon(Icons.help)),
+                      ),
                     ),
-                  ),
+                    Tooltip(
+                      message: 'Editar Pergunta',
+                      child: CustomEditButton(
+                        form: CustomQuestionForm(
+                          encounter: widget.encounter,
+                          editingQuestion: question,
+                        ),
+                      ),
+                    ),
+                    Tooltip(
+                      message: 'Excluir Pergunta',
+                      child: CustomDeleteButton(
+                        alertMessage: 'Excluir Pergunta',
+                        deleteFunction: () async =>
+                            _deleteQuestion(question: question),
+                      ),
+                    ),
+                  ],
                 ),
-                Tooltip(
-                  message: 'Excluir Pergunta',
-                  child: CustomDeleteButton(
-                    alertMessage: 'Excluir Pergunta',
-                    deleteFunction: () async =>
-                        _deleteQuestion(question: question),
-                  ),
-                ),
+                for (var answer in answers) ...[
+                  if (answer.referenceQuestion.id == question.id) ...[
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Container(
+                            height: 20,
+                            width: 20,
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.black),
+                              color: _functionColor
+                                  .getFromHexadecimal(answer.hexColorCircle),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                          ),
+                          Flexible(
+                              child: Padding(
+                            padding: const EdgeInsets.only(left: 8.0),
+                            child: Text(answer.answer),
+                          )),
+                          Tooltip(
+                            message: 'Editar Resposta',
+                            child: IconButton(
+                                onPressed: () {},
+                                icon: const Icon(Icons.edit_note)),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const Divider(
+                      height: 3,
+                    )
+                  ]
+                ],
               ],
             ],
           ),
@@ -221,5 +214,17 @@ class _QuestionScreenState extends State<QuestionScreen> {
             encounter: encounter, editingQuestion: question);
       },
     );
+  }
+
+  void _loadAnswers() async {
+    setState(() {
+      isLoadingAnswers = true;
+    });
+    answers = await _answerController.init(
+      sequentialEncounter: widget.encounter.sequential,
+    );
+    setState(() {
+      isLoadingAnswers = false;
+    });
   }
 }
