@@ -11,9 +11,9 @@ class AnswerController extends ChangeNotifier {
 
   Stream<List<AnswerModel>>? get stream => _streamController.stream;
 
-  void init({required int sequentialEncounter}) {
+  Future<List<AnswerModel>> init({required int sequentialEncounter}) async {
     _streamController = StreamController<List<AnswerModel>>();
-    getAnswers(sequentialEncounter: sequentialEncounter);
+    return await getAnswers(sequentialEncounter: sequentialEncounter);
   }
 
   @override
@@ -31,11 +31,13 @@ class AnswerController extends ChangeNotifier {
     }
   }
 
-  Future<void> getAnswers({required int sequentialEncounter}) async {
+  Future<List<AnswerModel>> getAnswers(
+      {required int sequentialEncounter}) async {
     try {
       var response = await _answerService.getAnswers(
           sequentialEncounter: sequentialEncounter);
       _streamController.sink.add(response);
+      return response;
     } catch (e) {
       throw 'Erro ao buscar respostas: $e';
     }

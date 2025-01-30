@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:gestao_ejc/controllers/answer_controller.dart';
 import 'package:gestao_ejc/controllers/auth_controller.dart';
 import 'package:gestao_ejc/controllers/circle_controller.dart';
 import 'package:gestao_ejc/controllers/circle_member_controller.dart';
@@ -22,6 +23,7 @@ import 'package:gestao_ejc/functions/function_music_icon.dart';
 import 'package:gestao_ejc/functions/function_pick_image.dart';
 import 'package:gestao_ejc/functions/function_reports.dart';
 import 'package:gestao_ejc/functions/function_screen.dart';
+import 'package:gestao_ejc/services/answer_service.dart';
 import 'package:gestao_ejc/services/auth_service.dart';
 import 'package:gestao_ejc/services/circle_member_service.dart';
 import 'package:gestao_ejc/services/circle_service.dart';
@@ -84,4 +86,6 @@ void setupGetIt() {
   getIt.registerLazySingleton<MemberService>(() => MemberService());
   getIt.registerLazySingleton<QuestionService>(() => QuestionService());
   getIt.registerLazySingleton<QuestionController>(() => QuestionController());
+  getIt.registerLazySingleton<AnswerController>(() => AnswerController());
+  getIt.registerLazySingleton<AnswerService>(() => AnswerService());
 }
