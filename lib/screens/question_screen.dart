@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gestao_ejc/components/SnackBars/custom_snack_bar.dart';
 import 'package:gestao_ejc/components/buttons/custom_delete_button.dart';
 import 'package:gestao_ejc/components/buttons/custom_edit_button.dart';
+import 'package:gestao_ejc/components/forms/custom_answer_form.dart';
 import 'package:gestao_ejc/components/forms/custom_question_form.dart';
 import 'package:gestao_ejc/components/utils/custom_list_tile.dart';
 import 'package:gestao_ejc/components/utils/custom_search_row.dart';
@@ -128,7 +129,13 @@ class _QuestionScreenState extends State<QuestionScreen> {
                       child: Tooltip(
                         message: 'Responder pergunta',
                         child: IconButton(
-                            onPressed: () {}, icon: const Icon(Icons.help)),
+                            onPressed: () {
+                              _showAnswerForm(
+                                encounter: widget.encounter,
+                                question: question,
+                              );
+                            },
+                            icon: const Icon(Icons.help)),
                       ),
                     ),
                     Tooltip(
@@ -175,9 +182,27 @@ class _QuestionScreenState extends State<QuestionScreen> {
                           Tooltip(
                             message: 'Editar Resposta',
                             child: IconButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  _showAnswerForm(
+                                    encounter: widget.encounter,
+                                    question: question,
+                                    answer: answer,
+                                  );
+                                },
                                 icon: const Icon(Icons.edit_note)),
                           ),
+                          Tooltip(
+                            message: 'Excluir resposta',
+                            child: CustomDeleteButton(
+                              alertMessage: 'Excluir Resposta',
+                              deleteFunction: () =>
+                                  _deleteAnswer(answer: answer),
+                              iconButton: const Icon(
+                                Icons.cancel,
+                                color: Colors.red,
+                              ),
+                            ),
+                          )
                         ],
                       ),
                     ),
@@ -205,6 +230,19 @@ class _QuestionScreenState extends State<QuestionScreen> {
     }
   }
 
+  Future<void> _deleteAnswer({required AnswerModel answer}) async {
+    try {
+      await _answerController.deleteAnswer(answer: answer);
+      _loadAnswers();
+    } catch (e) {
+      CustomSnackBar.show(
+        context: context,
+        message: 'Erro ao excluir resposta',
+        colorBar: Colors.red,
+      );
+    }
+  }
+
   void _showQuestionForm(
       {required EncounterModel encounter, QuestionModel? question}) {
     showDialog(
@@ -214,6 +252,23 @@ class _QuestionScreenState extends State<QuestionScreen> {
             encounter: encounter, editingQuestion: question);
       },
     );
+  }
+
+  void _showAnswerForm({
+    required EncounterModel encounter,
+    required QuestionModel question,
+    AnswerModel? answer,
+  }) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return CustomAnswerForm(
+          encounter: encounter,
+          question: question,
+          answer: answer,
+        );
+      },
+    ).then((_) => _loadAnswers());
   }
 
   void _loadAnswers() async {

@@ -5,9 +5,6 @@ import 'package:gestao_ejc/services/locator/service_locator.dart';
 class AnswerService {
   final String collection = 'answers';
   final FirebaseFirestore _firestore = getIt<FirebaseFirestore>();
-  late Query query;
-  late QuerySnapshot snapshot;
-  var response;
 
   Future<void> saveAnswer({required AnswerModel answer}) async {
     try {
@@ -24,11 +21,11 @@ class AnswerService {
     required int sequentialEncounter,
   }) async {
     try {
-      query = _firestore.collection(collection).where(
-            'sequentialEncounter',
-            isEqualTo: sequentialEncounter,
-          );
-      snapshot = await query.get();
+      QuerySnapshot snapshot = await _firestore
+          .collection(collection)
+          .where('sequentialEncounter', isEqualTo: sequentialEncounter)
+          .get();
+
       return snapshot.docs
           .map(
             (doc) => AnswerModel.fromJson(
