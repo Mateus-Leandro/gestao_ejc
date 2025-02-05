@@ -170,7 +170,7 @@ class _CustomAnswerFormState extends State<CustomAnswerForm> {
         } catch (e) {
           CustomSnackBar.show(
             context: context,
-            message: 'Erro ao salvar pergunta: $e',
+            message: e.toString(),
             colorBar: Colors.red,
           );
         }

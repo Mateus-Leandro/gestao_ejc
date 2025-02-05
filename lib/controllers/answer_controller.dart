@@ -24,7 +24,10 @@ class AnswerController extends ChangeNotifier {
 
   Future<void> saveAnswer({required AnswerModel answer}) async {
     try {
-      await _answerService.saveAnswer(answer: answer);
+      await alreadyAnswered(answer: answer)
+          ? throw 'Questão ja respondida pelo círculo.'
+          : await _answerService.saveAnswer(answer: answer);
+
       getAnswers(sequentialEncounter: answer.sequentialEncounter);
     } catch (e) {
       throw 'Erro ao salvar resposta: $e';
@@ -49,6 +52,14 @@ class AnswerController extends ChangeNotifier {
       getAnswers(sequentialEncounter: answer.sequentialEncounter);
     } catch (e) {
       throw 'Erro ao deletar resposta: $e';
+    }
+  }
+
+  Future<bool> alreadyAnswered({required AnswerModel answer}) async {
+    try {
+      return await _answerService.alreadyAnswered(answer: answer);
+    } catch (e) {
+      rethrow;
     }
   }
 }
