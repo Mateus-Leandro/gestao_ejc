@@ -52,4 +52,15 @@ class CircleService {
       rethrow;
     }
   }
+
+  Future<void> updateUrlImages({required CircleModel circle}) async {
+    try {
+      await _firestore.collection(collection).doc(circle.id).update({
+        'urlCircleImage': circle.urlCircleImage,
+        'urlThemeImage': circle.urlThemeImage,
+      });
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

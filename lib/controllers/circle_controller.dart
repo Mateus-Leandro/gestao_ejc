@@ -58,16 +58,16 @@ class CircleController extends ChangeNotifier {
     }
   }
 
-  Future<String?> saveCircleImage(
+  Future<String> saveCircleImage(
       {required Uint8List image,
       required int sequentialEncounter,
-      required String circleId,
+      required CircleModel circle,
       required String fileName}) async {
     try {
       String? url = await firebaseStorageService.uploadImage(
           image: image,
           path:
-              'encounters/${functionIntToRoman.convert(sequentialEncounter)}/circles/$circleId/$fileName.png');
+              'encounters/${functionIntToRoman.convert(sequentialEncounter)}/circles/${circle.id}/$fileName.png');
       return url ?? '';
     } catch (e) {
       throw 'Erro ao salvar imagem: $e';
@@ -99,6 +99,16 @@ class CircleController extends ChangeNotifier {
               'encounters/${functionIntToRoman.convert(sequentialEncounter)}/circles/$circleId/$fileName.png');
     } catch (e) {
       throw 'Erro ao remover imagem do círculo: $e';
+    }
+  }
+
+  Future<void> updateImages({required CircleModel circle}) async {
+    try {
+      await _circleService.updateUrlImages(circle: circle);
+      getCircles(
+          circleName: null, sequentialEncounter: circle.sequentialEncounter);
+    } catch (e) {
+      throw 'Erro ao atualizar imagens do círculo: $e';
     }
   }
 }

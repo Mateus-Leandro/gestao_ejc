@@ -102,12 +102,24 @@ class _CustomCircleFormState extends State<CustomCircleForm> {
   void _saveCircle() async {
     try {
       final String circleId = widget.editingCircle?.id ?? const Uuid().v4();
+
+      CircleModel circle = CircleModel(
+        id: circleId,
+        sequentialEncounter: widget.encounter.sequential,
+        name: _circleNameController.text.trim(),
+        colorHex: selectedColorHex!,
+        urlThemeImage: '',
+        urlCircleImage: '',
+      );
+
+      await _circleController.saveCircle(circle: circle);
+
       if (themeImage != originalThemeImage) {
         if (themeImage != null) {
           urlThemeImage = await _circleController.saveCircleImage(
             image: themeImage!,
             sequentialEncounter: widget.encounter.sequential,
-            circleId: circleId,
+            circle: circle,
             fileName: 'themeImage',
           );
         } else {
@@ -116,6 +128,7 @@ class _CustomCircleFormState extends State<CustomCircleForm> {
             circleId: circleId,
             fileName: 'themeImage',
           );
+          urlThemeImage = '';
         }
       }
 
@@ -124,7 +137,7 @@ class _CustomCircleFormState extends State<CustomCircleForm> {
           urlCircleImage = await _circleController.saveCircleImage(
             image: circleImage!,
             sequentialEncounter: widget.encounter.sequential,
-            circleId: circleId,
+            circle: circle,
             fileName: 'circleImage',
           );
         } else {
@@ -133,19 +146,14 @@ class _CustomCircleFormState extends State<CustomCircleForm> {
             circleId: circleId,
             fileName: 'circleImage',
           );
+          urlCircleImage = '';
         }
       }
 
-      CircleModel circle = CircleModel(
-        id: circleId,
-        sequentialEncounter: widget.encounter.sequential,
-        name: _circleNameController.text.trim(),
-        colorHex: selectedColorHex!,
-        urlThemeImage: urlThemeImage,
-        urlCircleImage: urlCircleImage,
-      );
+      circle.urlCircleImage = urlCircleImage;
+      circle.urlThemeImage = urlThemeImage;
+      await _circleController.updateImages(circle: circle);
 
-      await _circleController.saveCircle(circle: circle);
       CustomSnackBar.show(
         context: context,
         message: 'Círculo salvo com sucesso!',
