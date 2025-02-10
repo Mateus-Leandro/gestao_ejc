@@ -42,6 +42,7 @@ class _QuestionScreenState extends State<QuestionScreen> {
   List<QuestionModel> questions = [];
   List<AnswerModel> answers = [];
   bool isLoadingAnswers = true;
+  String? searchedText;
   FunctionColor _functionColor = getIt<FunctionColor>();
   @override
   Widget build(BuildContext context) {
@@ -58,7 +59,16 @@ class _QuestionScreenState extends State<QuestionScreen> {
             inputType: TextInputType.text,
             controller: questionTextController,
             messageTextField: 'Pesquisar Pergunta',
-            functionTextField: () => (),
+            functionTextField: () {
+              searchedText = null;
+              if (questionTextController.text.trim().isNotEmpty) {
+                searchedText = questionTextController.text.trim();
+              }
+              _questionController.getQuestions(
+                  sequentialEncounter: widget.encounter.sequential,
+                  searchedText: searchedText);
+              _loadAnswers();
+            },
             iconButton: const Icon(Icons.add),
           ),
           Expanded(child: _buildQuestionList(context))

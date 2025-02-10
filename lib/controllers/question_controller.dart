@@ -32,11 +32,19 @@ class QuestionController extends ChangeNotifier {
     }
   }
 
-  Future<void> getQuestions({required int sequentialEncounter}) async {
+  Future<void> getQuestions(
+      {required int sequentialEncounter, String? searchedText}) async {
     try {
       var response = await _questionService.getQuestions(
           sequentialEncounter: sequentialEncounter);
-      _streamController.sink.add(response);
+      _streamController.sink.add(
+        searchedText != null
+            ? filterQuestion(
+                listQuestionModel: response,
+                searchedText: searchedText,
+              )
+            : response,
+      );
     } catch (e) {
       throw 'Erro ao buscar perguntas : $e';
     }
@@ -49,5 +57,13 @@ class QuestionController extends ChangeNotifier {
     } catch (e) {
       throw 'Erro ao deletar pergunta: $e';
     }
+  }
+
+  List<QuestionModel>? filterQuestion(
+      {required List<QuestionModel> listQuestionModel,
+      required String searchedText}) {
+    return listQuestionModel.where((doc) {
+      return doc.question.toLowerCase().contains(searchedText.toLowerCase());
+    }).toList();
   }
 }
