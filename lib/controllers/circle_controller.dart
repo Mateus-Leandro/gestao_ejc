@@ -14,7 +14,7 @@ class CircleController extends ChangeNotifier {
       getIt<FirebaseStorageService>();
   final FunctionIntToRoman functionIntToRoman = getIt<FunctionIntToRoman>();
   Stream<List<CircleModel>>? get stream => _streamController.stream;
-  List<CircleModel?>? circles;
+  List<CircleModel> circles = [];
 
   void init({required int sequentialEncounter}) {
     _streamController = StreamController<List<CircleModel>>();
@@ -30,9 +30,13 @@ class CircleController extends ChangeNotifier {
   void getCircles(
       {required String? circleName, required int sequentialEncounter}) async {
     try {
-      circles = await _circleService.getCircles(
-          circleName?.toLowerCase(), sequentialEncounter);
-      _streamController.sink.add(circles);
+      circles = await _circleService.getCircles(sequentialEncounter);
+      _streamController.sink.add(circleName != null
+          ? filterCircles(
+              listCircleModel: circles,
+              circleName: circleName,
+            )
+          : circles);
     } catch (e) {
       throw 'Erro ao buscar círculos: $e';
     }
@@ -110,5 +114,13 @@ class CircleController extends ChangeNotifier {
     } catch (e) {
       throw 'Erro ao atualizar imagens do círculo: $e';
     }
+  }
+
+  List<CircleModel>? filterCircles(
+      {required List<CircleModel> listCircleModel,
+      required String circleName}) {
+    return listCircleModel.where((doc) {
+      return doc.name.toLowerCase().contains(circleName.toLowerCase());
+    }).toList();
   }
 }
