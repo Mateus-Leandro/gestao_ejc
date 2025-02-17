@@ -113,10 +113,39 @@ class _QuestionScreenState extends State<QuestionScreen> {
         listTile: ListTile(
           title: Row(
             children: [
-              Flexible(
+              Expanded(
                 child: Text(
                   question.question,
                   style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
+              const Text('| '),
+              Tooltip(
+                message: 'Responder pergunta',
+                child: IconButton(
+                    onPressed: () {
+                      _showAnswerForm(
+                        encounter: widget.encounter,
+                        question: question,
+                      );
+                    },
+                    icon: const Icon(Icons.question_answer)),
+              ),
+              Tooltip(
+                message: 'Editar Pergunta',
+                child: CustomEditButton(
+                  form: CustomQuestionForm(
+                    encounter: widget.encounter,
+                    editingQuestion: question,
+                  ),
+                ),
+              ),
+              Tooltip(
+                message: 'Excluir Pergunta',
+                child: CustomDeleteButton(
+                  alertMessage: 'Excluir Pergunta',
+                  deleteFunction: () async =>
+                      _deleteQuestion(question: question),
                 ),
               ),
             ],
@@ -129,39 +158,6 @@ class _QuestionScreenState extends State<QuestionScreen> {
                   child: CircularProgressIndicator(),
                 )
               ] else ...[
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Tooltip(
-                      message: 'Responder pergunta',
-                      child: IconButton(
-                          onPressed: () {
-                            _showAnswerForm(
-                              encounter: widget.encounter,
-                              question: question,
-                            );
-                          },
-                          icon: const Icon(Icons.help)),
-                    ),
-                    Tooltip(
-                      message: 'Editar Pergunta',
-                      child: CustomEditButton(
-                        form: CustomQuestionForm(
-                          encounter: widget.encounter,
-                          editingQuestion: question,
-                        ),
-                      ),
-                    ),
-                    Tooltip(
-                      message: 'Excluir Pergunta',
-                      child: CustomDeleteButton(
-                        alertMessage: 'Excluir Pergunta',
-                        deleteFunction: () async =>
-                            _deleteQuestion(question: question),
-                      ),
-                    ),
-                  ],
-                ),
                 for (var answer in answers) ...[
                   if (answer.referenceQuestion.id == question.id) ...[
                     Padding(
@@ -194,7 +190,7 @@ class _QuestionScreenState extends State<QuestionScreen> {
                                     answer: answer,
                                   );
                                 },
-                                icon: const Icon(Icons.edit_note)),
+                                icon: const Icon(Icons.edit)),
                           ),
                           Tooltip(
                             message: 'Excluir resposta',
@@ -203,7 +199,7 @@ class _QuestionScreenState extends State<QuestionScreen> {
                               deleteFunction: () =>
                                   _deleteAnswer(answer: answer),
                               iconButton: const Icon(
-                                Icons.cancel,
+                                Icons.delete_forever,
                                 color: Colors.red,
                               ),
                             ),
