@@ -8,6 +8,7 @@ class CustomDatePicker extends StatefulWidget {
   final String labelText;
   final DateTime? lowestDate;
   final DateTime? higherDate;
+  final bool? active;
 
   const CustomDatePicker({
     super.key,
@@ -15,6 +16,7 @@ class CustomDatePicker extends StatefulWidget {
     required this.labelText,
     this.lowestDate,
     this.higherDate,
+    this.active,
   });
 
   @override
@@ -27,7 +29,7 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: _openDatePickerDialog,
+      onTap: widget.active != false ? _openDatePickerDialog : null,
       child: AbsorbPointer(
         child: TextFormField(
           controller: widget.controller,
@@ -41,6 +43,7 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
             }
             return null;
           },
+          enabled: widget.active ?? true,
         ),
       ),
     );
