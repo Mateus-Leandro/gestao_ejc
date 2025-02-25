@@ -10,6 +10,7 @@ import 'package:gestao_ejc/controllers/financial_controller.dart';
 import 'package:gestao_ejc/controllers/financial_index_controller.dart';
 import 'package:gestao_ejc/controllers/member_controller.dart';
 import 'package:gestao_ejc/controllers/question_controller.dart';
+import 'package:gestao_ejc/controllers/team_controller.dart';
 import 'package:gestao_ejc/controllers/user_controller.dart';
 import 'package:gestao_ejc/functions/function_call_email_app.dart';
 import 'package:gestao_ejc/functions/function_call_url.dart';
@@ -34,6 +35,7 @@ import 'package:gestao_ejc/services/firebase_storage_service.dart';
 import 'package:gestao_ejc/services/member_service.dart';
 import 'package:gestao_ejc/services/pdf_service.dart';
 import 'package:gestao_ejc/services/question_service.dart';
+import 'package:gestao_ejc/services/team_service.dart';
 import 'package:gestao_ejc/services/user_service.dart';
 import 'package:gestao_ejc/services/xlsx_service.dart';
 import 'package:gestao_ejc/theme/app_theme.dart';
@@ -88,4 +90,6 @@ void setupGetIt() {
   getIt.registerLazySingleton<QuestionController>(() => QuestionController());
   getIt.registerLazySingleton<AnswerController>(() => AnswerController());
   getIt.registerLazySingleton<AnswerService>(() => AnswerService());
+  getIt.registerLazySingleton<TeamService>(() => TeamService());
+  getIt.registerLazySingleton<TeamController>(() => TeamController());
 }
