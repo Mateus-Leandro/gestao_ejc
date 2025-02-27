@@ -11,7 +11,7 @@ enum TeamTypeEnum {
   liturgiaExterna,
   liturgiaInterna,
   ordemELimpeza,
-  salaImagens,
+  sala,
   secretaria,
   tiosDaExterna,
 }
@@ -39,8 +39,8 @@ extension TeamExtension on TeamTypeEnum {
         return 'Liturgia Interna';
       case TeamTypeEnum.ordemELimpeza:
         return 'Ordem e Limpeza';
-      case TeamTypeEnum.salaImagens:
-        return 'Sala Imagens';
+      case TeamTypeEnum.sala:
+        return 'Sala';
       case TeamTypeEnum.secretaria:
         return 'Secretaria';
       case TeamTypeEnum.tiosDaExterna:
@@ -70,8 +70,8 @@ extension TeamExtension on TeamTypeEnum {
         return const Icon(Icons.church);
       case TeamTypeEnum.ordemELimpeza:
         return const Icon(Icons.clean_hands_rounded);
-      case TeamTypeEnum.salaImagens:
-        return const Icon(Icons.photo_album);
+      case TeamTypeEnum.sala:
+        return const Icon(Icons.door_back_door_outlined);
       case TeamTypeEnum.secretaria:
         return const Icon(Icons.monitor);
       case TeamTypeEnum.tiosDaExterna:
