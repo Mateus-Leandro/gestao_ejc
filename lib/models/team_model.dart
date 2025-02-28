@@ -4,13 +4,15 @@ class TeamModel {
   final int sequentialEncounter;
   final String id;
   final TeamTypeEnum type;
-  final String urlImage;
+  String? urlImage;
+  final String? parodyMusic;
 
   TeamModel({
     required this.sequentialEncounter,
     required this.id,
     required this.urlImage,
     required this.type,
+    required this.parodyMusic,
   });
 
   Map<String, dynamic> toJson() {
@@ -19,6 +21,7 @@ class TeamModel {
       'id': id,
       'type': type.formattedName,
       'urlImage': urlImage,
+      'parodyMusic': parodyMusic,
     };
   }
 
@@ -30,6 +33,7 @@ class TeamModel {
         (type) => type.formattedName == map['type'],
       ),
       urlImage: map['urlImage'] ?? '',
+      parodyMusic: map['parodyMusic'] ?? '',
     );
   }
 }

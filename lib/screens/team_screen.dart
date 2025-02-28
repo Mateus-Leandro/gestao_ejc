@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:gestao_ejc/components/buttons/custom_edit_button.dart';
+import 'package:gestao_ejc/components/forms/custom_team_form.dart';
 import 'package:gestao_ejc/components/utils/custom_list_tile.dart';
 import 'package:gestao_ejc/components/utils/custom_search_row.dart';
 import 'package:gestao_ejc/controllers/team_controller.dart';
@@ -41,7 +43,7 @@ class _TeamScreenState extends State<TeamScreen> {
         children: [
           CustomSearchRow(
             messageButton: 'Criar Equipe',
-            functionButton: () => (),
+            functionButton: () => _showTeamForm(null),
             showButton: true,
             inputType: TextInputType.text,
             controller: teamNameController,
@@ -90,14 +92,33 @@ class _TeamScreenState extends State<TeamScreen> {
         title: Row(
           children: [
             Padding(
-              padding: const EdgeInsets.only(right: 5),
+              padding: const EdgeInsets.only(right: 20.0),
               child: team.type.teamIcon,
             ),
-            Text(" -  ${team.type.formattedName}"),
+            Text(team.type.formattedName),
           ],
+        ),
+        trailing: CustomEditButton(
+          form: CustomTeamForm(
+            teamEditing: team,
+            encounter: widget.encounter,
+          ),
         ),
       ),
       defaultBackgroundColor: Colors.white,
+    );
+  }
+
+  void _showTeamForm(TeamModel? team) {
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return CustomTeamForm(
+          encounter: widget.encounter,
+          teamEditing: team,
+        );
+      },
     );
   }
 }

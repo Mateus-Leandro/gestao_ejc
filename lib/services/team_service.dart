@@ -39,4 +39,14 @@ class TeamService extends ChangeNotifier {
       rethrow;
     }
   }
+
+  Future<void> updateUrlImage({required TeamModel team}) async {
+    try {
+      await _firestore.collection(collection).doc(team.id).update({
+        'urlImage': team.urlImage,
+      });
+    } catch (e) {
+      rethrow;
+    }
+  }
 }
