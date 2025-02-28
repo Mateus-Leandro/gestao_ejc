@@ -41,8 +41,8 @@ class _CustomTeamFormState extends State<CustomTeamForm> {
     if (widget.teamEditing != null) {
       selectedTeam = widget.teamEditing!.type;
       _musicTextController.text = widget.teamEditing!.parodyMusic ?? '';
+      _loadImages();
     }
-    _loadImages();
   }
 
   @override
