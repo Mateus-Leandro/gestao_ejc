@@ -14,7 +14,6 @@ import 'package:gestao_ejc/controllers/team_controller.dart';
 import 'package:gestao_ejc/controllers/user_controller.dart';
 import 'package:gestao_ejc/functions/function_call_email_app.dart';
 import 'package:gestao_ejc/functions/function_call_url.dart';
-import 'package:gestao_ejc/functions/function_color.dart';
 import 'package:gestao_ejc/functions/function_date.dart';
 import 'package:gestao_ejc/functions/function_decimal_place.dart';
 import 'package:gestao_ejc/functions/function_input_text.dart';
@@ -79,7 +78,6 @@ void setupGetIt() {
   getIt.registerLazySingleton<FunctionPickImage>(() => FunctionPickImage());
   getIt.registerLazySingleton<CircleService>(() => CircleService());
   getIt.registerLazySingleton<CircleController>(() => CircleController());
-  getIt.registerLazySingleton<FunctionColor>(() => FunctionColor());
   getIt.registerLazySingleton<CircleMemberController>(
       () => CircleMemberController());
   getIt.registerLazySingleton<CircleMemberService>(() => CircleMemberService());

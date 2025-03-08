@@ -8,7 +8,7 @@ import 'package:gestao_ejc/components/buttons/custom_pick_file_button.dart';
 import 'package:gestao_ejc/components/drawers/custom_color_drawer.dart';
 import 'package:gestao_ejc/components/forms/custom_model_form.dart';
 import 'package:gestao_ejc/controllers/circle_controller.dart';
-import 'package:gestao_ejc/functions/function_color.dart';
+import 'package:gestao_ejc/enums/circle_color_enum.dart';
 import 'package:gestao_ejc/functions/function_pick_image.dart';
 import 'package:gestao_ejc/models/circle_model.dart';
 import 'package:gestao_ejc/models/encounter_model.dart';
@@ -28,17 +28,16 @@ class CustomCircleForm extends StatefulWidget {
 }
 
 class _CustomCircleFormState extends State<CustomCircleForm> {
-  String? selectedColorHex;
   final formKey = GlobalKey<FormState>();
   final CircleController _circleController = getIt<CircleController>();
   final FunctionPickImage functionPickImage = getIt<FunctionPickImage>();
   final TextEditingController _circleNameController = TextEditingController();
-  final FunctionColor _functionColor = getIt<FunctionColor>();
   String? _colorSelectionError;
   bool _isLoadingThemeImage = false;
   bool _isLoadingCircleImage = false;
   bool _isLoadingSaveCircle = false;
-  Color? initialColor;
+  CircleColorEnum? _initialColor;
+  CircleColorEnum? _selectedColor;
   Uint8List? themeImage;
   Uint8List? originalThemeImage;
   Uint8List? circleImage;
@@ -51,8 +50,8 @@ class _CustomCircleFormState extends State<CustomCircleForm> {
     super.initState();
     if (widget.editingCircle != null) {
       _circleNameController.text = widget.editingCircle?.name ?? '';
-      selectedColorHex = widget.editingCircle!.colorHex;
-      initialColor = _functionColor.getFromHexadecimal(selectedColorHex!);
+      _initialColor = widget.editingCircle!.color;
+      _selectedColor = _initialColor;
       urlThemeImage = widget.editingCircle!.urlThemeImage;
       urlCircleImage = widget.editingCircle!.urlCircleImage;
       _loadImages();
@@ -81,7 +80,7 @@ class _CustomCircleFormState extends State<CustomCircleForm> {
           CustomConfirmationButton(
             onPressed: () {
               setState(() {
-                if (selectedColorHex == null) {
+                if (_selectedColor == null) {
                   _colorSelectionError = 'Necessário selecionar cor do círculo';
                 }
               });
@@ -107,7 +106,7 @@ class _CustomCircleFormState extends State<CustomCircleForm> {
         id: circleId,
         sequentialEncounter: widget.encounter.sequential,
         name: _circleNameController.text.trim(),
-        colorHex: selectedColorHex!,
+        color: _selectedColor!,
         urlThemeImage: '',
         urlCircleImage: '',
       );
@@ -174,15 +173,15 @@ class _CustomCircleFormState extends State<CustomCircleForm> {
     return [
       const Text('Cor do círculo'),
       CustomColorDrawer(
-        initialColor: initialColor,
+        initialColor: _initialColor,
         colorSelected: (newColor) {
           setState(
             () {
-              selectedColorHex = newColor[2];
+              _selectedColor = newColor;
               _colorSelectionError = null;
               if (widget.editingCircle == null &&
                   widget.circles!.any(
-                    (circle) => circle.colorHex == newColor[2],
+                    (circle) => circle.color == newColor,
                   )) {
                 _colorSelectionError =
                     'Cor já utilizada em outro círculo do encontro!';

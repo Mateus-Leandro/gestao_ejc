@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:gestao_ejc/enums/circle_color_enum.dart';
 import 'package:gestao_ejc/models/answer_model.dart';
+import 'package:gestao_ejc/screens/question_screen.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
 
 class AnswerService {
@@ -52,7 +54,7 @@ class AnswerService {
       snapshot = await _firestore
           .collection(collection)
           .where('sequentialEncounter', isEqualTo: answer.sequentialEncounter)
-          .where('hexColorCircle', isEqualTo: answer.hexColorCircle)
+          .where('hexColorCircle', isEqualTo: answer.circleColor.colorHex)
           .where('referenceQuestion', isEqualTo: answer.referenceQuestion)
           .get();
       return snapshot!.docs.isNotEmpty;

@@ -3,7 +3,7 @@ import 'package:gestao_ejc/components/utils/custom_list_tile.dart';
 import 'package:gestao_ejc/components/utils/custom_search_row.dart';
 import 'package:gestao_ejc/controllers/circle_member_controller.dart';
 import 'package:gestao_ejc/controllers/member_controller.dart';
-import 'package:gestao_ejc/functions/function_color.dart';
+import 'package:gestao_ejc/enums/circle_color_enum.dart';
 import 'package:gestao_ejc/models/circle_member_model.dart';
 import 'package:gestao_ejc/models/member_model.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
@@ -32,7 +32,6 @@ class _CircleMembersScreenState extends State<CircleMembersScreen> {
   final CircleMemberController _circleMemberController =
       getIt<CircleMemberController>();
   final TextEditingController memberNameController = TextEditingController();
-  final FunctionColor _functionColor = getIt<FunctionColor>();
   final MemberController _memberController = getIt<MemberController>();
   bool loadingMembers = true;
   List<MemberModel> members = [];
@@ -110,8 +109,7 @@ class _CircleMembersScreenState extends State<CircleMembersScreen> {
                   width: 20,
                   decoration: BoxDecoration(
                     border: Border.all(color: Colors.black),
-                    color: _functionColor
-                        .getFromHexadecimal(circleMember.hexColorCircle),
+                    color: circleMember.circleColor.circleColor,
                     borderRadius: BorderRadius.circular(20),
                   ),
                 ),

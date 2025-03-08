@@ -6,7 +6,7 @@ import 'package:gestao_ejc/components/forms/custom_circle_form.dart';
 import 'package:gestao_ejc/components/utils/custom_list_tile.dart';
 import 'package:gestao_ejc/components/utils/custom_search_row.dart';
 import 'package:gestao_ejc/controllers/circle_controller.dart';
-import 'package:gestao_ejc/functions/function_color.dart';
+import 'package:gestao_ejc/enums/circle_color_enum.dart';
 import 'package:gestao_ejc/models/circle_model.dart';
 import 'package:gestao_ejc/models/encounter_model.dart';
 import 'package:gestao_ejc/services/auth_service.dart';
@@ -36,7 +36,6 @@ class _CircleScreenState extends State<CircleScreen> {
   TextEditingController circleNameController = TextEditingController();
   final CircleController _circleController = getIt<CircleController>();
   final AuthService _authService = getIt<AuthService>();
-  final FunctionColor _functionColor = getIt<FunctionColor>();
   List<CircleModel> circles = [];
   @override
   Widget build(BuildContext context) {
@@ -98,25 +97,15 @@ class _CircleScreenState extends State<CircleScreen> {
   Widget _buildCircleTile(BuildContext context, CircleModel circle) {
     return CustomListTile(
         listTile: ListTile(
-          title: Row(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(right: 5),
-                child: Container(
-                  height: 20,
-                  width: 20,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.black),
-                    color: _functionColor.getFromHexadecimal(circle.colorHex),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                ),
+          title: Row(children: [
+            circle.color.iconColor,
+            Padding(
+              padding: const EdgeInsets.only(left: 10.0),
+              child: Text(
+                circle.color.circleName,
               ),
-              Text(
-                circle.name,
-              ),
-            ],
-          ),
+            ),
+          ]),
           trailing: Row(
             mainAxisSize: MainAxisSize.min,
             children: [

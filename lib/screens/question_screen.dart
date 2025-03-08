@@ -8,7 +8,7 @@ import 'package:gestao_ejc/components/utils/custom_list_tile.dart';
 import 'package:gestao_ejc/components/utils/custom_search_row.dart';
 import 'package:gestao_ejc/controllers/answer_controller.dart';
 import 'package:gestao_ejc/controllers/question_controller.dart';
-import 'package:gestao_ejc/functions/function_color.dart';
+import 'package:gestao_ejc/enums/circle_color_enum.dart';
 import 'package:gestao_ejc/models/answer_model.dart';
 import 'package:gestao_ejc/models/encounter_model.dart';
 import 'package:gestao_ejc/models/question_model.dart';
@@ -43,7 +43,6 @@ class _QuestionScreenState extends State<QuestionScreen> {
   List<AnswerModel> answers = [];
   bool isLoadingAnswers = true;
   String? searchedText;
-  FunctionColor _functionColor = getIt<FunctionColor>();
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -165,21 +164,13 @@ class _QuestionScreenState extends State<QuestionScreen> {
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Container(
-                            height: 20,
-                            width: 20,
-                            decoration: BoxDecoration(
-                              border: Border.all(color: Colors.black),
-                              color: _functionColor
-                                  .getFromHexadecimal(answer.hexColorCircle),
-                              borderRadius: BorderRadius.circular(20),
+                          answer.circleColor.iconColor,
+                          Flexible(
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 10.0),
+                              child: Text(answer.answer),
                             ),
                           ),
-                          Flexible(
-                              child: Padding(
-                            padding: const EdgeInsets.only(left: 8.0),
-                            child: Text(answer.answer),
-                          )),
                           Tooltip(
                             message: 'Editar Resposta',
                             child: IconButton(

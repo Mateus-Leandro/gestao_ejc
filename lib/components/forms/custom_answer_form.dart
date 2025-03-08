@@ -6,7 +6,7 @@ import 'package:gestao_ejc/components/buttons/custom_confirmation_button.dart';
 import 'package:gestao_ejc/components/drawers/custom_color_drawer.dart';
 import 'package:gestao_ejc/components/forms/custom_model_form.dart';
 import 'package:gestao_ejc/controllers/answer_controller.dart';
-import 'package:gestao_ejc/functions/function_color.dart';
+import 'package:gestao_ejc/enums/circle_color_enum.dart';
 import 'package:gestao_ejc/models/answer_model.dart';
 import 'package:gestao_ejc/models/encounter_model.dart';
 import 'package:gestao_ejc/models/question_model.dart';
@@ -32,19 +32,18 @@ class _CustomAnswerFormState extends State<CustomAnswerForm> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _answerTextController = TextEditingController();
   final AnswerController _answerController = getIt<AnswerController>();
-  FunctionColor _functionColor = getIt<FunctionColor>();
   String? _colorSelectionError;
   bool _isLoadingSaveAnswer = false;
-  String? selectedColorHex;
-  Color? initialColor;
+  CircleColorEnum? initialColor;
+  CircleColorEnum? selectedColor;
 
   @override
   void initState() {
     super.initState();
     if (widget.editingAnswer != null) {
       _answerTextController.text = widget.editingAnswer!.answer;
-      selectedColorHex = widget.editingAnswer!.hexColorCircle;
-      initialColor = _functionColor.getFromHexadecimal(selectedColorHex!);
+      initialColor = widget.editingAnswer!.circleColor;
+      selectedColor = initialColor;
     }
   }
 
@@ -86,7 +85,7 @@ class _CustomAnswerFormState extends State<CustomAnswerForm> {
                 colorSelected: (newColor) {
                   setState(
                     () {
-                      selectedColorHex = newColor[2];
+                      selectedColor = newColor;
                       _colorSelectionError = null;
                     },
                   );
@@ -147,7 +146,7 @@ class _CustomAnswerFormState extends State<CustomAnswerForm> {
   }
 
   void _saveAnswer() async {
-    if (selectedColorHex == null) {
+    if (selectedColor == null) {
       setState(() {
         _colorSelectionError = 'Necessário informar a cor do círculo';
       });
@@ -166,7 +165,7 @@ class _CustomAnswerFormState extends State<CustomAnswerForm> {
                 .collection('answers')
                 .doc(widget.question.id),
             answer: _answerTextController.text.trim(),
-            hexColorCircle: selectedColorHex!,
+            circleColor: selectedColor!,
           );
           await _answerController.saveAnswer(
               answer: answer, editingAnswer: widget.editingAnswer != null);
