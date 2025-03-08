@@ -16,12 +16,12 @@ import 'package:uuid/uuid.dart';
 class CustomAnswerForm extends StatefulWidget {
   final EncounterModel encounter;
   final QuestionModel question;
-  final AnswerModel? answer;
+  final AnswerModel? editingAnswer;
   const CustomAnswerForm({
     super.key,
     required this.encounter,
     required this.question,
-    this.answer,
+    this.editingAnswer,
   });
 
   @override
@@ -41,9 +41,9 @@ class _CustomAnswerFormState extends State<CustomAnswerForm> {
   @override
   void initState() {
     super.initState();
-    if (widget.answer != null) {
-      _answerTextController.text = widget.answer!.answer;
-      selectedColorHex = widget.answer!.hexColorCircle;
+    if (widget.editingAnswer != null) {
+      _answerTextController.text = widget.editingAnswer!.answer;
+      selectedColorHex = widget.editingAnswer!.hexColorCircle;
       initialColor = _functionColor.getFromHexadecimal(selectedColorHex!);
     }
   }
@@ -91,10 +91,10 @@ class _CustomAnswerFormState extends State<CustomAnswerForm> {
                     },
                   );
                 },
-                tooltipMessage: widget.answer == null
+                tooltipMessage: widget.editingAnswer == null
                     ? 'Selecione a cor do círculo que responde a pergunta'
                     : '',
-                allowSelection: widget.answer == null,
+                allowSelection: widget.editingAnswer == null,
               ),
             ],
           ),
@@ -159,14 +159,17 @@ class _CustomAnswerFormState extends State<CustomAnswerForm> {
         try {
           AnswerModel answer = AnswerModel(
             sequentialEncounter: widget.encounter.sequential,
-            id: widget.answer != null ? widget.answer!.id : const Uuid().v4(),
+            id: widget.editingAnswer != null
+                ? widget.editingAnswer!.id
+                : const Uuid().v4(),
             referenceQuestion: FirebaseFirestore.instance
                 .collection('answers')
                 .doc(widget.question.id),
             answer: _answerTextController.text.trim(),
             hexColorCircle: selectedColorHex!,
           );
-          await _answerController.saveAnswer(answer: answer);
+          await _answerController.saveAnswer(
+              answer: answer, editingAnswer: widget.editingAnswer != null);
         } catch (e) {
           CustomSnackBar.show(
             context: context,

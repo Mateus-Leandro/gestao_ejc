@@ -266,7 +266,7 @@ class _QuestionScreenState extends State<QuestionScreen> {
         return CustomAnswerForm(
           encounter: encounter,
           question: question,
-          answer: answer,
+          editingAnswer: answer,
         );
       },
     ).then((_) => _loadAnswers());

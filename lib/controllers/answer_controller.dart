@@ -22,12 +22,13 @@ class AnswerController extends ChangeNotifier {
     super.dispose();
   }
 
-  Future<void> saveAnswer({required AnswerModel answer}) async {
+  Future<void> saveAnswer(
+      {required AnswerModel answer, required bool editingAnswer}) async {
     try {
-      await alreadyAnswered(answer: answer)
-          ? throw 'Questão ja respondida pelo círculo.'
-          : await _answerService.saveAnswer(answer: answer);
-
+      if (!editingAnswer && await alreadyAnswered(answer: answer)) {
+        throw 'Questão ja respondida pelo círculo.';
+      }
+      await _answerService.saveAnswer(answer: answer);
       getAnswers(sequentialEncounter: answer.sequentialEncounter);
     } catch (e) {
       throw 'Erro ao salvar resposta: $e';
