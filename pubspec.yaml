@@ -44,7 +44,6 @@ dependencies:
   flutter_localization: ^0.2.2
   firebase_storage: ^12.3.2
   google_fonts: ^6.2.1
-  flutter_vector_icons: ^2.0.0
   url_launcher: ^6.3.0
   quickalert: ^1.1.0
   buttons_tabbar: ^1.3.13
@@ -58,6 +57,7 @@ dependencies:
   font_awesome_flutter: ^10.7.0
   image_picker_web: ^4.0.0
   uuid: ^4.5.1
+  eva_icons_flutter: ^3.1.0
 
 dev_dependencies:
   flutter_test:

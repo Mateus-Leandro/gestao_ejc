@@ -1,4 +1,6 @@
+import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 enum TeamTypeEnum {
   apoioEAcolhida,
@@ -48,34 +50,34 @@ extension TeamExtension on TeamTypeEnum {
     }
   }
 
-  Icon get teamIcon {
+  get teamIcon {
     switch (this) {
       case TeamTypeEnum.apoioEAcolhida:
-        return const Icon(Icons.volunteer_activism);
+        return const FaIcon(Icons.volunteer_activism);
       case TeamTypeEnum.cafezinho:
-        return const Icon(Icons.coffee);
+        return const FaIcon(Icons.coffee);
       case TeamTypeEnum.compras:
-        return const Icon(Icons.payments_outlined);
+        return const FaIcon(Icons.payments_outlined);
       case TeamTypeEnum.cozinha:
-        return const Icon(Icons.soup_kitchen_outlined);
+        return const FaIcon(Icons.soup_kitchen_outlined);
       case TeamTypeEnum.coordenacaoGeral:
-        return const Icon(Icons.settings_accessibility);
+        return const FaIcon(FontAwesomeIcons.gear);
       case TeamTypeEnum.dirigentes:
-        return const Icon(Icons.emoji_people_outlined);
+        return const FaIcon(Icons.emoji_people_outlined);
       case TeamTypeEnum.garcoms:
-        return const Icon(Icons.room_service_outlined);
+        return const FaIcon(Icons.room_service_outlined);
       case TeamTypeEnum.liturgiaExterna:
-        return const Icon(Icons.book);
+        return const FaIcon(Icons.book);
       case TeamTypeEnum.liturgiaInterna:
         return const Icon(Icons.church);
       case TeamTypeEnum.ordemELimpeza:
-        return const Icon(Icons.clean_hands_rounded);
+        return const FaIcon(Icons.clean_hands_rounded);
       case TeamTypeEnum.sala:
-        return const Icon(Icons.door_back_door_outlined);
+        return const FaIcon(Icons.door_back_door_outlined);
       case TeamTypeEnum.secretaria:
-        return const Icon(Icons.monitor);
+        return const FaIcon(Icons.monitor);
       case TeamTypeEnum.tiosDaExterna:
-        return const Icon(Icons.people);
+        return const Icon(EvaIcons.car);
     }
   }
 }
