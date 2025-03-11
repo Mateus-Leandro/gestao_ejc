@@ -34,6 +34,7 @@ class _CustomTeamFormState extends State<CustomTeamForm> {
   bool _isLoadingSaveTeam = false;
   Uint8List? teamImage;
   Uint8List? originalTeamImage;
+  String? urlTeamImage = '';
 
   @override
   void initState() {
@@ -41,6 +42,7 @@ class _CustomTeamFormState extends State<CustomTeamForm> {
     if (widget.teamEditing != null) {
       selectedTeam = widget.teamEditing!.type;
       _musicTextController.text = widget.teamEditing!.parodyMusic ?? '';
+      urlTeamImage = widget.teamEditing!.urlImage;
       _loadImages();
     }
   }
@@ -172,7 +174,6 @@ class _CustomTeamFormState extends State<CustomTeamForm> {
   void _saveTeam() async {
     try {
       final String teamId = widget.teamEditing?.id ?? const Uuid().v4();
-      String? urlTeamImage;
       TeamModel team = TeamModel(
         sequentialEncounter: widget.encounter.sequential,
         id: teamId,
