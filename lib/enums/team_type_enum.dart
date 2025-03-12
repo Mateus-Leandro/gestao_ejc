@@ -53,31 +53,39 @@ extension TeamExtension on TeamTypeEnum {
   get teamIcon {
     switch (this) {
       case TeamTypeEnum.apoioEAcolhida:
-        return const FaIcon(Icons.volunteer_activism);
+        return Image.asset('assets/icons/apoio_e_acolhida.png',
+            width: 24, height: 24);
       case TeamTypeEnum.cafezinho:
-        return const FaIcon(Icons.coffee);
+        return Image.asset('assets/icons/cafezinho.png', width: 24, height: 24);
       case TeamTypeEnum.compras:
-        return const FaIcon(Icons.payments_outlined);
+        return Image.asset('assets/icons/compras.png', width: 24, height: 24);
       case TeamTypeEnum.cozinha:
-        return const FaIcon(Icons.soup_kitchen_outlined);
+        return Image.asset('assets/icons/cozinha.png', width: 24, height: 24);
       case TeamTypeEnum.coordenacaoGeral:
-        return const FaIcon(FontAwesomeIcons.gear);
+        return Image.asset('assets/icons/coordenacao_geral.png',
+            width: 24, height: 24);
       case TeamTypeEnum.dirigentes:
-        return const FaIcon(Icons.emoji_people_outlined);
+        return Image.asset('assets/icons/dirigentes.png',
+            width: 24, height: 24);
       case TeamTypeEnum.garcoms:
-        return const FaIcon(Icons.room_service_outlined);
+        return Image.asset('assets/icons/garcom.png', width: 24, height: 24);
       case TeamTypeEnum.liturgiaExterna:
-        return const FaIcon(Icons.book);
+        return Image.asset('assets/icons/liturgia_externa.png',
+            width: 24, height: 24);
       case TeamTypeEnum.liturgiaInterna:
-        return const Icon(Icons.church);
+        return Image.asset('assets/icons/liturgia_interna.png',
+            width: 24, height: 24);
       case TeamTypeEnum.ordemELimpeza:
-        return const FaIcon(Icons.clean_hands_rounded);
+        return Image.asset('assets/icons/ordem_e_limpeza.png',
+            width: 24, height: 24);
       case TeamTypeEnum.sala:
-        return const FaIcon(Icons.door_back_door_outlined);
+        return Image.asset('assets/icons/sala.png', width: 24, height: 24);
       case TeamTypeEnum.secretaria:
-        return const FaIcon(Icons.monitor);
+        return Image.asset('assets/icons/secretaria.png',
+            width: 24, height: 24);
       case TeamTypeEnum.tiosDaExterna:
-        return const Icon(EvaIcons.car);
+        return Image.asset('assets/icons/tios_da_externa.png',
+            width: 24, height: 24);
     }
   }
 }
