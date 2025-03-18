@@ -1,6 +1,10 @@
-import 'package:gestao_ejc/models/abstract_person_model.dart';
-
-class UserModel extends AbstractPersonModel {
+class UserModel {
+  String? id;
+  bool active;
+  final String name;
+  final String nameLowerCase;
+  final String email;
+  final String birthday;
   final bool manipulateAdministrator;
   final bool manipulateCircles;
   final bool manipulateEncounter;
@@ -11,12 +15,12 @@ class UserModel extends AbstractPersonModel {
   final bool manipulateUsers;
 
   UserModel({
-    super.id,
-    required super.active,
-    required super.name,
-    required super.nameLowerCase,
-    required super.email,
-    required super.birthday,
+    this.id,
+    required this.active,
+    required this.name,
+    required this.nameLowerCase,
+    required this.email,
+    required this.birthday,
     required this.manipulateAdministrator,
     required this.manipulateCircles,
     required this.manipulateEncounter,
@@ -30,12 +34,12 @@ class UserModel extends AbstractPersonModel {
   @override
   Map<String, dynamic> toJson() {
     return {
-      'id': super.id,
-      'active': super.active,
-      'name': super.name,
-      'nameLowerCase': super.nameLowerCase,
-      'email': super.email,
-      'birthday': super.birthday,
+      'id': id,
+      'active': active,
+      'name': name,
+      'nameLowerCase': nameLowerCase,
+      'email': email,
+      'birthday': birthday,
       'manipulateAdministrator': manipulateAdministrator,
       'manipulateCircles': manipulateCircles,
       'manipulateEncounter': manipulateEncounter,
