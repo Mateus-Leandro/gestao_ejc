@@ -182,7 +182,8 @@ class _CustomTeamFormState extends State<CustomTeamForm> {
         parodyMusic: _musicTextController.text.trim(),
       );
 
-      await _teamController.saveTeam(team: team);
+      await _teamController.saveTeam(
+          team: team, editingTeam: widget.teamEditing != null);
 
       if (teamImage != originalTeamImage) {
         if (teamImage != null) {
@@ -207,7 +208,7 @@ class _CustomTeamFormState extends State<CustomTeamForm> {
     } catch (e) {
       CustomSnackBar.show(
         context: context,
-        message: 'Erro ao salvar equipe: $e',
+        message: e.toString(),
         colorBar: Colors.red,
       );
     } finally {

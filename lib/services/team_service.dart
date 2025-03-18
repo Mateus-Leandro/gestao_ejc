@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:gestao_ejc/enums/team_type_enum.dart';
 import 'package:gestao_ejc/models/team_model.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
 
@@ -45,6 +46,19 @@ class TeamService extends ChangeNotifier {
       await _firestore.collection(collection).doc(team.id).update({
         'urlImage': team.urlImage,
       });
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<bool> alreadyRegistered({required TeamModel team}) async {
+    try {
+      snapshot = await _firestore
+          .collection(collection)
+          .where('sequentialEncounter', isEqualTo: team.sequentialEncounter)
+          .where('type', isEqualTo: team.type.formattedName)
+          .get();
+      return snapshot.docs.isNotEmpty;
     } catch (e) {
       rethrow;
     }

@@ -38,8 +38,11 @@ class TeamController extends ChangeNotifier {
     }
   }
 
-  Future<void> saveTeam({required TeamModel team}) async {
+  Future<void> saveTeam({required TeamModel team, required bool editingTeam}) async {
     try {
+      if(!editingTeam && await alreadyRegistered(team: team)){
+        throw 'Equipe ${team.type.formattedName} já cadastrado(a) no encontro!';
+      }
       await _teamService.saveTeam(team: team);
     } catch (e) {
       throw 'Erro ao salvar equipe: $e';
@@ -95,6 +98,14 @@ class TeamController extends ChangeNotifier {
       getTeams(sequentialEncounter: team.sequentialEncounter);
     } catch (e) {
       throw 'Erro ao atualizar imagens do círculo: $e';
+    }
+  }
+
+  Future<bool> alreadyRegistered({required TeamModel team}) async {
+    try {
+      return await _teamService.alreadyRegistered(team: team);
+    } catch (e) {
+      rethrow;
     }
   }
 }
