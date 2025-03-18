@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:gestao_ejc/enums/circle_color_enum.dart';
 import 'package:gestao_ejc/models/answer_model.dart';
-import 'package:gestao_ejc/screens/question_screen.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
 
 class AnswerService {

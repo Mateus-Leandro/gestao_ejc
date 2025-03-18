@@ -7,7 +7,6 @@ import 'package:gestao_ejc/components/pickers/custom_date_picker.dart';
 import 'package:gestao_ejc/controllers/user_controller.dart';
 import 'package:gestao_ejc/models/user_model.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
-import 'package:gestao_ejc/theme/app_theme.dart';
 
 class CustomUserForm extends StatefulWidget {
   const CustomUserForm({super.key, this.userEditing});
@@ -25,7 +24,6 @@ class _CustomUserFormState extends State<CustomUserForm> {
   final _confirmePasswordController = TextEditingController();
   final _birthdayController = TextEditingController();
   final _userController = getIt<UserController>();
-  final _appTheme = getIt<AppTheme>();
   final _formKey = GlobalKey<FormState>();
 
   bool manipulateAdministrator = false;
