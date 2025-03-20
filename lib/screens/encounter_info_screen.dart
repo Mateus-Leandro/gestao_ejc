@@ -5,6 +5,7 @@ import 'package:gestao_ejc/components/buttons/custom_cancel_button.dart';
 import 'package:gestao_ejc/components/buttons/custom_confirmation_button.dart';
 import 'package:gestao_ejc/components/buttons/custom_icon_button.dart';
 import 'package:gestao_ejc/components/buttons/custom_pick_file_button.dart';
+import 'package:gestao_ejc/components/pickers/custom_date_picker.dart';
 import 'package:gestao_ejc/controllers/encounter_controller.dart';
 import 'package:gestao_ejc/functions/function_call_url.dart';
 import 'package:gestao_ejc/functions/function_date.dart';
@@ -14,7 +15,6 @@ import 'package:gestao_ejc/functions/function_pick_image.dart';
 import 'package:gestao_ejc/models/encounter_model.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
 import 'package:gestao_ejc/theme/app_theme.dart';
-import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 
 class EncounterInfoScreen extends StatefulWidget {
   final EncounterModel encounterModel;
@@ -46,8 +46,11 @@ class _EncounterInfoScreenState extends State<EncounterInfoScreen> {
   final EncounterController encounterController = getIt<EncounterController>();
   final FunctionCallUrl functionCallUrl = getIt<FunctionCallUrl>();
   final FunctionPickImage functionPickImage = getIt<FunctionPickImage>();
+  final TextEditingController _initialEncounterDateController =
+      TextEditingController();
+  final TextEditingController _finalEncounterDateController =
+      TextEditingController();
 
-  List<DateTime?> selectedDates = [];
   late bool activeFields;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   var musicIcon;
@@ -67,10 +70,10 @@ class _EncounterInfoScreenState extends State<EncounterInfoScreen> {
       musicLink: widget.encounterModel.themeSongLink,
       activeFields: activeFields,
     );
-    selectedDates.add(DateTime.fromMillisecondsSinceEpoch(
-        widget.encounterModel.initialDate.millisecondsSinceEpoch));
-    selectedDates.add(DateTime.fromMillisecondsSinceEpoch(
-        widget.encounterModel.finalDate.millisecondsSinceEpoch));
+    _initialEncounterDateController.text =
+        functionDate.getStringFromTimestamp(widget.encounterModel.initialDate);
+    _finalEncounterDateController.text =
+        functionDate.getStringFromTimestamp(widget.encounterModel.finalDate);
 
     if (widget.encounterModel.urlImageTheme.isNotEmpty) {
       _getImageTheme();
@@ -90,7 +93,11 @@ class _EncounterInfoScreenState extends State<EncounterInfoScreen> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 if (_isLoading)
-                  const Center(child: CircularProgressIndicator())
+                  const SizedBox(
+                    height: 250,
+                    width: 250,
+                    child: Center(child: CircularProgressIndicator()),
+                  )
                 else
                   CustomPickFileButton(
                     onPressed: () {
@@ -104,7 +111,6 @@ class _EncounterInfoScreenState extends State<EncounterInfoScreen> {
                         opacity: !activeFields ? 0.5 : 1.0,
                         child: Stack(
                           alignment: Alignment.topRight,
-                          fit: StackFit.loose,
                           children: [
                             ClipRRect(
                                 borderRadius: BorderRadius.circular(20),
@@ -119,16 +125,27 @@ class _EncounterInfoScreenState extends State<EncounterInfoScreen> {
                                         elevation: 5,
                                         child: Padding(
                                           padding: EdgeInsets.all(8.0),
-                                          child: Text('Selecionar imagem Tema'),
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Icon(Icons.image,
+                                                  size: 50, color: Colors.grey),
+                                              SizedBox(height: 8),
+                                              Text(
+                                                'Selecionar Imagem Tema',
+                                                textAlign: TextAlign.center,
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       )),
                             if (themeImage != null && activeFields) ...[
                               Padding(
-                                padding: const EdgeInsets.all(15.0),
+                                padding: const EdgeInsets.all(8.0),
                                 child: IconButton(
-                                  iconSize: 35,
+                                  iconSize: 30,
                                   icon: const Icon(Icons.close,
-                                      color: Colors.red, size: 30),
+                                      color: Colors.red),
                                   onPressed: () {
                                     setState(() {
                                       themeImage = null;
@@ -170,6 +187,12 @@ class _EncounterInfoScreenState extends State<EncounterInfoScreen> {
                         musicThemeController.text =
                             widget.encounterModel.themeSong;
                         themeImage = originalThemeImage;
+                        _initialEncounterDateController.text =
+                            functionDate.getStringFromTimestamp(
+                                widget.encounterModel.initialDate);
+                        _finalEncounterDateController.text =
+                            functionDate.getStringFromTimestamp(
+                                widget.encounterModel.finalDate);
                         _activeFields();
                       },
                     ),
@@ -190,28 +213,41 @@ class _EncounterInfoScreenState extends State<EncounterInfoScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  TextFormField(
-                    decoration: const InputDecoration(
-                      labelText: 'Encontro',
-                      labelStyle: TextStyle(fontSize: 20),
-                    ),
-                    controller: encounterNameController,
-                    enabled: false,
+                  Row(
+                    children: [
+                      Flexible(
+                        flex: 5,
+                        child: TextFormField(
+                          decoration: const InputDecoration(
+                            labelText: 'Encontro',
+                            labelStyle: TextStyle(fontSize: 20),
+                          ),
+                          controller: encounterNameController,
+                          enabled: false,
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Flexible(
+                        flex: 6,
+                        fit: FlexFit.loose,
+                        child: TextFormField(
+                          decoration: const InputDecoration(
+                            labelText: 'Local',
+                            labelStyle: TextStyle(fontSize: 20),
+                          ),
+                          controller: locationController,
+                          enabled: activeFields,
+                          validator: (value) {
+                            if (value == null || value.trim().isEmpty) {
+                              return 'Local não pode ser vazio';
+                            }
+                            return null;
+                          },
+                        ),
+                      ),
+                    ],
                   ),
-                  TextFormField(
-                    decoration: const InputDecoration(
-                      labelText: 'Local',
-                      labelStyle: TextStyle(fontSize: 20),
-                    ),
-                    controller: locationController,
-                    enabled: activeFields,
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return 'Local não pode ser vazio';
-                      }
-                      return null;
-                    },
-                  ),
+                  const SizedBox(height: 10),
                   TextFormField(
                     decoration: const InputDecoration(
                       labelText: 'Música Tema',
@@ -226,6 +262,7 @@ class _EncounterInfoScreenState extends State<EncounterInfoScreen> {
                       return null;
                     },
                   ),
+                  const SizedBox(height: 10),
                   TextFormField(
                     decoration: InputDecoration(
                       labelText: 'Link música',
@@ -248,42 +285,36 @@ class _EncounterInfoScreenState extends State<EncounterInfoScreen> {
                       });
                     },
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 15, bottom: 15),
-                    child: Text(
-                      'Dias do encontro',
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: activeFields ? Colors.black : Colors.grey[300],
-                      ),
+                  const SizedBox(height: 15),
+                  Text(
+                    'Dias do encontro',
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: activeFields ? Colors.black : Colors.grey[300],
                     ),
                   ),
-                  SizedBox(
-                    width: 350,
-                    height: 320,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: activeFields
-                            ? Colors.transparent
-                            : Colors.grey[300],
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: AbsorbPointer(
-                        absorbing: !activeFields,
-                        child: CalendarDatePicker2(
-                          config: CalendarDatePicker2Config(
-                            disableModePicker: true,
-                            calendarType: CalendarDatePicker2Type.range,
-                          ),
-                          value: selectedDates,
-                          onValueChanged: (dates) {
-                            setState(() {
-                              selectedDates = dates;
-                            });
-                          },
+                  const SizedBox(height: 10),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Expanded(
+                        flex: 5,
+                        child: CustomDatePicker(
+                          controller: _initialEncounterDateController,
+                          labelText: 'Data Inicial',
+                          active: activeFields,
                         ),
                       ),
-                    ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        flex: 5,
+                        child: CustomDatePicker(
+                          controller: _finalEncounterDateController,
+                          labelText: 'Data Final',
+                          active: activeFields,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -318,18 +349,26 @@ class _EncounterInfoScreenState extends State<EncounterInfoScreen> {
   }
 
   void _saveEncounter() async {
-    if (selectedDates.length < 2) {
+    DateTime initialDate = functionDate.getDateFromStringFormatted(
+        _initialEncounterDateController.text.trim());
+    DateTime finalDate = functionDate
+        .getDateFromStringFormatted(_finalEncounterDateController.text.trim());
+
+    if (functionDate
+        .getDaysBetweenDates(initialDate: initialDate, finalDate: finalDate)
+        .isNegative) {
       CustomSnackBar.show(
         context: context,
-        message: 'Seleciona as datas do encontro',
+        message:
+            'Data inicial do encontro não pode ser posterior a data final!',
         colorBar: Colors.red,
       );
       return;
     }
-    widget.encounterModel.initialDate =
-        functionDate.getTimestampFromDateTime(selectedDates[0]!);
-    widget.encounterModel.finalDate =
-        functionDate.getTimestampFromDateTime(selectedDates[1]!);
+    widget.encounterModel.initialDate = functionDate
+        .getTimestampFromString(_initialEncounterDateController.text.trim());
+    widget.encounterModel.finalDate = functionDate
+        .getTimestampFromString(_finalEncounterDateController.text.trim());
     widget.encounterModel.location = locationController.text.trim();
     widget.encounterModel.themeSong = musicThemeController.text.trim();
     widget.encounterModel.themeSongLink = musicThemeLinkController.text.trim();

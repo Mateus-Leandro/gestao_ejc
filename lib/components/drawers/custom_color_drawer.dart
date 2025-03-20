@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:gestao_ejc/functions/function_color.dart';
-import 'package:gestao_ejc/models/circle_color_model.dart';
-import 'package:gestao_ejc/services/locator/service_locator.dart';
+import 'package:gestao_ejc/enums/circle_color_enum.dart';
 
 class CustomColorDrawer extends StatefulWidget {
-  final Color? initialColor;
-  final ValueChanged<List> colorSelected;
+  final CircleColorEnum? initialColor;
+  final ValueChanged<CircleColorEnum> colorSelected;
   final String tooltipMessage;
   final bool allowSelection;
 
@@ -22,9 +20,7 @@ class CustomColorDrawer extends StatefulWidget {
 }
 
 class _CustomColorDrawerState extends State<CustomColorDrawer> {
-  late Color? _currentColor;
-  final FunctionColor functionColor = getIt<FunctionColor>();
-  final CircleColorModel _circleColors = CircleColorModel();
+  late CircleColorEnum? _currentColor;
   String? colorName;
 
   @override
@@ -37,27 +33,21 @@ class _CustomColorDrawerState extends State<CustomColorDrawer> {
   Widget build(BuildContext context) {
     return Tooltip(
       message: widget.tooltipMessage,
-      child: DropdownButton<Color>(
+      child: DropdownButton<CircleColorEnum>(
         focusColor: Colors.transparent,
         value: _currentColor,
         icon: const Icon(Icons.arrow_drop_down),
-        items: _circleColors.currentColors.entries.map((color) {
-          return DropdownMenuItem<Color>(
-            value: color.value,
+        items: CircleColorEnum.values.map((CircleColorEnum color) {
+          return DropdownMenuItem<CircleColorEnum>(
+            value: color,
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.black),
-                    color: color.value,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  width: 24,
-                  height: 24,
-                  margin: const EdgeInsets.only(right: 8),
+                color.iconColor,
+                Padding(
+                  padding: const EdgeInsets.only(left: 10.0),
+                  child: Text(color.circleName),
                 ),
-                Text(color.key),
               ],
             ),
           );
@@ -68,14 +58,7 @@ class _CustomColorDrawerState extends State<CustomColorDrawer> {
                   setState(() {
                     _currentColor = color;
                   });
-                  colorName = _circleColors.currentColors.entries
-                      .firstWhere((element) => element.value == color)
-                      .key;
-                  widget.colorSelected([
-                    colorName,
-                    color,
-                    functionColor.convertToHexadecimal(color),
-                  ]);
+                  widget.colorSelected(color);
                 }
               }
             : null,

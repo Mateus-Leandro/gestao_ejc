@@ -1,8 +1,10 @@
+import 'package:gestao_ejc/enums/circle_color_enum.dart';
+
 class CircleModel {
   final String id;
   final int sequentialEncounter;
   final String name;
-  final String colorHex;
+  final CircleColorEnum color;
   String? urlThemeImage;
   String? urlCircleImage;
 
@@ -10,7 +12,7 @@ class CircleModel {
     required this.id,
     required this.sequentialEncounter,
     required this.name,
-    required this.colorHex,
+    required this.color,
     this.urlThemeImage,
     this.urlCircleImage,
   });
@@ -20,7 +22,7 @@ class CircleModel {
       'id': id,
       'sequentialEncounter': sequentialEncounter,
       'name': name,
-      'colorHex': colorHex,
+      'colorHex': color.colorHex,
       'urlThemeImage': urlThemeImage,
       'urlCircleImage': urlCircleImage,
     };
@@ -31,7 +33,9 @@ class CircleModel {
       id: map['id'],
       sequentialEncounter: map['sequentialEncounter'],
       name: map['name'],
-      colorHex: map['colorHex'],
+      color: CircleColorEnum.values.firstWhere(
+        (color) => color.colorHex == map['colorHex'],
+      ),
       urlThemeImage: map['urlThemeImage'] ?? '',
       urlCircleImage: map['urlCircleImage'] ?? '',
     );
