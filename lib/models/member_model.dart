@@ -1,28 +1,32 @@
-class MemberModel {
-  final String id;
-  final String name;
-  final String instagram;
-  final String phone;
-  final String birthday;
-  final String encounter;
+import 'package:gestao_ejc/enums/instrument_enum.dart';
+import 'package:gestao_ejc/models/abstract_person_model.dart';
 
+class MemberModel extends AbstractPersonModel {
   MemberModel({
-    required this.id,
-    required this.name,
-    required this.instagram,
-    required this.phone,
-    required this.birthday,
-    required this.encounter,
+    required super.id,
+    required super.name,
+    required super.type,
+    super.instagram,
+    super.phone,
+    super.birthday,
+    super.ejcAccomplished,
+    super.eccAccomplished,
+    super.instruments,
   });
 
+  @override
   Map<String, dynamic> toJson() {
     return {
       'id': id,
       'name': name,
+      'type': type,
       'instagram': instagram,
       'phone': phone,
       'birthday': birthday,
-      'encounter': encounter,
+      'ejcAccomplished': ejcAccomplished,
+      'eccAccomplished': eccAccomplished,
+      'instruments':
+          instruments?.map((instrument) => instrument.instrumentName).toList(),
     };
   }
 
@@ -30,10 +34,15 @@ class MemberModel {
     return MemberModel(
       id: map['id'],
       name: map['name'],
+      type: map['type'],
       instagram: map['instagram'],
       phone: map['phone'],
       birthday: map['birthday'],
-      encounter: map['encounter'],
+      ejcAccomplished: map['ejcAccomplished'],
+      eccAccomplished: map['eccAccomplished'],
+      instruments: (map['instruments'] as List<dynamic>?)
+          ?.map((e) => InstrumentEnumExtension.fromName(e as String))
+          .toList(),
     );
   }
 }
