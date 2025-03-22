@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:gestao_ejc/controllers/answer_controller.dart';
+import 'package:gestao_ejc/controllers/auth_controller.dart';
 import 'package:gestao_ejc/controllers/circle_controller.dart';
 import 'package:gestao_ejc/controllers/circle_member_controller.dart';
 import 'package:gestao_ejc/controllers/encounter_controller.dart';
@@ -88,4 +89,5 @@ void setupGetIt() {
   getIt.registerLazySingleton<TeamController>(() => TeamController());
   getIt.registerLazySingleton<PersonService>(() => PersonService());
   getIt.registerLazySingleton<PersonController>(() => PersonController());
+  getIt.registerLazySingleton<AuthController>(() => AuthController());
 }

@@ -67,7 +67,7 @@ class _UserScreenState extends State<UserScreen> {
           Expanded(child: _buildUserList(context)),
         ],
       ),
-      indexMenuSelected: 6,
+      indexMenuSelected: 5,
       showMenuDrawer: true,
     );
   }

@@ -38,7 +38,7 @@ class _FinancialScreenState extends State<FinancialScreen> {
   Widget build(BuildContext context) {
     return ModelScreen(
       title: 'Financeiro',
-      indexMenuSelected: 5,
+      indexMenuSelected: 4,
       body: Column(
         children: [
           _buildFinancialSummaryStream(),
@@ -95,7 +95,8 @@ class _FinancialScreenState extends State<FinancialScreen> {
           Center(child: FinancialDocsScreen(transactionType: "E")),
           Center(child: FinancialDocsScreen(transactionType: "S")),
         ],
-      ), tabLenght: 3,
+      ),
+      tabLenght: 3,
     );
   }
 
