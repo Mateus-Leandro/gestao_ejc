@@ -29,31 +29,31 @@ class CustomMenuDrawer extends StatelessWidget {
       {
         'title': 'Membros',
         'route': '/members',
-        'index': 2,
+        'index': 1,
         'permission': authService.actualUserModel!.manipulateMembers
       },
       {
         'title': 'Exportação',
         'route': '/export',
-        'index': 3,
+        'index': 2,
         'permission': authService.actualUserModel!.manipulateExport
       },
       {
         'title': 'Importação',
         'route': '/import',
-        'index': 4,
+        'index': 3,
         'permission': authService.actualUserModel!.manipulateImport
       },
       {
         'title': 'Financeiro',
         'route': '/financial',
-        'index': 5,
+        'index': 4,
         'permission': authService.actualUserModel!.manipulateFinancial
       },
       {
         'title': 'Cadastro de Usuários',
         'route': '/users',
-        'index': 6,
+        'index': 5,
         'permission': authService.actualUserModel!.manipulateUsers
       },
     ];
