@@ -35,11 +35,11 @@ class MemberModel extends AbstractPersonModel {
       id: map['id'],
       name: map['name'],
       type: map['type'],
-      instagram: map['instagram'],
-      phone: map['phone'],
-      birthday: map['birthday'],
-      ejcAccomplished: map['ejcAccomplished'],
-      eccAccomplished: map['eccAccomplished'],
+      instagram: map['instagram'] ?? '',
+      phone: map['phone'] ?? '',
+      birthday: map['birthday'] ?? '',
+      ejcAccomplished: map['ejcAccomplished'] ?? '',
+      eccAccomplished: map['eccAccomplished'] ?? '',
       instruments: (map['instruments'] as List<dynamic>?)
           ?.map((e) => InstrumentEnumExtension.fromName(e as String))
           .toList(),

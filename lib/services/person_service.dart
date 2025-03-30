@@ -29,6 +29,8 @@ class PersonService {
             .collection(collectionPath)
             .doc(person.uncles.first.id)
             .set({
+          'id': person.id,
+          'name': person.name,
           'type': 'uncle',
           'uncles': person.uncles.map((uncle) => uncle.toJson()).toList(),
         });
