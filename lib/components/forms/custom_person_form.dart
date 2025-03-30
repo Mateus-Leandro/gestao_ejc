@@ -270,7 +270,7 @@ class _CustomPersonFormState extends State<CustomPersonForm> {
             ? widget.editingPerson!.id
             : const Uuid().v4(),
         name: _NameController2.text.trim(),
-        type: 'Uncle',
+        type: 'uncle',
         birthday: _birthdayDateController2.text,
         phone: _phoneController2.text,
         instagram: _instagramController2.text.trim(),
