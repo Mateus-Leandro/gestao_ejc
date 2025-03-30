@@ -12,6 +12,7 @@ class PersonController extends ChangeNotifier {
   Stream<List<AbstractPersonModel>>? get stream => _streamController.stream;
 
   void init() {
+    _streamController = StreamController<List<AbstractPersonModel>>();
     getPersons();
   }
 
@@ -26,7 +27,7 @@ class PersonController extends ChangeNotifier {
   Future<void> getPersons() async {
     try {
       final persons = await _personService.getPersons();
-      _streamController.add(persons);
+      _streamController.sink.add(persons);
     } catch (e) {
       _streamController.addError('Erro ao listar membros: $e');
     }
