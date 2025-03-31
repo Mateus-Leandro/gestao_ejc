@@ -4,6 +4,7 @@ import 'package:gestao_ejc/models/uncle_model.dart';
 
 abstract class AbstractPersonModel {
   final String id;
+  String? urlImage;
   final String name;
   final String type;
   final String? instagram;
@@ -15,6 +16,7 @@ abstract class AbstractPersonModel {
 
   AbstractPersonModel({
     required this.id,
+    required this.urlImage,
     required this.name,
     required this.type,
     this.instagram,

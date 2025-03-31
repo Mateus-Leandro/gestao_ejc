@@ -1,10 +1,14 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:gestao_ejc/components/SnackBars/custom_snack_bar.dart';
 import 'package:gestao_ejc/components/buttons/custom_cancel_button.dart';
 import 'package:gestao_ejc/components/buttons/custom_confirmation_button.dart';
+import 'package:gestao_ejc/components/buttons/custom_pick_file_button.dart';
 import 'package:gestao_ejc/components/forms/custom_model_form.dart';
 import 'package:gestao_ejc/components/pickers/custom_date_picker.dart';
 import 'package:gestao_ejc/controllers/person_controller.dart';
+import 'package:gestao_ejc/functions/function_pick_image.dart';
 import 'package:gestao_ejc/models/abstract_person_model.dart';
 import 'package:gestao_ejc/models/member_model.dart';
 import 'package:gestao_ejc/models/uncle_model.dart';
@@ -52,8 +56,13 @@ class _CustomPersonFormState extends State<CustomPersonForm> {
   );
 
   final _personController = getIt<PersonController>();
+  final FunctionPickImage functionPickImage = getIt<FunctionPickImage>();
   bool memberIsUncle = false;
   bool _savingPerson = false;
+  bool _isLoadingPersonImage = false;
+  Uint8List? personImage;
+  Uint8List? originalPersonImage;
+  String? urlPersonImage = '';
   AbstractPersonModel? personOne;
   AbstractPersonModel? personTwo;
 
@@ -68,6 +77,8 @@ class _CustomPersonFormState extends State<CustomPersonForm> {
       } else {
         personOne = widget.editingPerson as MemberModel;
       }
+      urlPersonImage = widget.editingPerson!.urlImage;
+      _loadImages();
       fillInField();
     }
   }
@@ -133,6 +144,59 @@ class _CustomPersonFormState extends State<CustomPersonForm> {
               ),
               const Text('É Tio?'),
             ],
+          ),
+          CustomPickFileButton(
+            onPressed: () {
+              _pickPersonImage();
+            },
+            icon: Tooltip(
+              message: 'Selecionar Imagem do ${_personType()}',
+              child: Opacity(
+                opacity: 1.0,
+                child: Stack(
+                  alignment: Alignment.topRight,
+                  fit: StackFit.loose,
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(20),
+                      child: _isLoadingPersonImage
+                          ? const Center(child: CircularProgressIndicator())
+                          : personImage != null
+                              ? Image.memory(
+                                  personImage!,
+                                  height: 250,
+                                  width: 250,
+                                  fit: BoxFit.cover,
+                                )
+                              : Card(
+                                  elevation: 5,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                        'Selecionar Imagem do ${_personType()}'),
+                                  ),
+                                ),
+                    ),
+                    if (personImage != null) ...[
+                      Padding(
+                        padding: const EdgeInsets.all(15.0),
+                        child: IconButton(
+                          iconSize: 35,
+                          icon: const Icon(Icons.close,
+                              color: Colors.red, size: 30),
+                          onPressed: () {
+                            setState(() {
+                              personImage = null;
+                            });
+                          },
+                          tooltip: 'Remover Imagem do membro',
+                        ),
+                      ),
+                    ]
+                  ],
+                ),
+              ),
+            ),
           ),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -233,13 +297,15 @@ class _CustomPersonFormState extends State<CustomPersonForm> {
             labelText: 'Ejc Realizado',
           ),
         ),
-        TextFormField(
-          keyboardType: TextInputType.text,
-          controller: eccController,
-          decoration: const InputDecoration(
-            labelText: 'Ecc Realizado',
+        if (memberIsUncle) ...[
+          TextFormField(
+            keyboardType: TextInputType.text,
+            controller: eccController,
+            decoration: const InputDecoration(
+              labelText: 'Ecc Realizado',
+            ),
           ),
-        ),
+        ],
       ],
     );
   }
@@ -253,10 +319,12 @@ class _CustomPersonFormState extends State<CustomPersonForm> {
       setState(() {
         _savingPerson = true;
       });
+
       final MemberModel uncleOrMember = MemberModel(
         id: widget.editingPerson != null
             ? widget.editingPerson!.id
             : const Uuid().v4(),
+        urlImage: '',
         name: _NameController1.text.trim(),
         type: memberIsUncle ? 'uncle' : 'member',
         birthday: _birthdayDateController1.text,
@@ -265,34 +333,55 @@ class _CustomPersonFormState extends State<CustomPersonForm> {
         eccAccomplished: _ejcAccomplishedController1.text.trim(),
         ejcAccomplished: _ejcAccomplishedController1.text.trim(),
       );
-      final MemberModel aunt = MemberModel(
-        id: widget.editingPerson != null
-            ? widget.editingPerson!.id
-            : const Uuid().v4(),
-        name: _NameController2.text.trim(),
-        type: 'uncle',
-        birthday: _birthdayDateController2.text,
-        phone: _phoneController2.text,
-        instagram: _instagramController2.text.trim(),
-        eccAccomplished: _ejcAccomplishedController2.text.trim(),
-        ejcAccomplished: _ejcAccomplishedController2.text.trim(),
-      );
 
+      late AbstractPersonModel finalPerson;
       try {
         if (memberIsUncle) {
+          final MemberModel aunt = MemberModel(
+            id: widget.editingPerson != null
+                ? widget.editingPerson!.id
+                : const Uuid().v4(),
+            urlImage: '',
+            name: _NameController2.text.trim(),
+            type: 'uncle',
+            birthday: _birthdayDateController2.text,
+            phone: _phoneController2.text,
+            instagram: _instagramController2.text.trim(),
+            eccAccomplished: _ejcAccomplishedController2.text.trim(),
+            ejcAccomplished: _ejcAccomplishedController2.text.trim(),
+          );
+
           List<AbstractPersonModel>? uncles = [];
           uncles.add(uncleOrMember);
           uncles.add(aunt);
           final UncleModel finalUncle = UncleModel(
             id: uncleOrMember.id,
+            urlImage: '',
             name:
                 'Tio ${_NameController1.text.split(' ').first} e Tia ${_NameController2.text.split(' ').first}',
             uncles: uncles,
           );
-          _personController.savePerson(person: finalUncle);
+          finalPerson = finalUncle;
         } else {
-          _personController.savePerson(person: uncleOrMember);
+          finalPerson = uncleOrMember;
         }
+
+        _personController.savePerson(person: finalPerson);
+
+        if (personImage != originalPersonImage) {
+          if (personImage != null) {
+            urlPersonImage = await _personController.savePersonImage(
+              image: personImage!,
+              person: finalPerson,
+            );
+          } else {
+            await _personController.removePersonImage(person: finalPerson);
+            urlPersonImage = '';
+          }
+        }
+        finalPerson.urlImage = urlPersonImage;
+        await _personController.updateImage(person: finalPerson);
+
         CustomSnackBar.show(
           context: context,
           message:
@@ -331,5 +420,33 @@ class _CustomPersonFormState extends State<CustomPersonForm> {
       _birthdayDateController2.text = personTwo!.birthday!;
       _phoneController2.text = personTwo!.phone ?? '';
     }
+  }
+
+  Future<void> _pickPersonImage() async {
+    setState(() {
+      _isLoadingPersonImage = true;
+    });
+    personImage = await functionPickImage.getSingleImage();
+    personImage ??= originalPersonImage;
+    setState(() {
+      _isLoadingPersonImage = false;
+    });
+  }
+
+  Future<void> _loadImages() async {
+    setState(() {
+      _isLoadingPersonImage = true;
+    });
+
+    originalPersonImage = null;
+    if (widget.editingPerson!.urlImage!.isNotEmpty) {
+      originalPersonImage =
+          await _personController.getPersonImage(person: widget.editingPerson!);
+    }
+
+    personImage = originalPersonImage;
+    setState(() {
+      _isLoadingPersonImage = false;
+    });
   }
 }

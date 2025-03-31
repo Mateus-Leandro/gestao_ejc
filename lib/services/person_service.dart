@@ -63,4 +63,14 @@ class PersonService {
         throw Exception("Tipo desconhecido: ${map['type']}");
     }
   }
+
+  Future<void> updateUrlImage({required AbstractPersonModel person}) async {
+    try {
+      await _firestore.collection(collectionPath).doc(person.id).update({
+        'urlImage': person.urlImage,
+      });
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

@@ -4,15 +4,18 @@ class UncleModel extends AbstractPersonModel {
   final List<AbstractPersonModel> uncles;
 
   UncleModel({
-    required String id,
-    required String name,
+    required super.id,
+    required super.urlImage,
+    super.type = 'uncle',
+    required super.name,
     required this.uncles,
-  }) : super(id: id, name: name, type: 'uncle');
+  });
 
   @override
   Map<String, dynamic> toJson() {
     return {
       'id': id,
+      'urlImage': urlImage,
       'name': name,
       'type': type,
       'uncles': uncles.map((uncle) => uncle.toJson()).toList(),
@@ -22,6 +25,8 @@ class UncleModel extends AbstractPersonModel {
   factory UncleModel.fromJson(Map<String, dynamic> map) {
     return UncleModel(
       id: map['id'],
+      urlImage: map['urlImage'],
+      type: map['type'],
       name: map['name'],
       uncles: (map['uncles'] as List<dynamic>?)
               ?.map((e) => AbstractPersonModel.fromJson(e))

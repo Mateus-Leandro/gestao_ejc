@@ -4,6 +4,7 @@ import 'package:gestao_ejc/models/abstract_person_model.dart';
 class MemberModel extends AbstractPersonModel {
   MemberModel({
     required super.id,
+    required super.urlImage,
     required super.name,
     required super.type,
     super.instagram,
@@ -18,6 +19,7 @@ class MemberModel extends AbstractPersonModel {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
+      'urlImage': urlImage,
       'name': name,
       'type': type,
       'instagram': instagram,
@@ -33,6 +35,7 @@ class MemberModel extends AbstractPersonModel {
   factory MemberModel.fromJson(Map<String, dynamic> map) {
     return MemberModel(
       id: map['id'],
+      urlImage: map['urlImage'],
       name: map['name'],
       type: map['type'],
       instagram: map['instagram'] ?? '',
