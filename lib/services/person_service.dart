@@ -5,7 +5,7 @@ import 'package:gestao_ejc/models/uncle_model.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
 
 class PersonService {
-  final String collectionPath = 'members';
+  final String collectionPath = 'persons';
   final FirebaseFirestore _firestore = getIt<FirebaseFirestore>();
 
   Future<List<AbstractPersonModel>> getPersons() async {

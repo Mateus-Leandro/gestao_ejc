@@ -7,14 +7,14 @@ import 'package:gestao_ejc/models/abstract_person_model.dart';
 import 'package:gestao_ejc/screens/model_screen.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
 
-class MemberScren extends StatefulWidget {
-  const MemberScren({super.key});
+class PersonScreen extends StatefulWidget {
+  const PersonScreen({super.key});
 
   @override
-  State<MemberScren> createState() => _MemberScrenState();
+  State<PersonScreen> createState() => _PersonScreenState();
 }
 
-class _MemberScrenState extends State<MemberScren> {
+class _PersonScreenState extends State<PersonScreen> {
   final TextEditingController _memberNameController = TextEditingController();
   final PersonController _personController = getIt<PersonController>();
   bool loadingMembers = false;

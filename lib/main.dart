@@ -6,7 +6,7 @@ import 'package:gestao_ejc/screens/encounter_screen.dart';
 import 'package:gestao_ejc/screens/financial_screen.dart';
 import 'package:gestao_ejc/screens/home_screen.dart';
 import 'package:gestao_ejc/screens/login_screen.dart';
-import 'package:gestao_ejc/screens/member_scren.dart';
+import 'package:gestao_ejc/screens/person_screen.dart';
 import 'package:gestao_ejc/screens/user_screen.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
 import 'firebase_options.dart';
@@ -61,7 +61,7 @@ class MyApp extends StatelessWidget {
         '/users': (context) => const UserScreen(),
         '/financial': (context) => const FinancialScreen(),
         '/encounter': (context) => const EncounterScreen(),
-        '/members': (context) => const MemberScren(),
+        '/members': (context) => const PersonScreen(),
       },
     );
   }
