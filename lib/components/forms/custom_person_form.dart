@@ -74,7 +74,7 @@ class _CustomPersonFormState extends State<CustomPersonForm> {
         memberIsUncle = true;
         UncleModel uncles = widget.editingPerson as UncleModel;
         personOne = uncles.uncles[0];
-        personTwo = uncles.uncles[0];
+        personTwo = uncles.uncles[1];
       } else {
         memberIsUncle = false;
         personOne = widget.editingPerson as MemberModel;
