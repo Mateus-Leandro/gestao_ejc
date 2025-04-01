@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gestao_ejc/components/buttons/custom_edit_button.dart';
 import 'package:gestao_ejc/components/forms/custom_person_form.dart';
 import 'package:gestao_ejc/components/utils/custom_list_tile.dart';
 import 'package:gestao_ejc/components/utils/custom_search_row.dart';
@@ -23,6 +24,12 @@ class _PersonScreenState extends State<PersonScreen> {
   void initState() {
     super.initState();
     _personController.init();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _personController.dispose();
   }
 
   @override
@@ -98,9 +105,15 @@ class _PersonScreenState extends State<PersonScreen> {
 
   _buildMemberTile(BuildContext context, AbstractPersonModel person) {
     return CustomListTile(
-        listTile: ListTile(
-          title: Text(person.name),
+      listTile: ListTile(
+        title: Text(person.name),
+        trailing: CustomEditButton(
+          form: CustomPersonForm(
+            editingPerson: person,
+          ),
         ),
-        defaultBackgroundColor: Colors.white);
+      ),
+      defaultBackgroundColor: Colors.white,
+    );
   }
 }

@@ -71,15 +71,17 @@ class _CustomPersonFormState extends State<CustomPersonForm> {
     super.initState();
     if (widget.editingPerson != null) {
       if (widget.editingPerson is UncleModel) {
+        memberIsUncle = true;
         UncleModel uncles = widget.editingPerson as UncleModel;
         personOne = uncles.uncles[0];
         personTwo = uncles.uncles[0];
       } else {
+        memberIsUncle = false;
         personOne = widget.editingPerson as MemberModel;
       }
       urlPersonImage = widget.editingPerson!.urlImage;
-      _loadImages();
       fillInField();
+      _loadImages();
     }
   }
 
@@ -324,7 +326,7 @@ class _CustomPersonFormState extends State<CustomPersonForm> {
         id: widget.editingPerson != null
             ? widget.editingPerson!.id
             : const Uuid().v4(),
-        urlImage: '',
+        urlImage: widget.editingPerson?.urlImage ?? '',
         name: _NameController1.text.trim(),
         type: memberIsUncle ? 'uncle' : 'member',
         birthday: _birthdayDateController1.text,

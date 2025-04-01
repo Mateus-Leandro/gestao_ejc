@@ -86,7 +86,7 @@ class PersonController extends ChangeNotifier {
   Future<void> updateImage({required AbstractPersonModel person}) async {
     try {
       await _personService.updateUrlImage(person: person);
-      getPersons();
+      await getPersons();
     } catch (e) {
       throw 'Erro ao atualizar imagem: $e';
     }
