@@ -33,7 +33,7 @@ class CustomPersonForm extends StatefulWidget {
 
 class _CustomPersonFormState extends State<CustomPersonForm> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _NameController1 = TextEditingController();
+  final TextEditingController _nameController1 = TextEditingController();
   final TextEditingController _instagramController1 = TextEditingController();
   final TextEditingController _ejcAccomplishedController1 =
       TextEditingController();
@@ -45,7 +45,7 @@ class _CustomPersonFormState extends State<CustomPersonForm> {
   final MultiSelectController<InstrumentEnum> _instrumentController1 =
       MultiSelectController();
 
-  final TextEditingController _NameController2 = TextEditingController();
+  final TextEditingController _nameController2 = TextEditingController();
   final TextEditingController _instagramController2 = TextEditingController();
   final TextEditingController _ejcAccomplishedController2 =
       TextEditingController();
@@ -96,14 +96,14 @@ class _CustomPersonFormState extends State<CustomPersonForm> {
 
   @override
   void dispose() {
-    _NameController1.dispose();
+    _nameController1.dispose();
     _instagramController1.dispose();
     _ejcAccomplishedController1.dispose();
     _eccAccomplishedController1.dispose();
     _birthdayDateController1.dispose();
     _phoneController1.dispose();
 
-    _NameController2.dispose();
+    _nameController2.dispose();
     _instagramController2.dispose();
     _ejcAccomplishedController2.dispose();
     _eccAccomplishedController2.dispose();
@@ -217,7 +217,7 @@ class _CustomPersonFormState extends State<CustomPersonForm> {
                   padding: const EdgeInsets.all(8),
                   child: _buildPersonForm(
                     _personType(),
-                    _NameController1,
+                    _nameController1,
                     _phoneController1,
                     _instagramController1,
                     _ejcAccomplishedController1,
@@ -233,7 +233,7 @@ class _CustomPersonFormState extends State<CustomPersonForm> {
                     padding: const EdgeInsets.all(8),
                     child: _buildPersonForm(
                       'Tia',
-                      _NameController2,
+                      _nameController2,
                       _phoneController2,
                       _instagramController2,
                       _ejcAccomplishedController2,
@@ -311,6 +311,15 @@ class _CustomPersonFormState extends State<CustomPersonForm> {
             labelText: 'Ejc Realizado',
           ),
         ),
+        if (memberIsUncle) ...[
+          TextFormField(
+            keyboardType: TextInputType.text,
+            controller: eccController,
+            decoration: const InputDecoration(
+              labelText: 'Ecc Realizado',
+            ),
+          ),
+        ],
         Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -326,15 +335,6 @@ class _CustomPersonFormState extends State<CustomPersonForm> {
             ),
           ],
         ),
-        if (memberIsUncle) ...[
-          TextFormField(
-            keyboardType: TextInputType.text,
-            controller: eccController,
-            decoration: const InputDecoration(
-              labelText: 'Ecc Realizado',
-            ),
-          ),
-        ],
       ],
     );
   }
@@ -354,7 +354,7 @@ class _CustomPersonFormState extends State<CustomPersonForm> {
             ? widget.editingPerson!.id
             : const Uuid().v4(),
         urlImage: widget.editingPerson?.urlImage ?? '',
-        name: _NameController1.text.trim(),
+        name: _nameController1.text.trim(),
         type: memberIsUncle ? 'uncle' : 'member',
         birthday: _birthdayDateController1.text,
         phone: _phoneController1.text,
@@ -374,7 +374,7 @@ class _CustomPersonFormState extends State<CustomPersonForm> {
                 ? widget.editingPerson!.id
                 : const Uuid().v4(),
             urlImage: '',
-            name: _NameController2.text.trim(),
+            name: _nameController2.text.trim(),
             type: 'uncle',
             birthday: _birthdayDateController2.text,
             phone: _phoneController2.text,
@@ -393,7 +393,7 @@ class _CustomPersonFormState extends State<CustomPersonForm> {
             id: uncleOrMember.id,
             urlImage: '',
             name:
-                'Tio ${_NameController1.text.split(' ').first} e Tia ${_NameController2.text.split(' ').first}',
+                'Tio ${_nameController1.text.split(' ').first} e Tia ${_nameController2.text.split(' ').first}',
             uncles: uncles,
           );
           finalPerson = finalUncle;
@@ -440,7 +440,7 @@ class _CustomPersonFormState extends State<CustomPersonForm> {
   }
 
   fillInField() {
-    _NameController1.text = personOne?.name ?? '';
+    _nameController1.text = personOne?.name ?? '';
     _instagramController1.text = personOne?.instagram ?? '';
     _ejcAccomplishedController1.text = personOne?.ejcAccomplished ?? '';
     _eccAccomplishedController1.text = personOne?.eccAccomplished ?? '';
@@ -456,7 +456,7 @@ class _CustomPersonFormState extends State<CustomPersonForm> {
     }).toList());
 
     if (widget.editingPerson is UncleModel) {
-      _NameController2.text = personTwo?.name ?? '';
+      _nameController2.text = personTwo?.name ?? '';
       _instagramController2.text = personTwo?.instagram ?? '';
       _ejcAccomplishedController2.text = personTwo?.ejcAccomplished ?? '';
       _eccAccomplishedController2.text = personTwo?.eccAccomplished ?? '';
