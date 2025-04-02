@@ -92,6 +92,7 @@ class _CustomPersonFormState extends State<CustomPersonForm> {
         _loadImages();
       }
     }
+    fillInInstruments();
   }
 
   @override
@@ -447,6 +448,17 @@ class _CustomPersonFormState extends State<CustomPersonForm> {
     _birthdayDateController1.text = personOne?.birthday ?? '';
     _phoneController1.text = personOne?.phone ?? '';
 
+    if (widget.editingPerson is UncleModel) {
+      _nameController2.text = personTwo?.name ?? '';
+      _instagramController2.text = personTwo?.instagram ?? '';
+      _ejcAccomplishedController2.text = personTwo?.ejcAccomplished ?? '';
+      _eccAccomplishedController2.text = personTwo?.eccAccomplished ?? '';
+      _birthdayDateController2.text = personTwo?.birthday ?? '';
+      _phoneController2.text = personTwo!.phone ?? '';
+    }
+  }
+
+  fillInInstruments() {
     _instrumentController1.setItems(InstrumentEnum.values.map((instrument) {
       return DropdownItem(
         label: instrument.instrumentName,
@@ -455,21 +467,13 @@ class _CustomPersonFormState extends State<CustomPersonForm> {
       );
     }).toList());
 
-    if (widget.editingPerson is UncleModel) {
-      _nameController2.text = personTwo?.name ?? '';
-      _instagramController2.text = personTwo?.instagram ?? '';
-      _ejcAccomplishedController2.text = personTwo?.ejcAccomplished ?? '';
-      _eccAccomplishedController2.text = personTwo?.eccAccomplished ?? '';
-      _birthdayDateController2.text = personTwo?.birthday ?? '';
-      _phoneController2.text = personTwo!.phone ?? '';
-      _instrumentController2.setItems(InstrumentEnum.values.map((instrument) {
-        return DropdownItem(
-          label: instrument.instrumentName,
-          value: instrument,
-          selected: personTwo?.instruments?.contains(instrument) ?? false,
-        );
-      }).toList());
-    }
+    _instrumentController2.setItems(InstrumentEnum.values.map((instrument) {
+      return DropdownItem(
+        label: instrument.instrumentName,
+        value: instrument,
+        selected: personTwo?.instruments?.contains(instrument) ?? false,
+      );
+    }).toList());
   }
 
   Future<void> _pickPersonImage() async {
