@@ -1,5 +1,4 @@
 enum InstrumentEnum {
-  nenhum,
   violao,
   violino,
   teclado,
@@ -14,8 +13,6 @@ enum InstrumentEnum {
 extension InstrumentEnumExtension on InstrumentEnum {
   String get instrumentName {
     switch (this) {
-      case InstrumentEnum.nenhum:
-        return 'Nenhum';
       case InstrumentEnum.canto:
         return 'Canto';
       case InstrumentEnum.violao:

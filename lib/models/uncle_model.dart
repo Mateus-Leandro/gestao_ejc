@@ -40,14 +40,14 @@ class UncleModel extends AbstractPersonModel {
       id: map['id'],
       urlImage: map['urlImage'],
       name: map['name'],
+      type: map['type'],
       instagram: map['instagram'],
       phone: map['phone'],
       birthday: map['birthday'],
       ejcAccomplished: map['ejcAccomplished'],
       eccAccomplished: map['eccAccomplished'],
       instruments: (map['instruments'] as List<dynamic>?)
-          ?.map((e) => InstrumentEnum.values
-              .firstWhere((enumValue) => enumValue.toString() == e))
+          ?.map((e) => InstrumentEnumExtension.fromName(e as String))
           .toList(),
       uncles: (map['uncles'] as List<dynamic>?)
               ?.map((e) => AbstractPersonModel.fromJson(e))

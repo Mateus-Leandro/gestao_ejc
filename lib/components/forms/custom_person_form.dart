@@ -5,15 +5,18 @@ import 'package:gestao_ejc/components/SnackBars/custom_snack_bar.dart';
 import 'package:gestao_ejc/components/buttons/custom_cancel_button.dart';
 import 'package:gestao_ejc/components/buttons/custom_confirmation_button.dart';
 import 'package:gestao_ejc/components/buttons/custom_pick_file_button.dart';
+import 'package:gestao_ejc/components/drawers/custom_instrument_drawer.dart';
 import 'package:gestao_ejc/components/forms/custom_model_form.dart';
 import 'package:gestao_ejc/components/pickers/custom_date_picker.dart';
 import 'package:gestao_ejc/controllers/person_controller.dart';
+import 'package:gestao_ejc/enums/instrument_enum.dart';
 import 'package:gestao_ejc/functions/function_pick_image.dart';
 import 'package:gestao_ejc/models/abstract_person_model.dart';
 import 'package:gestao_ejc/models/member_model.dart';
 import 'package:gestao_ejc/models/uncle_model.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+import 'package:multi_dropdown/multi_dropdown.dart';
 import 'package:uuid/uuid.dart';
 
 class CustomPersonForm extends StatefulWidget {
@@ -39,6 +42,8 @@ class _CustomPersonFormState extends State<CustomPersonForm> {
   final TextEditingController _birthdayDateController1 =
       TextEditingController();
   final TextEditingController _phoneController1 = TextEditingController();
+  final MultiSelectController<InstrumentEnum> _instrumentController1 =
+      MultiSelectController();
 
   final TextEditingController _NameController2 = TextEditingController();
   final TextEditingController _instagramController2 = TextEditingController();
@@ -49,6 +54,8 @@ class _CustomPersonFormState extends State<CustomPersonForm> {
   final TextEditingController _birthdayDateController2 =
       TextEditingController();
   final TextEditingController _phoneController2 = TextEditingController();
+  final MultiSelectController<InstrumentEnum> _instrumentController2 =
+      MultiSelectController();
 
   final maskFormatter = MaskTextInputFormatter(
     mask: '(##) #####-####',
@@ -81,7 +88,9 @@ class _CustomPersonFormState extends State<CustomPersonForm> {
       }
       urlPersonImage = widget.editingPerson!.urlImage;
       fillInField();
-      _loadImages();
+      if (widget.editingPerson!.urlImage!.isNotEmpty) {
+        _loadImages();
+      }
     }
   }
 
@@ -214,6 +223,7 @@ class _CustomPersonFormState extends State<CustomPersonForm> {
                     _ejcAccomplishedController1,
                     _eccAccomplishedController1,
                     _birthdayDateController1,
+                    _instrumentController1,
                   ),
                 ),
               ),
@@ -229,6 +239,7 @@ class _CustomPersonFormState extends State<CustomPersonForm> {
                       _ejcAccomplishedController2,
                       _eccAccomplishedController2,
                       _birthdayDateController2,
+                      _instrumentController2,
                     ),
                   ),
                 ),
@@ -247,6 +258,7 @@ class _CustomPersonFormState extends State<CustomPersonForm> {
     TextEditingController ejcController,
     TextEditingController eccController,
     TextEditingController dateController,
+    MultiSelectController<InstrumentEnum> instrumentController,
   ) {
     return Column(
       children: [
@@ -299,6 +311,21 @@ class _CustomPersonFormState extends State<CustomPersonForm> {
             labelText: 'Ejc Realizado',
           ),
         ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 12.0),
+              child: Text(
+                'Instrumentos Musicais',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ),
+            CustomInstrumentDrawer(
+              instrumentController: instrumentController,
+            ),
+          ],
+        ),
         if (memberIsUncle) ...[
           TextFormField(
             keyboardType: TextInputType.text,
@@ -334,6 +361,9 @@ class _CustomPersonFormState extends State<CustomPersonForm> {
         instagram: _instagramController1.text.trim(),
         eccAccomplished: _ejcAccomplishedController1.text.trim(),
         ejcAccomplished: _ejcAccomplishedController1.text.trim(),
+        instruments: _instrumentController1.selectedItems
+            .map((instrument) => instrument.value)
+            .toList(),
       );
 
       late AbstractPersonModel finalPerson;
@@ -351,6 +381,9 @@ class _CustomPersonFormState extends State<CustomPersonForm> {
             instagram: _instagramController2.text.trim(),
             eccAccomplished: _ejcAccomplishedController2.text.trim(),
             ejcAccomplished: _ejcAccomplishedController2.text.trim(),
+            instruments: _instrumentController2.selectedItems
+                .map((instrument) => instrument.value)
+                .toList(),
           );
 
           List<AbstractPersonModel>? uncles = [];
@@ -407,20 +440,35 @@ class _CustomPersonFormState extends State<CustomPersonForm> {
   }
 
   fillInField() {
-    _NameController1.text = personOne!.name;
-    _instagramController1.text = personOne!.instagram ?? '';
-    _ejcAccomplishedController1.text = personOne!.ejcAccomplished ?? '';
-    _eccAccomplishedController1.text = personOne!.eccAccomplished ?? '';
-    _birthdayDateController1.text = personOne!.birthday!;
-    _phoneController1.text = personOne!.phone ?? '';
+    _NameController1.text = personOne?.name ?? '';
+    _instagramController1.text = personOne?.instagram ?? '';
+    _ejcAccomplishedController1.text = personOne?.ejcAccomplished ?? '';
+    _eccAccomplishedController1.text = personOne?.eccAccomplished ?? '';
+    _birthdayDateController1.text = personOne?.birthday ?? '';
+    _phoneController1.text = personOne?.phone ?? '';
+
+    _instrumentController1.setItems(InstrumentEnum.values.map((instrument) {
+      return DropdownItem(
+        label: instrument.instrumentName,
+        value: instrument,
+        selected: personOne?.instruments?.contains(instrument) ?? false,
+      );
+    }).toList());
 
     if (widget.editingPerson is UncleModel) {
-      _NameController2.text = personTwo!.name;
-      _instagramController2.text = personTwo!.instagram ?? '';
-      _ejcAccomplishedController2.text = personTwo!.ejcAccomplished ?? '';
-      _eccAccomplishedController2.text = personTwo!.eccAccomplished ?? '';
-      _birthdayDateController2.text = personTwo!.birthday!;
+      _NameController2.text = personTwo?.name ?? '';
+      _instagramController2.text = personTwo?.instagram ?? '';
+      _ejcAccomplishedController2.text = personTwo?.ejcAccomplished ?? '';
+      _eccAccomplishedController2.text = personTwo?.eccAccomplished ?? '';
+      _birthdayDateController2.text = personTwo?.birthday ?? '';
       _phoneController2.text = personTwo!.phone ?? '';
+      _instrumentController2.setItems(InstrumentEnum.values.map((instrument) {
+        return DropdownItem(
+          label: instrument.instrumentName,
+          value: instrument,
+          selected: personTwo?.instruments?.contains(instrument) ?? false,
+        );
+      }).toList());
     }
   }
 
@@ -439,15 +487,11 @@ class _CustomPersonFormState extends State<CustomPersonForm> {
     setState(() {
       _isLoadingPersonImage = true;
     });
+    originalPersonImage =
+        await _personController.getPersonImage(person: widget.editingPerson!);
 
-    originalPersonImage = null;
-    if (widget.editingPerson!.urlImage!.isNotEmpty) {
-      originalPersonImage =
-          await _personController.getPersonImage(person: widget.editingPerson!);
-    }
-
-    personImage = originalPersonImage;
     setState(() {
+      personImage = originalPersonImage;
       _isLoadingPersonImage = false;
     });
   }
