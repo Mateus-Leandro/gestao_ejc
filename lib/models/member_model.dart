@@ -13,6 +13,12 @@ class MemberModel extends AbstractPersonModel {
     super.ejcAccomplished,
     super.eccAccomplished,
     super.instruments,
+    super.cep,
+    super.street,
+    super.numberAdress,
+    super.apartment,
+    super.district,
+    super.city,
   });
 
   @override
@@ -29,6 +35,12 @@ class MemberModel extends AbstractPersonModel {
       'eccAccomplished': eccAccomplished,
       'instruments':
           instruments?.map((instrument) => instrument.instrumentName).toList(),
+      'cep': cep,
+      'street': street,
+      'numberAdress': numberAdress,
+      'apartment': apartment,
+      'district': district,
+      'city': city,
     };
   }
 
@@ -46,6 +58,12 @@ class MemberModel extends AbstractPersonModel {
       instruments: (map['instruments'] as List<dynamic>?)
           ?.map((e) => InstrumentEnumExtension.fromName(e as String))
           .toList(),
+      cep: map['cep'] ?? '',
+      street: map['street'] ?? '',
+      numberAdress: map['numberAdress'] ?? '',
+      apartment: map['apartment'] ?? '',
+      district: map['district'] ?? '',
+      city: map['city'] ?? '',
     );
   }
 }

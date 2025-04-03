@@ -13,6 +13,12 @@ abstract class AbstractPersonModel {
   final String? ejcAccomplished;
   final String? eccAccomplished;
   final List<InstrumentEnum>? instruments;
+  final String? cep;
+  final String? street;
+  final String? numberAdress;
+  final String? apartment;
+  final String? district;
+  final String? city;
 
   AbstractPersonModel({
     required this.id,
@@ -25,6 +31,12 @@ abstract class AbstractPersonModel {
     this.ejcAccomplished,
     this.eccAccomplished,
     this.instruments,
+    this.cep,
+    this.street,
+    this.numberAdress,
+    this.apartment,
+    this.district,
+    this.city,
   });
 
   Map<String, dynamic> toJson();

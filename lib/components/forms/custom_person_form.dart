@@ -14,6 +14,7 @@ import 'package:gestao_ejc/functions/function_pick_image.dart';
 import 'package:gestao_ejc/models/abstract_person_model.dart';
 import 'package:gestao_ejc/models/member_model.dart';
 import 'package:gestao_ejc/models/uncle_model.dart';
+import 'package:gestao_ejc/services/apis/cep_service_api.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:multi_dropdown/multi_dropdown.dart';
@@ -57,13 +58,24 @@ class _CustomPersonFormState extends State<CustomPersonForm> {
   final MultiSelectController<InstrumentEnum> _instrumentController2 =
       MultiSelectController();
 
-  final maskFormatter = MaskTextInputFormatter(
+  final phoneMaskFormatter = MaskTextInputFormatter(
     mask: '(##) #####-####',
+    filter: {"#": RegExp(r'[0-9]')},
+  );
+
+  final cepMaskFormatter = MaskTextInputFormatter(
+    mask: '##-###-###',
     filter: {"#": RegExp(r'[0-9]')},
   );
 
   final _personController = getIt<PersonController>();
   final FunctionPickImage functionPickImage = getIt<FunctionPickImage>();
+  final TextEditingController _cepController = TextEditingController();
+  final TextEditingController _streetController = TextEditingController();
+  final TextEditingController _apartmentController = TextEditingController();
+  final TextEditingController _numberAdressController = TextEditingController();
+  final TextEditingController _districtController = TextEditingController();
+  final TextEditingController _cityController = TextEditingController();
   bool memberIsUncle = false;
   bool _savingPerson = false;
   bool _isLoadingPersonImage = false;
@@ -72,6 +84,8 @@ class _CustomPersonFormState extends State<CustomPersonForm> {
   String? urlPersonImage = '';
   AbstractPersonModel? personOne;
   AbstractPersonModel? personTwo;
+  var addressData;
+  bool invalidCep = false;
 
   @override
   void initState() {
@@ -246,6 +260,99 @@ class _CustomPersonFormState extends State<CustomPersonForm> {
                 ),
             ],
           ),
+          const Text(
+            'Endereço',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: 8),
+            child: Divider(),
+          ),
+          TextFormField(
+            keyboardType: TextInputType.number,
+            controller: _cepController,
+            inputFormatters: [cepMaskFormatter],
+            decoration: InputDecoration(
+              labelText: "Cep",
+              hintText: "00-000-000",
+              suffixIcon: IconButton(
+                icon: const Icon(Icons.search),
+                onPressed: () async => {
+                  await _searchAdress(),
+                  _formKey.currentState!.validate(),
+                },
+              ),
+            ),
+            onFieldSubmitted: (_) async => {
+              await _searchAdress(),
+              _formKey.currentState!.validate(),
+            },
+            onChanged: (_) => {
+              if (cepMaskFormatter.getUnmaskedText().trim().isEmpty) ...[
+                invalidCep = false,
+                setState(() {
+                  _clearAdressFields();
+                  _formKey.currentState!.validate();
+                }),
+              ]
+            },
+            validator: (cepValue) {
+              if (invalidCep || (cepValue == null || cepValue.isEmpty)) {
+                return 'Cep inválido!';
+              }
+              return null;
+            },
+          ),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Expanded(
+                flex: 7,
+                child: TextFormField(
+                  readOnly: true,
+                  keyboardType: TextInputType.streetAddress,
+                  controller: _streetController,
+                  decoration: const InputDecoration(
+                    labelText: 'Rua',
+                  ),
+                ),
+              ),
+              const SizedBox(width: 10),
+              Flexible(
+                flex: 3,
+                child: TextFormField(
+                  keyboardType: TextInputType.number,
+                  controller: _numberAdressController,
+                  decoration: const InputDecoration(
+                    labelText: 'Nº',
+                  ),
+                ),
+              ),
+            ],
+          ),
+          TextFormField(
+            keyboardType: TextInputType.number,
+            controller: _apartmentController,
+            decoration: const InputDecoration(
+              labelText: 'Apartamento',
+            ),
+          ),
+          TextFormField(
+            readOnly: true,
+            keyboardType: TextInputType.text,
+            controller: _districtController,
+            decoration: const InputDecoration(
+              labelText: 'Bairro',
+            ),
+          ),
+          TextFormField(
+            readOnly: true,
+            keyboardType: TextInputType.text,
+            controller: _cityController,
+            decoration: const InputDecoration(
+              labelText: 'Cidade',
+            ),
+          ),
         ],
       ),
     ];
@@ -287,7 +394,7 @@ class _CustomPersonFormState extends State<CustomPersonForm> {
         TextFormField(
           keyboardType: TextInputType.phone,
           controller: phoneController,
-          inputFormatters: [maskFormatter],
+          inputFormatters: [phoneMaskFormatter],
           decoration: const InputDecoration(
             labelText: "Telefone",
             hintText: "(99) 99999-9999",
@@ -345,6 +452,7 @@ class _CustomPersonFormState extends State<CustomPersonForm> {
   }
 
   Future _savePerson() async {
+    await _searchAdress();
     if (_formKey.currentState!.validate()) {
       setState(() {
         _savingPerson = true;
@@ -365,6 +473,12 @@ class _CustomPersonFormState extends State<CustomPersonForm> {
         instruments: _instrumentController1.selectedItems
             .map((instrument) => instrument.value)
             .toList(),
+        cep: _cepController.text.trim(),
+        street: _streetController.text.trim(),
+        numberAdress: _numberAdressController.text.trim(),
+        apartment: _apartmentController.text.trim(),
+        city: _cityController.text.trim(),
+        district: _districtController.text.trim(),
       );
 
       late AbstractPersonModel finalPerson;
@@ -447,6 +561,12 @@ class _CustomPersonFormState extends State<CustomPersonForm> {
     _eccAccomplishedController1.text = personOne?.eccAccomplished ?? '';
     _birthdayDateController1.text = personOne?.birthday ?? '';
     _phoneController1.text = personOne?.phone ?? '';
+    _cepController.text = personOne?.cep ?? '';
+    _streetController.text = personOne?.street ?? '';
+    _numberAdressController.text = personOne?.numberAdress ?? '';
+    _apartmentController.text = personOne?.apartment ?? '';
+    _districtController.text = personOne?.district ?? '';
+    _cityController.text = personOne?.city ?? '';
 
     if (widget.editingPerson is UncleModel) {
       _nameController2.text = personTwo?.name ?? '';
@@ -454,7 +574,18 @@ class _CustomPersonFormState extends State<CustomPersonForm> {
       _ejcAccomplishedController2.text = personTwo?.ejcAccomplished ?? '';
       _eccAccomplishedController2.text = personTwo?.eccAccomplished ?? '';
       _birthdayDateController2.text = personTwo?.birthday ?? '';
-      _phoneController2.text = personTwo!.phone ?? '';
+      _phoneController2.text = personTwo?.phone ?? '';
+      _cepController.text = personTwo?.cep ?? '';
+      _streetController.text = personTwo?.street ?? '';
+      _numberAdressController.text = personTwo?.numberAdress ?? '';
+      _apartmentController.text = personTwo?.apartment ?? '';
+      _districtController.text = personTwo?.district ?? '';
+      _cityController.text = personTwo?.city ?? '';
+    }
+
+    if (_cepController.text.isNotEmpty) {
+      _searchAdress();
+      _formKey.currentState?.validate();
     }
   }
 
@@ -498,5 +629,36 @@ class _CustomPersonFormState extends State<CustomPersonForm> {
       personImage = originalPersonImage;
       _isLoadingPersonImage = false;
     });
+  }
+
+  _searchAdress() async {
+    addressData = null;
+    var cep = cepMaskFormatter.getUnmaskedText().trim();
+    try {
+      if (cep.isNotEmpty) {
+        addressData = await CepServiceApi.zipCodeSearch(cep);
+        setState(() {
+          _fillAdressFields();
+          invalidCep = false;
+        });
+      }
+    } catch (error) {
+      setState(() {
+        invalidCep = true;
+      });
+    }
+  }
+
+  _fillAdressFields() {
+    _streetController.text = addressData['logradouro'] ?? '';
+    _districtController.text = addressData['bairro'] ?? '';
+    _cityController.text = addressData['localidade'] ?? '';
+  }
+
+  _clearAdressFields() {
+    _streetController.clear();
+    _numberAdressController.clear();
+    _districtController.clear();
+    _cityController.clear();
   }
 }

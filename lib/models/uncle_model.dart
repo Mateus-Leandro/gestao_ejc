@@ -16,6 +16,12 @@ class UncleModel extends AbstractPersonModel {
     super.ejcAccomplished,
     super.eccAccomplished,
     super.instruments,
+    super.cep,
+    super.street,
+    super.numberAdress,
+    super.apartment,
+    super.district,
+    super.city,
   });
 
   @override
@@ -32,6 +38,12 @@ class UncleModel extends AbstractPersonModel {
       'eccAccomplished': eccAccomplished,
       'instruments': instruments?.map((e) => e.toString()).toList(),
       'uncles': uncles.map((uncle) => uncle.toJson()).toList(),
+      'cep': cep,
+      'street': street,
+      'numberAdress': numberAdress,
+      'apartment': apartment,
+      'district': district,
+      'city': city,
     };
   }
 
@@ -49,6 +61,12 @@ class UncleModel extends AbstractPersonModel {
       instruments: (map['instruments'] as List<dynamic>?)
           ?.map((e) => InstrumentEnumExtension.fromName(e as String))
           .toList(),
+      cep: map['cep'] ?? '',
+      street: map['street'] ?? '',
+      numberAdress: map['numberAdress'] ?? '',
+      apartment: map['apartment'] ?? '',
+      district: map['district'] ?? '',
+      city: map['city'] ?? '',
       uncles: (map['uncles'] as List<dynamic>?)
               ?.map((e) => AbstractPersonModel.fromJson(e))
               .toList() ??
