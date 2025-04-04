@@ -22,6 +22,7 @@ class UncleModel extends AbstractPersonModel {
     super.apartment,
     super.district,
     super.city,
+    super.reference,
   });
 
   @override
@@ -44,6 +45,7 @@ class UncleModel extends AbstractPersonModel {
       'apartment': apartment,
       'district': district,
       'city': city,
+      'reference': reference,
     };
   }
 
@@ -71,6 +73,7 @@ class UncleModel extends AbstractPersonModel {
               ?.map((e) => AbstractPersonModel.fromJson(e))
               .toList() ??
           [],
+      reference: map['reference'] ?? '',
     );
   }
 }

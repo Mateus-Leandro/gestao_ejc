@@ -76,6 +76,7 @@ class _CustomPersonFormState extends State<CustomPersonForm> {
   final TextEditingController _numberAdressController = TextEditingController();
   final TextEditingController _districtController = TextEditingController();
   final TextEditingController _cityController = TextEditingController();
+  final TextEditingController _referenceController = TextEditingController();
   bool memberIsUncle = false;
   bool _savingPerson = false;
   bool _isLoadingPersonImage = false;
@@ -331,6 +332,13 @@ class _CustomPersonFormState extends State<CustomPersonForm> {
             ],
           ),
           TextFormField(
+            keyboardType: TextInputType.text,
+            controller: _referenceController,
+            decoration: const InputDecoration(
+              labelText: 'Referencia',
+            ),
+          ),
+          TextFormField(
             keyboardType: TextInputType.number,
             controller: _apartmentController,
             decoration: const InputDecoration(
@@ -479,6 +487,7 @@ class _CustomPersonFormState extends State<CustomPersonForm> {
         apartment: _apartmentController.text.trim(),
         city: _cityController.text.trim(),
         district: _districtController.text.trim(),
+        reference: _referenceController.text.trim(),
       );
 
       late AbstractPersonModel finalPerson;
@@ -567,6 +576,7 @@ class _CustomPersonFormState extends State<CustomPersonForm> {
     _apartmentController.text = personOne?.apartment ?? '';
     _districtController.text = personOne?.district ?? '';
     _cityController.text = personOne?.city ?? '';
+    _referenceController.text = personOne?.reference ?? '';
 
     if (widget.editingPerson is UncleModel) {
       _nameController2.text = personTwo?.name ?? '';
@@ -581,6 +591,7 @@ class _CustomPersonFormState extends State<CustomPersonForm> {
       _apartmentController.text = personTwo?.apartment ?? '';
       _districtController.text = personTwo?.district ?? '';
       _cityController.text = personTwo?.city ?? '';
+      _referenceController.text = personTwo?.reference ?? '';
     }
 
     if (_cepController.text.isNotEmpty) {
@@ -658,7 +669,9 @@ class _CustomPersonFormState extends State<CustomPersonForm> {
   _clearAdressFields() {
     _streetController.clear();
     _numberAdressController.clear();
+    _apartmentController.clear();
     _districtController.clear();
     _cityController.clear();
+    _referenceController.clear();
   }
 }

@@ -31,7 +31,6 @@ class UserModel {
     required this.manipulateUsers,
   });
 
-  @override
   Map<String, dynamic> toJson() {
     return {
       'id': id,

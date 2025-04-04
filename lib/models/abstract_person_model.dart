@@ -19,6 +19,7 @@ abstract class AbstractPersonModel {
   final String? apartment;
   final String? district;
   final String? city;
+  final String? reference;
 
   AbstractPersonModel({
     required this.id,
@@ -37,6 +38,7 @@ abstract class AbstractPersonModel {
     this.apartment,
     this.district,
     this.city,
+    this.reference,
   });
 
   Map<String, dynamic> toJson();

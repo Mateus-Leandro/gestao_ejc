@@ -19,6 +19,7 @@ class MemberModel extends AbstractPersonModel {
     super.apartment,
     super.district,
     super.city,
+    super.reference,
   });
 
   @override
@@ -41,6 +42,7 @@ class MemberModel extends AbstractPersonModel {
       'apartment': apartment,
       'district': district,
       'city': city,
+      'reference': reference,
     };
   }
 
@@ -64,6 +66,7 @@ class MemberModel extends AbstractPersonModel {
       apartment: map['apartment'] ?? '',
       district: map['district'] ?? '',
       city: map['city'] ?? '',
+      reference: map['reference'] ?? '',
     );
   }
 }
