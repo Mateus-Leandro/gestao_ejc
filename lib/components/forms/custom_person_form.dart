@@ -261,13 +261,17 @@ class _CustomPersonFormState extends State<CustomPersonForm> {
                 ),
             ],
           ),
-          const Text(
-            'Endereço',
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
           const Padding(
-            padding: EdgeInsets.symmetric(vertical: 8),
-            child: Divider(),
+            padding: EdgeInsets.symmetric(vertical: 15.0),
+            child: Column(
+              children: [
+                Text(
+                  'Endereço',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                Divider(),
+              ],
+            ),
           ),
           TextFormField(
             keyboardType: TextInputType.number,
@@ -378,13 +382,17 @@ class _CustomPersonFormState extends State<CustomPersonForm> {
   ) {
     return Column(
       children: [
-        Text(
-          titleForm,
-          style: const TextStyle(fontWeight: FontWeight.bold),
-        ),
-        const Padding(
-          padding: EdgeInsets.symmetric(vertical: 8),
-          child: Divider(),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 15.0),
+          child: Column(
+            children: [
+              Text(
+                titleForm,
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+              const Divider(),
+            ],
+          ),
         ),
         TextFormField(
           keyboardType: TextInputType.name,
