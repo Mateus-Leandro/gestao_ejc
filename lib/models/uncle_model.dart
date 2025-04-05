@@ -1,12 +1,15 @@
 import 'package:gestao_ejc/enums/instrument_enum.dart';
 import 'package:gestao_ejc/models/abstract_person_model.dart';
 
-class MemberModel extends AbstractPersonModel {
-  MemberModel({
+class UncleModel extends AbstractPersonModel {
+  final List<AbstractPersonModel> uncles;
+
+  UncleModel({
     required super.id,
     required super.urlImage,
     required super.name,
-    required super.type,
+    super.type = 'uncle',
+    required this.uncles,
     super.instagram,
     super.phone,
     super.birthday,
@@ -34,8 +37,8 @@ class MemberModel extends AbstractPersonModel {
       'birthday': birthday,
       'ejcAccomplished': ejcAccomplished,
       'eccAccomplished': eccAccomplished,
-      'instruments':
-          instruments?.map((instrument) => instrument.instrumentName).toList(),
+      'instruments': instruments?.map((e) => e.toString()).toList(),
+      'uncles': uncles.map((uncle) => uncle.toJson()).toList(),
       'cep': cep,
       'street': street,
       'numberAdress': numberAdress,
@@ -46,17 +49,17 @@ class MemberModel extends AbstractPersonModel {
     };
   }
 
-  factory MemberModel.fromJson(Map<String, dynamic> map) {
-    return MemberModel(
+  factory UncleModel.fromJson(Map<String, dynamic> map) {
+    return UncleModel(
       id: map['id'],
       urlImage: map['urlImage'],
       name: map['name'],
       type: map['type'],
-      instagram: map['instagram'] ?? '',
-      phone: map['phone'] ?? '',
-      birthday: map['birthday'] ?? '',
-      ejcAccomplished: map['ejcAccomplished'] ?? '',
-      eccAccomplished: map['eccAccomplished'] ?? '',
+      instagram: map['instagram'],
+      phone: map['phone'],
+      birthday: map['birthday'],
+      ejcAccomplished: map['ejcAccomplished'],
+      eccAccomplished: map['eccAccomplished'],
       instruments: (map['instruments'] as List<dynamic>?)
           ?.map((e) => InstrumentEnumExtension.fromName(e as String))
           .toList(),
@@ -66,6 +69,10 @@ class MemberModel extends AbstractPersonModel {
       apartment: map['apartment'] ?? '',
       district: map['district'] ?? '',
       city: map['city'] ?? '',
+      uncles: (map['uncles'] as List<dynamic>?)
+              ?.map((e) => AbstractPersonModel.fromJson(e))
+              .toList() ??
+          [],
       reference: map['reference'] ?? '',
     );
   }
