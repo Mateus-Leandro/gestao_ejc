@@ -7,7 +7,7 @@ import 'package:gestao_ejc/models/encounter_model.dart';
 import 'package:gestao_ejc/screens/circle_tabs_screen.dart';
 import 'package:gestao_ejc/screens/encounter_info_screen.dart';
 import 'package:gestao_ejc/screens/model_screen.dart';
-import 'package:gestao_ejc/screens/team_screen.dart';
+import 'package:gestao_ejc/screens/team_tabs_screen.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
 import 'package:gestao_ejc/theme/app_theme.dart';
 
@@ -63,7 +63,7 @@ class EncounterTabsScreen extends StatelessWidget {
                     ),
                   ),
                   _KeepAliveWrapper(
-                    child: TeamScreen(encounter: encounterModel),
+                    child: TeamTabsScreen(encounter: encounterModel),
                   ),
                   _KeepAliveWrapper(child: Container()),
                 ],
