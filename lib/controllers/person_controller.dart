@@ -10,6 +10,8 @@ class PersonController extends ChangeNotifier {
   final PersonService _personService = getIt<PersonService>();
   final FirebaseStorageService firebaseStorageService =
       getIt<FirebaseStorageService>();
+  List<AbstractPersonModel> listPersons = [];
+  List<AbstractPersonModel> filteredListPersons = [];
 
   var _streamController;
   Stream<List<AbstractPersonModel>>? get stream => _streamController.stream;
@@ -29,10 +31,26 @@ class PersonController extends ChangeNotifier {
 
   Future<void> getPersons() async {
     try {
-      final persons = await _personService.getPersons();
-      _streamController.sink.add(persons);
+      listPersons = await _personService.getPersons();
+      filteredListPersons = listPersons;
+      _streamController.sink.add(listPersons);
     } catch (e) {
       _streamController.addError('Erro ao listar membros: $e');
+    }
+  }
+
+  void filterPerson({required String? personName}) {
+    try {
+      personName != null
+          ? filteredListPersons = listPersons
+              .where((person) =>
+                  person.name.toLowerCase().contains(personName.toLowerCase()))
+              .toList()
+          : filteredListPersons = listPersons;
+
+      _streamController.sink.add(filteredListPersons);
+    } catch (e) {
+      throw 'Erro ao buscar membro/tios';
     }
   }
 
@@ -41,7 +59,6 @@ class PersonController extends ChangeNotifier {
       await _personService.savePerson(person: person);
       getPersons();
     } catch (e) {
-      debugPrint('Erro ao salvar pessoa: $e');
       throw Exception('Erro ao salvar pessoa: $e');
     }
   }

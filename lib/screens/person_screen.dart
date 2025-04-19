@@ -45,7 +45,10 @@ class _PersonScreenState extends State<PersonScreen> {
             inputType: TextInputType.text,
             controller: _memberNameController,
             messageTextField: 'Pesquisar membro/tio',
-            functionTextField: () => (),
+            functionTextField: () => _personController.filterPerson(
+                personName: _memberNameController.text.trim().isEmpty
+                    ? null
+                    : _memberNameController.text.trim()),
             iconButton: const Icon(Icons.add),
           ),
           Expanded(child: _buildMembersList(context)),
