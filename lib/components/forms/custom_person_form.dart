@@ -72,11 +72,10 @@ class _CustomPersonFormState extends State<CustomPersonForm> {
   final FunctionPickImage functionPickImage = getIt<FunctionPickImage>();
   final TextEditingController _cepController = TextEditingController();
   final TextEditingController _streetController = TextEditingController();
-  final TextEditingController _apartmentController = TextEditingController();
   final TextEditingController _numberAdressController = TextEditingController();
   final TextEditingController _districtController = TextEditingController();
   final TextEditingController _cityController = TextEditingController();
-  final TextEditingController _referenceController = TextEditingController();
+  final TextEditingController _complementController = TextEditingController();
   bool memberIsUncle = false;
   bool _savingPerson = false;
   bool _isLoadingPersonImage = false;
@@ -337,16 +336,9 @@ class _CustomPersonFormState extends State<CustomPersonForm> {
           ),
           TextFormField(
             keyboardType: TextInputType.text,
-            controller: _referenceController,
+            controller: _complementController,
             decoration: const InputDecoration(
-              labelText: 'Referencia',
-            ),
-          ),
-          TextFormField(
-            keyboardType: TextInputType.number,
-            controller: _apartmentController,
-            decoration: const InputDecoration(
-              labelText: 'Apartamento',
+              labelText: 'Complemento',
             ),
           ),
           TextFormField(
@@ -492,10 +484,9 @@ class _CustomPersonFormState extends State<CustomPersonForm> {
         cep: _cepController.text.trim(),
         street: _streetController.text.trim(),
         numberAdress: _numberAdressController.text.trim(),
-        apartment: _apartmentController.text.trim(),
         city: _cityController.text.trim(),
         district: _districtController.text.trim(),
-        reference: _referenceController.text.trim(),
+        complement: _complementController.text.trim(),
       );
 
       late AbstractPersonModel finalPerson;
@@ -581,10 +572,9 @@ class _CustomPersonFormState extends State<CustomPersonForm> {
     _cepController.text = personOne?.cep ?? '';
     _streetController.text = personOne?.street ?? '';
     _numberAdressController.text = personOne?.numberAdress ?? '';
-    _apartmentController.text = personOne?.apartment ?? '';
     _districtController.text = personOne?.district ?? '';
     _cityController.text = personOne?.city ?? '';
-    _referenceController.text = personOne?.reference ?? '';
+    _complementController.text = personOne?.complement ?? '';
 
     if (widget.editingPerson is UncleModel) {
       _nameController2.text = personTwo?.name ?? '';
@@ -596,10 +586,9 @@ class _CustomPersonFormState extends State<CustomPersonForm> {
       _cepController.text = personTwo?.cep ?? '';
       _streetController.text = personTwo?.street ?? '';
       _numberAdressController.text = personTwo?.numberAdress ?? '';
-      _apartmentController.text = personTwo?.apartment ?? '';
       _districtController.text = personTwo?.district ?? '';
       _cityController.text = personTwo?.city ?? '';
-      _referenceController.text = personTwo?.reference ?? '';
+      _complementController.text = personTwo?.complement ?? '';
     }
 
     if (_cepController.text.isNotEmpty) {
@@ -677,9 +666,8 @@ class _CustomPersonFormState extends State<CustomPersonForm> {
   _clearAdressFields() {
     _streetController.clear();
     _numberAdressController.clear();
-    _apartmentController.clear();
     _districtController.clear();
     _cityController.clear();
-    _referenceController.clear();
+    _complementController.clear();
   }
 }

@@ -16,10 +16,9 @@ abstract class AbstractPersonModel {
   final String? cep;
   final String? street;
   final String? numberAdress;
-  final String? apartment;
   final String? district;
   final String? city;
-  final String? reference;
+  final String? complement;
 
   AbstractPersonModel({
     required this.id,
@@ -35,10 +34,9 @@ abstract class AbstractPersonModel {
     this.cep,
     this.street,
     this.numberAdress,
-    this.apartment,
     this.district,
     this.city,
-    this.reference,
+    this.complement,
   });
 
   Map<String, dynamic> toJson();
