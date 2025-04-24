@@ -3,6 +3,7 @@ import 'package:buttons_tabbar/buttons_tabbar.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gestao_ejc/functions/function_int_to_roman.dart';
 import 'package:gestao_ejc/models/encounter_model.dart';
+import 'package:gestao_ejc/screens/team_members_screen.dart';
 import 'package:gestao_ejc/screens/team_screen.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
 import 'package:gestao_ejc/theme/app_theme.dart';
@@ -44,7 +45,7 @@ class TeamTabsScreen extends StatelessWidget {
                     child: TeamScreen(encounter: encounter),
                   ),
                   _KeepAliveWrapper(
-                    child: Container(),
+                    child: TeamMembersScreen(encounter: encounter),
                   ),
                 ],
               ),
