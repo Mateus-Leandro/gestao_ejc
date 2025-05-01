@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:gestao_ejc/components/forms/custom_team_member_form.dart';
 import 'package:gestao_ejc/components/utils/custom_list_tile.dart';
 import 'package:gestao_ejc/components/utils/custom_search_row.dart';
 import 'package:gestao_ejc/controllers/team_member_controller.dart';
 import 'package:gestao_ejc/enums/team_type_enum.dart';
+import 'package:gestao_ejc/models/abstract_person_model.dart';
 import 'package:gestao_ejc/models/encounter_model.dart';
 import 'package:gestao_ejc/models/team_member_model.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
@@ -43,7 +45,7 @@ class _TeamMembersScreenState extends State<TeamMembersScreen> {
         children: [
           CustomSearchRow(
             messageButton: 'Adicionar Membro/tio',
-            functionButton: () => (),
+            functionButton: () => _showTeamMemberForm(),
             showButton: true,
             inputType: TextInputType.text,
             controller: teamNameController,
@@ -109,16 +111,17 @@ class _TeamMembersScreenState extends State<TeamMembersScreen> {
     );
   }
 
-  // void _showTeamForm(TeamMemberModel? teamMember) {
-  //   showDialog(
-  //     barrierDismissible: false,
-  //     context: context,
-  //     builder: (BuildContext context) {
-  //       return CustomTeamMemberForm(
-  //         encounter: widget.encounter,
-  //         teamEditing: teamMember,
-  //       );
-  //     },
-  //   );
-  // }
+  void _showTeamMemberForm({AbstractPersonModel? teamMember}) {
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return CustomTeamMemberForm(
+          encounter: widget.encounter,
+          teamMemberEditing: null,
+          teamMembers: _TeamMemberController.actualMemberList,
+        );
+      },
+    );
+  }
 }

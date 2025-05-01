@@ -84,4 +84,6 @@ class TeamMemberController extends ChangeNotifier {
       throw 'Erro ao deletar membro';
     }
   }
+
+  get actualMemberList => listTeamMember;
 }
