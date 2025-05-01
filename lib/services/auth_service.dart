@@ -124,6 +124,8 @@ class AuthService {
         return user.manipulateEncounter;
       case '/circles':
         return user.manipulateCircles;
+      case '/speakers':
+        return user.manipulateEncounter;
       default:
         return true;
     }

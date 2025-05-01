@@ -1,8 +1,8 @@
-import 'package:gestao_ejc/enums/instrument_enum.dart';
-import 'package:gestao_ejc/models/abstract_person_model.dart';
+  import 'package:gestao_ejc/enums/instrument_enum.dart';
+  import 'package:gestao_ejc/models/abstract_person_model.dart';
 
-class UncleModel extends AbstractPersonModel {
-  final List<AbstractPersonModel> uncles;
+  class UncleModel extends AbstractPersonModel {
+    final List<AbstractPersonModel> uncles;
 
   UncleModel({
     required super.id,
