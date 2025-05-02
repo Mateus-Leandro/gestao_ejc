@@ -9,13 +9,7 @@ class SpeakerCoupleModel extends AbstractSpeakerModel {
     required super.name,
     required this.uncles,
     super.phone,
-    super.cep,
-    super.street,
-    super.numberAdress,
-    super.apartment,
-    super.district,
-    super.city,
-    super.reference,
+    super.instagram,
   });
 
   SpeakerModel get uncle {
@@ -44,13 +38,6 @@ class SpeakerCoupleModel extends AbstractSpeakerModel {
       'name': name,
       'couple': true,
       'uncles': uncles.map((speaker) => speaker.toJson()).toList(),
-      'cep': cep,
-      'street': street,
-      'numberAdress': numberAdress,
-      'apartment': apartment,
-      'district': district,
-      'city': city,
-      'reference': reference,
     };
   }
 
@@ -74,13 +61,7 @@ class SpeakerCoupleModel extends AbstractSpeakerModel {
       urlImage: map['urlImage'] ?? '',
       name: map['name'],
       uncles: uncles,
-      cep: map['cep'] ?? '',
-      street: map['street'] ?? '',
-      numberAdress: map['numberAdress'] ?? '',
-      apartment: map['apartment'] ?? '',
-      district: map['district'] ?? '',
-      city: map['city'] ?? '',
-      reference: map['reference'] ?? '',
+      instagram: map['instagram'] ?? '',
     );
   }
 }

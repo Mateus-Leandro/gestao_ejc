@@ -60,7 +60,7 @@ class _SpeakerScreenState extends State<SpeakerScreen> {
           Expanded(child: _buildSpeakersList(context)),
         ],
       ),
-      indexMenuSelected: 1,
+      indexMenuSelected: 6,
       showMenuDrawer: true,
     );
   }

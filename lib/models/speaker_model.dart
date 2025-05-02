@@ -5,26 +5,14 @@ abstract class AbstractSpeakerModel {
   String? urlImage;
   final String name;
   final String? phone;
-  final String? cep;
-  final String? street;
-  final String? numberAdress;
-  final String? apartment;
-  final String? district;
-  final String? city;
-  final String? reference;
+  final String? instagram;
 
   AbstractSpeakerModel({
     required this.id,
     required this.urlImage,
     required this.name,
     this.phone,
-    this.cep,
-    this.street,
-    this.numberAdress,
-    this.apartment,
-    this.district,
-    this.city,
-    this.reference,
+    this.instagram,
   });
 
   Map<String, dynamic> toJson();
@@ -47,13 +35,7 @@ class SpeakerModel extends AbstractSpeakerModel {
     required super.name,
     this.type = 'speaker', // Valor padrão é 'speaker'
     super.phone,
-    super.cep,
-    super.street,
-    super.numberAdress,
-    super.apartment,
-    super.district,
-    super.city,
-    super.reference,
+    super.instagram,
   });
 
   @override
@@ -64,14 +46,8 @@ class SpeakerModel extends AbstractSpeakerModel {
       'name': name,
       'type': type,
       'phone': phone,
+      'instagram': instagram,
       'couple': false,
-      'cep': cep,
-      'street': street,
-      'numberAdress': numberAdress,
-      'apartment': apartment,
-      'district': district,
-      'city': city,
-      'reference': reference,
     };
   }
 
@@ -82,13 +58,7 @@ class SpeakerModel extends AbstractSpeakerModel {
       name: map['name'],
       type: map['type'] ?? 'speaker',
       phone: map['phone'] ?? '',
-      cep: map['cep'] ?? '',
-      street: map['street'] ?? '',
-      numberAdress: map['numberAdress'] ?? '',
-      apartment: map['apartment'] ?? '',
-      district: map['district'] ?? '',
-      city: map['city'] ?? '',
-      reference: map['reference'] ?? '',
+      instagram: map['instagram'] ?? '',
     );
   }
 }

@@ -35,8 +35,8 @@ class _CustomLectureFormState extends State<CustomLectureForm> {
   final _lectureNameController = TextEditingController();
   final _lectureDateController = TextEditingController();
   final _lectureStartTimeController = TextEditingController();
-  final _lectureDurationHoursController = TextEditingController(text: '0');
-  final _lectureDurationMinutesController = TextEditingController(text: '0');
+  final _lectureDurationHoursController = TextEditingController(text: '');
+  final _lectureDurationMinutesController = TextEditingController(text: '');
   final _lectureEndTimeController = TextEditingController();
 
   final _lectureController = getIt<LectureController>();
@@ -66,8 +66,8 @@ class _CustomLectureFormState extends State<CustomLectureForm> {
       _lectureStartTimeController.text = _formatTimeOfDay(_startTime!);
       final hours = lec.durationMinutes ~/ 60;
       final mins = lec.durationMinutes % 60;
-      _lectureDurationHoursController.text = hours.toString();
-      _lectureDurationMinutesController.text = mins.toString();
+      _lectureDurationHoursController.text = hours > 0 ? hours.toString() : '';
+      _lectureDurationMinutesController.text = mins > 0 ? mins.toString() : '';
       final end = lec.endTime.toDate();
       _lectureEndTimeController.text =
           _formatTimeOfDay(TimeOfDay(hour: end.hour, minute: end.minute));
@@ -148,19 +148,21 @@ class _CustomLectureFormState extends State<CustomLectureForm> {
                 ),
                 const SizedBox(width: 16),
                 Expanded(
-                  child: TextFormField(
-                    controller: _lectureStartTimeController,
-                    readOnly: true,
-                    decoration: InputDecoration(
-                      labelText: 'Horário de Início',
-                      border: const OutlineInputBorder(),
-                      suffixIcon: IconButton(
-                        icon: const Icon(Icons.access_time),
-                        onPressed: () => _selectTime(context),
+                  child: InkWell(
+                    onTap: () => _selectTime(context),
+                    child: IgnorePointer(
+                      child: TextFormField(
+                        controller: _lectureStartTimeController,
+                        decoration: const InputDecoration(
+                          labelText: 'Horário de Início',
+                          border: OutlineInputBorder(),
+                          suffixIcon: Icon(Icons.access_time),
+                        ),
+                        validator: (v) => (v == null || v.isEmpty)
+                            ? 'Selecione o horário'
+                            : null,
                       ),
                     ),
-                    validator: (v) =>
-                        (v == null || v.isEmpty) ? 'Selecione o horário' : null,
                   ),
                 ),
               ],
@@ -181,7 +183,8 @@ class _CustomLectureFormState extends State<CustomLectureForm> {
                     ),
                     onChanged: (_) => _calculateEndTime(),
                     validator: (v) {
-                      final n = int.tryParse(v ?? '') ?? -1;
+                      if (v == null || v.isEmpty) return null;
+                      final n = int.tryParse(v) ?? -1;
                       return n < 0 ? 'Valor inválido' : null;
                     },
                   ),
@@ -197,8 +200,9 @@ class _CustomLectureFormState extends State<CustomLectureForm> {
                     ),
                     onChanged: (_) => _calculateEndTime(),
                     validator: (v) {
-                      final n = int.tryParse(v ?? '') ?? -1;
-                      return (n < 0 || n > 59) ? 'Valor inválido (0–59)' : null;
+                      if (v == null || v.isEmpty) return null;
+                      final n = int.tryParse(v) ?? -1;
+                      return n < 0 ? 'Valor inválido' : null;
                     },
                   ),
                 ),
@@ -244,7 +248,9 @@ class _CustomLectureFormState extends State<CustomLectureForm> {
 
   void _calculateEndTime() {
     if (_startTime == null) return;
-    final h = int.tryParse(_lectureDurationHoursController.text) ?? 0;
+    final h = _lectureDurationHoursController.text.isEmpty
+        ? 0
+        : int.tryParse(_lectureDurationHoursController.text) ?? 0;
     final m = int.tryParse(_lectureDurationMinutesController.text) ?? 0;
     final startMin = _startTime!.hour * 60 + _startTime!.minute;
     final totalMin = h * 60 + m;
@@ -256,7 +262,9 @@ class _CustomLectureFormState extends State<CustomLectureForm> {
   }
 
   int _totalMinutes() {
-    final h = int.tryParse(_lectureDurationHoursController.text) ?? 0;
+    final h = _lectureDurationHoursController.text.isEmpty
+        ? 0
+        : int.tryParse(_lectureDurationHoursController.text) ?? 0;
     final m = int.tryParse(_lectureDurationMinutesController.text) ?? 0;
     return h * 60 + m;
   }

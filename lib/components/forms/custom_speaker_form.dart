@@ -10,7 +10,6 @@ import 'package:gestao_ejc/controllers/speaker_controller.dart';
 import 'package:gestao_ejc/functions/function_pick_image.dart';
 import 'package:gestao_ejc/models/speaker_couple_model.dart';
 import 'package:gestao_ejc/models/speaker_model.dart';
-import 'package:gestao_ejc/services/apis/cep_service_api.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:uuid/uuid.dart';
@@ -31,29 +30,19 @@ class _CustomSpeakerFormState extends State<CustomSpeakerForm> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController1 = TextEditingController();
   final TextEditingController _phoneController1 = TextEditingController();
+  final TextEditingController _instagramController1 = TextEditingController();
 
   final TextEditingController _nameController2 = TextEditingController();
   final TextEditingController _phoneController2 = TextEditingController();
+  final TextEditingController _instagramController2 = TextEditingController();
 
   final phoneMaskFormatter = MaskTextInputFormatter(
     mask: '(##) #####-####',
     filter: {"#": RegExp(r'[0-9]')},
   );
 
-  final cepMaskFormatter = MaskTextInputFormatter(
-    mask: '##-###-###',
-    filter: {"#": RegExp(r'[0-9]')},
-  );
-
   final _speakerController = getIt<SpeakerController>();
   final FunctionPickImage functionPickImage = getIt<FunctionPickImage>();
-  final TextEditingController _cepController = TextEditingController();
-  final TextEditingController _streetController = TextEditingController();
-  final TextEditingController _apartmentController = TextEditingController();
-  final TextEditingController _numberAdressController = TextEditingController();
-  final TextEditingController _districtController = TextEditingController();
-  final TextEditingController _cityController = TextEditingController();
-  final TextEditingController _referenceController = TextEditingController();
   bool speakerIsCouple = false;
   bool _savingSpeaker = false;
   bool _isLoadingSpeakerImage1 = false;
@@ -64,8 +53,6 @@ class _CustomSpeakerFormState extends State<CustomSpeakerForm> {
   Uint8List? originalSpeakerImage2;
   String? urlSpeakerImage1 = '';
   String? urlSpeakerImage2 = '';
-  var addressData;
-  bool invalidCep = false;
 
   @override
   void initState() {
@@ -80,16 +67,11 @@ class _CustomSpeakerFormState extends State<CustomSpeakerForm> {
 
         _nameController1.text = uncle.name;
         _phoneController1.text = uncle.phone ?? '';
+        _instagramController1.text = uncle.instagram ?? '';
+
         _nameController2.text = aunt.name;
         _phoneController2.text = aunt.phone ?? '';
-
-        _cepController.text = coupleModel.cep ?? '';
-        _streetController.text = coupleModel.street ?? '';
-        _numberAdressController.text = coupleModel.numberAdress ?? '';
-        _apartmentController.text = coupleModel.apartment ?? '';
-        _districtController.text = coupleModel.district ?? '';
-        _cityController.text = coupleModel.city ?? '';
-        _referenceController.text = coupleModel.reference ?? '';
+        _instagramController2.text = aunt.instagram ?? '';
 
         urlSpeakerImage1 = uncle.urlImage;
         urlSpeakerImage2 = aunt.urlImage;
@@ -98,20 +80,9 @@ class _CustomSpeakerFormState extends State<CustomSpeakerForm> {
         var speakerModel = widget.editingSpeaker as SpeakerModel;
         _nameController1.text = speakerModel.name;
         _phoneController1.text = speakerModel.phone ?? '';
-
-        _cepController.text = speakerModel.cep ?? '';
-        _streetController.text = speakerModel.street ?? '';
-        _numberAdressController.text = speakerModel.numberAdress ?? '';
-        _apartmentController.text = speakerModel.apartment ?? '';
-        _districtController.text = speakerModel.district ?? '';
-        _cityController.text = speakerModel.city ?? '';
-        _referenceController.text = speakerModel.reference ?? '';
+        _instagramController1.text = speakerModel.instagram ?? '';
 
         urlSpeakerImage1 = speakerModel.urlImage;
-      }
-
-      if (_cepController.text.isNotEmpty) {
-        _searchAdress();
       }
 
       _loadImages();
@@ -122,15 +93,10 @@ class _CustomSpeakerFormState extends State<CustomSpeakerForm> {
   void dispose() {
     _nameController1.dispose();
     _phoneController1.dispose();
+    _instagramController1.dispose();
     _nameController2.dispose();
     _phoneController2.dispose();
-    _cepController.dispose();
-    _streetController.dispose();
-    _apartmentController.dispose();
-    _numberAdressController.dispose();
-    _districtController.dispose();
-    _cityController.dispose();
-    _referenceController.dispose();
+    _instagramController2.dispose();
     super.dispose();
   }
 
@@ -188,7 +154,6 @@ class _CustomSpeakerFormState extends State<CustomSpeakerForm> {
                 : _buildSpeakerSectionsHorizontal(),
             const SizedBox(height: 16),
             // Seção de endereço
-            _buildAddressSection(isSmallScreen),
           ],
         ),
       ),
@@ -204,6 +169,7 @@ class _CustomSpeakerFormState extends State<CustomSpeakerForm> {
           _speakerType(),
           _nameController1,
           _phoneController1,
+          _instagramController1,
           1,
         ),
         const SizedBox(height: 16),
@@ -213,6 +179,7 @@ class _CustomSpeakerFormState extends State<CustomSpeakerForm> {
             'Tia',
             _nameController2,
             _phoneController2,
+            _instagramController2,
             2,
           ),
           const SizedBox(height: 16),
@@ -234,6 +201,7 @@ class _CustomSpeakerFormState extends State<CustomSpeakerForm> {
               _speakerType(),
               _nameController1,
               _phoneController1,
+              _instagramController1,
               1,
             ),
           ),
@@ -247,6 +215,7 @@ class _CustomSpeakerFormState extends State<CustomSpeakerForm> {
                 'Tia',
                 _nameController2,
                 _phoneController2,
+                _instagramController2,
                 2,
               ),
             ),
@@ -260,6 +229,7 @@ class _CustomSpeakerFormState extends State<CustomSpeakerForm> {
     String titleForm,
     TextEditingController nameController,
     TextEditingController phoneController,
+    TextEditingController instagramController,
     int speakerIndex,
   ) {
     // Determina qual imagem e estado de carregamento usar
@@ -308,6 +278,14 @@ class _CustomSpeakerFormState extends State<CustomSpeakerForm> {
             }
             return null;
           },
+        ),
+        TextFormField(
+          keyboardType: TextInputType.url,
+          controller: instagramController,
+          decoration: const InputDecoration(
+            labelText: "Instagram",
+            hintText: "@username",
+          ),
         ),
         const SizedBox(height: 16),
         // Botão para selecionar imagem
@@ -377,169 +355,6 @@ class _CustomSpeakerFormState extends State<CustomSpeakerForm> {
     );
   }
 
-  // Seção de endereço
-  Widget _buildAddressSection(bool isSmallScreen) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Endereço (Opcional)',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        const Padding(
-          padding: EdgeInsets.symmetric(vertical: 8),
-          child: Divider(),
-        ),
-        // Campo CEP
-        TextFormField(
-          keyboardType: TextInputType.number,
-          controller: _cepController,
-          inputFormatters: [cepMaskFormatter],
-          decoration: InputDecoration(
-            labelText: "CEP",
-            hintText: "00-000-000",
-            suffixIcon: IconButton(
-              icon: const Icon(Icons.search),
-              onPressed: () async {
-                await _searchAdress();
-                _formKey.currentState!.validate();
-              },
-            ),
-          ),
-          onFieldSubmitted: (_) async {
-            await _searchAdress();
-            _formKey.currentState!.validate();
-          },
-          onChanged: (_) {
-            if (cepMaskFormatter.getUnmaskedText().trim().isEmpty) {
-              invalidCep = false;
-              setState(() {
-                _clearAdressFields();
-                _formKey.currentState!.validate();
-              });
-            }
-          },
-          validator: (cepValue) {
-            if (invalidCep) {
-              return 'CEP inválido!';
-            }
-            return null;
-          },
-        ),
-        // Rua e número (adaptativo)
-        isSmallScreen
-            ? Column(
-                children: [
-                  TextFormField(
-                    readOnly: true,
-                    keyboardType: TextInputType.streetAddress,
-                    controller: _streetController,
-                    decoration: const InputDecoration(
-                      labelText: 'Rua',
-                    ),
-                  ),
-                  TextFormField(
-                    keyboardType: TextInputType.number,
-                    controller: _numberAdressController,
-                    decoration: const InputDecoration(
-                      labelText: 'Nº',
-                    ),
-                  ),
-                ],
-              )
-            : Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Expanded(
-                    flex: 7,
-                    child: TextFormField(
-                      readOnly: true,
-                      keyboardType: TextInputType.streetAddress,
-                      controller: _streetController,
-                      decoration: const InputDecoration(
-                        labelText: 'Rua',
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Flexible(
-                    flex: 3,
-                    child: TextFormField(
-                      keyboardType: TextInputType.number,
-                      controller: _numberAdressController,
-                      decoration: const InputDecoration(
-                        labelText: 'Nº',
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-        // Campos adicionais de endereço
-        TextFormField(
-          keyboardType: TextInputType.text,
-          controller: _referenceController,
-          decoration: const InputDecoration(
-            labelText: 'Referência',
-          ),
-        ),
-        TextFormField(
-          keyboardType: TextInputType.number,
-          controller: _apartmentController,
-          decoration: const InputDecoration(
-            labelText: 'Apartamento',
-          ),
-        ),
-        // Bairro e cidade (adaptativo)
-        isSmallScreen
-            ? Column(
-                children: [
-                  TextFormField(
-                    readOnly: true,
-                    keyboardType: TextInputType.text,
-                    controller: _districtController,
-                    decoration: const InputDecoration(
-                      labelText: 'Bairro',
-                    ),
-                  ),
-                  TextFormField(
-                    readOnly: true,
-                    keyboardType: TextInputType.text,
-                    controller: _cityController,
-                    decoration: const InputDecoration(
-                      labelText: 'Cidade',
-                    ),
-                  ),
-                ],
-              )
-            : Row(
-                children: [
-                  Expanded(
-                    child: TextFormField(
-                      readOnly: true,
-                      keyboardType: TextInputType.text,
-                      controller: _districtController,
-                      decoration: const InputDecoration(
-                        labelText: 'Bairro',
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: TextFormField(
-                      readOnly: true,
-                      keyboardType: TextInputType.text,
-                      controller: _cityController,
-                      decoration: const InputDecoration(
-                        labelText: 'Cidade',
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-      ],
-    );
-  }
-
   String _speakerType() {
     return speakerIsCouple ? 'Tio' : 'Palestrante';
   }
@@ -601,6 +416,7 @@ class _CustomSpeakerFormState extends State<CustomSpeakerForm> {
               name: _nameController1.text.trim(),
               type: 'uncle',
               phone: _phoneController1.text,
+              instagram: _instagramController1.text,
             ),
             // Tia
             SpeakerModel(
@@ -609,6 +425,7 @@ class _CustomSpeakerFormState extends State<CustomSpeakerForm> {
               name: _nameController2.text.trim(),
               type: 'aunt',
               phone: _phoneController2.text,
+              instagram: _instagramController2.text,
             ),
           ];
 
@@ -619,13 +436,6 @@ class _CustomSpeakerFormState extends State<CustomSpeakerForm> {
             name:
                 'Tio ${_nameController1.text.split(' ').first} e Tia ${_nameController2.text.split(' ').first}',
             uncles: uncles,
-            cep: _cepController.text.trim(),
-            street: _streetController.text.trim(),
-            numberAdress: _numberAdressController.text.trim(),
-            apartment: _apartmentController.text.trim(),
-            district: _districtController.text.trim(),
-            city: _cityController.text.trim(),
-            reference: _referenceController.text.trim(),
           );
         } else {
           finalSpeaker = SpeakerModel(
@@ -634,13 +444,7 @@ class _CustomSpeakerFormState extends State<CustomSpeakerForm> {
             name: _nameController1.text.trim(),
             type: 'speaker',
             phone: _phoneController1.text,
-            cep: _cepController.text.trim(),
-            street: _streetController.text.trim(),
-            numberAdress: _numberAdressController.text.trim(),
-            apartment: _apartmentController.text.trim(),
-            district: _districtController.text.trim(),
-            city: _cityController.text.trim(),
-            reference: _referenceController.text.trim(),
+            instagram: _instagramController1.text,
           );
         }
 
@@ -746,38 +550,5 @@ class _CustomSpeakerFormState extends State<CustomSpeakerForm> {
         _isLoadingSpeakerImage1 = false;
       });
     }
-  }
-
-  _searchAdress() async {
-    addressData = null;
-    var cep = cepMaskFormatter.getUnmaskedText().trim();
-    try {
-      if (cep.isNotEmpty) {
-        addressData = await CepServiceApi.zipCodeSearch(cep);
-        setState(() {
-          _fillAdressFields();
-          invalidCep = false;
-        });
-      }
-    } catch (error) {
-      setState(() {
-        invalidCep = true;
-      });
-    }
-  }
-
-  _fillAdressFields() {
-    _streetController.text = addressData['logradouro'] ?? '';
-    _districtController.text = addressData['bairro'] ?? '';
-    _cityController.text = addressData['localidade'] ?? '';
-  }
-
-  _clearAdressFields() {
-    _streetController.clear();
-    _numberAdressController.clear();
-    _apartmentController.clear();
-    _districtController.clear();
-    _cityController.clear();
-    _referenceController.clear();
   }
 }

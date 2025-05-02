@@ -38,7 +38,7 @@ class _FinancialScreenState extends State<FinancialScreen> {
   Widget build(BuildContext context) {
     return ModelScreen(
       title: 'Financeiro',
-      indexMenuSelected: 5,
+      indexMenuSelected: 4,
       body: Column(
         children: [
           _buildFinancialSummaryStream(),
