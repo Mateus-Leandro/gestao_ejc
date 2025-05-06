@@ -228,7 +228,7 @@ class _CustomCircleFormState extends State<CustomCircleForm> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         const Text(
-                          'Imagem tema',
+                          'Imagem Capa',
                           style: TextStyle(fontWeight: FontWeight.bold),
                         ),
                         CustomPickFileButton(
@@ -236,7 +236,7 @@ class _CustomCircleFormState extends State<CustomCircleForm> {
                             _pickThemeImage();
                           },
                           icon: Tooltip(
-                            message: 'Selecionar Imagem Tema',
+                            message: 'Selecionar Imagem Capa',
                             child: Opacity(
                               opacity: 1.0,
                               child: Stack(
@@ -259,7 +259,7 @@ class _CustomCircleFormState extends State<CustomCircleForm> {
                                                 child: Padding(
                                                   padding: EdgeInsets.all(8.0),
                                                   child: Text(
-                                                      'Selecionar imagem tema'),
+                                                      'Selecionar imagem capa'),
                                                 ),
                                               ),
                                   ),
@@ -275,7 +275,7 @@ class _CustomCircleFormState extends State<CustomCircleForm> {
                                             themeImage = null;
                                           });
                                         },
-                                        tooltip: 'Remover Imagem tema',
+                                        tooltip: 'Remover Imagem capa',
                                       ),
                                     ),
                                   ]
