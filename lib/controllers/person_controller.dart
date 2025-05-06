@@ -13,11 +13,10 @@ class PersonController extends ChangeNotifier {
   List<AbstractPersonModel> listPersons = [];
   List<AbstractPersonModel> filteredListPersons = [];
 
-  var _streamController;
+  var _streamController = StreamController<List<AbstractPersonModel>>();
   Stream<List<AbstractPersonModel>>? get stream => _streamController.stream;
 
   void init() {
-    _streamController = StreamController<List<AbstractPersonModel>>();
     getPersons();
   }
 
@@ -119,4 +118,6 @@ class PersonController extends ChangeNotifier {
       throw 'Erro ao remover imagem: $e';
     }
   }
+
+  get getActualListPersons => listPersons;
 }

@@ -70,6 +70,8 @@ class TeamMemberController extends ChangeNotifier {
       {required TeamMemberModel teamMemberModel}) async {
     try {
       await _teamMemberService.saveTeamMember(teamMember: teamMemberModel);
+      await getTeamMembers(
+          sequentialEncounter: teamMemberModel.sequentialEncounter);
     } catch (e) {
       throw 'Erro ao salvar membro/tio';
     }
@@ -84,4 +86,6 @@ class TeamMemberController extends ChangeNotifier {
       throw 'Erro ao deletar membro';
     }
   }
+
+  get actualMemberList => listTeamMember;
 }
