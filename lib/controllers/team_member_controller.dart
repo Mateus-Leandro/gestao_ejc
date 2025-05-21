@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gestao_ejc/models/member_model.dart';
 import 'package:gestao_ejc/models/team_member_model.dart';
@@ -84,6 +85,20 @@ class TeamMemberController extends ChangeNotifier {
           teamMemberId: teamMemberModel.id);
     } catch (e) {
       throw 'Erro ao deletar membro';
+    }
+  }
+
+  Future<TeamMemberModel?> getMemberCurrentTeam({
+    required int sequentialEncounter,
+    required DocumentReference referenceMember,
+  }) async {
+    try {
+      return await _teamMemberService.getMemberCurrentTeam(
+        referenceMember: referenceMember,
+        sequentialEncounter: sequentialEncounter,
+      );
+    } catch (e) {
+      rethrow;
     }
   }
 

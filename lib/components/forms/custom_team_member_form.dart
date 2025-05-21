@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gestao_ejc/components/SnackBars/custom_snack_bar.dart';
+import 'package:gestao_ejc/components/alerts/custom_current_team_alert.dart';
 import 'package:gestao_ejc/components/buttons/custom_cancel_button.dart';
 import 'package:gestao_ejc/components/buttons/custom_confirmation_button.dart';
 import 'package:gestao_ejc/components/drawers/custom_person_drawer.dart';
@@ -118,8 +119,7 @@ class _CustomTeamMemberFormState extends State<CustomTeamMemberForm> {
         ),
         CustomConfirmationButton(
           onPressed: () {
-            if (selectedTeam != null &&
-                _personControllerDrawer.selectedItems.isNotEmpty) {
+            if (_personControllerDrawer.selectedItems.isNotEmpty) {
               _saveTeamMember();
             }
           },
@@ -151,6 +151,7 @@ class _CustomTeamMemberFormState extends State<CustomTeamMemberForm> {
     setState(() {
       _isLoadingSaveTeamMember = true;
     });
+    bool confirmed = true;
     try {
       AbstractPersonModel person =
           _personControllerDrawer.selectedItems.first.value;
@@ -159,18 +160,39 @@ class _CustomTeamMemberFormState extends State<CustomTeamMemberForm> {
       final DocumentReference? referenceTeam =
           await _teamController.referenceTeamByTypeAndEncounter(
               sequentialEncounter: widget.encounter.sequential,
-              type: selectedTeam!);
-      TeamMemberModel _teamMemberModel = TeamMemberModel(
-          id: const Uuid().v4(),
+              type: selectedTeam);
+
+      TeamMemberModel? currentTeamMember =
+          await _teamMemberController.getMemberCurrentTeam(
+              referenceMember: referenceMember,
+              sequentialEncounter: widget.encounter.sequential);
+
+      TeamMemberModel _savingTeamMemberModel = TeamMemberModel(
+          id: currentTeamMember != null
+              ? currentTeamMember.id
+              : const Uuid().v4(),
           sequentialEncounter: widget.encounter.sequential,
           referenceMember: referenceMember,
           referenceTeam: referenceTeam!);
-      _teamMemberController.saveTeamMember(teamMemberModel: _teamMemberModel);
-      CustomSnackBar.show(
-        context: context,
-        message: 'Membro/tio vinculado com sucesso!',
-        colorBar: Colors.green,
-      );
+
+      if (currentTeamMember != null) {
+        currentTeamMember.team = await _teamController.teamByReference(
+            referenceTeam: currentTeamMember.referenceTeam);
+        confirmed = await showMemberAlreadyLinkedDialog(
+            context: context,
+            actualTeam: currentTeamMember.team.type.formattedName,
+            destinationTeam: selectedTeam.formattedName);
+      }
+
+      if (confirmed) {
+        await _teamMemberController.saveTeamMember(
+            teamMemberModel: _savingTeamMemberModel);
+        CustomSnackBar.show(
+          context: context,
+          message: 'Membro/tio vinculado com sucesso!',
+          colorBar: Colors.green,
+        );
+      }
     } catch (e) {
       CustomSnackBar.show(
         context: context,

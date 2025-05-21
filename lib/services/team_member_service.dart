@@ -43,4 +43,27 @@ class TeamMemberService {
       rethrow;
     }
   }
+
+  Future<TeamMemberModel?> getMemberCurrentTeam({
+    required int sequentialEncounter,
+    required DocumentReference referenceMember,
+  }) async {
+    try {
+      snapshot = await _firestore
+          .collection(collectionPath)
+          .where('sequentialEncounter', isEqualTo: sequentialEncounter)
+          .where(
+            'referenceMember',
+            isEqualTo: referenceMember,
+          )
+          .get();
+      return snapshot.docs
+          .map((doc) =>
+              TeamMemberModel.fromJson(doc.data() as Map<String, dynamic>))
+          .toList()
+          .first;
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

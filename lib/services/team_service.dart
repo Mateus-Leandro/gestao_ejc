@@ -77,4 +77,16 @@ class TeamService extends ChangeNotifier {
       rethrow;
     }
   }
+
+  Future<TeamModel> teamByReference(
+      {required DocumentReference referenceTeam}) async {
+    try {
+      final teamByReference = await referenceTeam.get();
+      return TeamModel.fromJson(
+        teamByReference.data() as Map<String, dynamic>,
+      );
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

@@ -120,4 +120,13 @@ class TeamController extends ChangeNotifier {
       throw 'Erro ao buscar referencia da equipe!';
     }
   }
+
+  Future<TeamModel> teamByReference(
+      {required DocumentReference referenceTeam}) async {
+    try {
+      return await _teamService.teamByReference(referenceTeam: referenceTeam);
+    } catch (e) {
+      throw 'Erro ao buscar equipe';
+    }
+  }
 }
