@@ -58,11 +58,16 @@ class TeamMemberService {
             isEqualTo: referenceMember,
           )
           .get();
-      return snapshot.docs
-          .map((doc) =>
-              TeamMemberModel.fromJson(doc.data() as Map<String, dynamic>))
-          .toList()
-          .first;
+
+      if (snapshot.docs.isNotEmpty) {
+        return snapshot.docs
+            .map((doc) =>
+                TeamMemberModel.fromJson(doc.data() as Map<String, dynamic>))
+            .toList()
+            .first;
+      }
+
+      return null;
     } catch (e) {
       rethrow;
     }
