@@ -1,6 +1,7 @@
 import 'package:expansion_tile_list/expansion_tile_list.dart';
 import 'package:flutter/material.dart';
 import 'package:gestao_ejc/components/SnackBars/custom_snack_bar.dart';
+import 'package:gestao_ejc/components/buttons/custom_delete_button.dart';
 import 'package:gestao_ejc/components/buttons/custom_edit_button.dart';
 import 'package:gestao_ejc/components/forms/custom_team_form.dart';
 import 'package:gestao_ejc/components/forms/custom_team_member_form.dart';
@@ -139,11 +140,21 @@ class _TeamScreenState extends State<TeamScreen> {
           )
         else if (teamMembersMap.containsKey(team.id))
           ...teamMembersMap[team.id]!.map((teamMember) => ListTile(
-                title: Text(teamMember.member.name),
+                title: Row(
+                  children: [
+                    Expanded(child: Text(teamMember.member.name)),
+                    CustomDeleteButton(
+                      alertMessage:
+                          'Remover ${teamMember.member.name} da equipe ${team.type.formattedName}?',
+                      deleteFunction: () =>
+                          _removeTeamMember(teamMember: teamMember, team: team),
+                    )
+                  ],
+                ),
               ))
         else
           Padding(
-            padding: EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(8.0),
             child: Text(
                 'Nenhum membro encontrado na equipe ${team.type.formattedName}'),
           ),
@@ -210,6 +221,12 @@ class _TeamScreenState extends State<TeamScreen> {
       },
     );
 
+    _loadTeamMembers(team: team);
+  }
+
+  Future _removeTeamMember(
+      {required TeamMemberModel teamMember, required TeamModel team}) async {
+    await _teamMemberController.deleteTeamMember(teamMemberModel: teamMember);
     _loadTeamMembers(team: team);
   }
 }
