@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:gestao_ejc/models/member_model.dart';
+import 'package:gestao_ejc/models/abstract_person_model.dart';
 import 'package:gestao_ejc/models/team_model.dart';
 
 class TeamMemberModel {
@@ -7,7 +7,7 @@ class TeamMemberModel {
   final int sequentialEncounter;
   final DocumentReference referenceMember;
   final DocumentReference referenceTeam;
-  late MemberModel member;
+  late AbstractPersonModel member;
   late TeamModel team;
 
   TeamMemberModel({

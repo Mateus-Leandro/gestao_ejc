@@ -117,8 +117,8 @@ class _TeamMembersScreenState extends State<TeamMembersScreen> {
       context: context,
       builder: (BuildContext context) {
         return CustomTeamMemberForm(
+          linkedTeam: null,
           encounter: widget.encounter,
-          teamMemberEditing: null,
           teamMembers: _TeamMemberController.actualMemberList,
         );
       },

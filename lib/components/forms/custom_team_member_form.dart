@@ -19,12 +19,12 @@ import 'package:multi_dropdown/multi_dropdown.dart';
 import 'package:uuid/uuid.dart';
 
 class CustomTeamMemberForm extends StatefulWidget {
-  final TeamMemberModel? teamMemberEditing;
   final EncounterModel encounter;
+  final TeamTypeEnum? linkedTeam;
   final List<TeamMemberModel> teamMembers;
   const CustomTeamMemberForm({
     super.key,
-    this.teamMemberEditing,
+    required this.linkedTeam,
     required this.encounter,
     required this.teamMembers,
   });
@@ -52,6 +52,9 @@ class _CustomTeamMemberFormState extends State<CustomTeamMemberForm> {
   @override
   void initState() {
     super.initState();
+    if (widget.linkedTeam != null) {
+      selectedTeam = widget.linkedTeam!;
+    }
     _getAllMembers();
   }
 
@@ -60,9 +63,7 @@ class _CustomTeamMemberFormState extends State<CustomTeamMemberForm> {
     return _loadingMembers
         ? const Center(child: CircularProgressIndicator())
         : CustomModelForm(
-            title: widget.teamMemberEditing != null
-                ? 'Editar Membro/Tio'
-                : 'Vincular Membro/Tio na Equipe',
+            title: 'Vincular Membro/Tio na Equipe',
             formKey: _formKey,
             formBody: _buildFormBody(),
             actions: _buildFormAction(),
@@ -83,8 +84,7 @@ class _CustomTeamMemberFormState extends State<CustomTeamMemberForm> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                      'Selecione a equipe que o membroi/tio será vinculado',
+                  const Text('Equipe que o membro/tio será vinculado',
                       style: TextStyle(fontWeight: FontWeight.bold)),
                   CustomTeamTypeDrawer(
                     initialTeamType: selectedTeam,
@@ -95,9 +95,10 @@ class _CustomTeamMemberFormState extends State<CustomTeamMemberForm> {
                         },
                       );
                     },
-                    tooltipMessage:
-                        'Escolha a equipe que deseja vincular o membro',
-                    allowSelection: true,
+                    tooltipMessage: widget.linkedTeam == null
+                        ? 'Escolha a equipe que deseja vincular o membro'
+                        : '',
+                    allowSelection: widget.linkedTeam == null,
                   ),
                 ],
               ),
