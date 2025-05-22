@@ -2,7 +2,8 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:gestao_ejc/models/member_model.dart';
+import 'package:gestao_ejc/enums/team_type_enum.dart';
+import 'package:gestao_ejc/models/abstract_person_model.dart';
 import 'package:gestao_ejc/models/team_member_model.dart';
 import 'package:gestao_ejc/models/team_model.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
@@ -13,11 +14,10 @@ class TeamMemberController extends ChangeNotifier {
   List<TeamMemberModel> listTeamMember = [];
   List<TeamMemberModel> filterListTeamMember = [];
 
-  var _streamController;
+  var _streamController = StreamController<List<TeamMemberModel>>();
   Stream<List<TeamMemberModel>>? get stream => _streamController.stream;
 
   void init({required int sequentialEncounter}) {
-    _streamController = StreamController<List<TeamMemberModel>>();
     getTeamMembers(sequentialEncounter: sequentialEncounter);
   }
 
@@ -33,21 +33,7 @@ class TeamMemberController extends ChangeNotifier {
     try {
       listTeamMember = await _teamMemberService.getTeamMembers(
           sequentialEncounter: sequentialEncounter);
-      await Future.wait(listTeamMember.map((teamMember) async {
-        final memberByReference = await teamMember.referenceMember.get();
-        if (memberByReference.exists && memberByReference.data() != null) {
-          teamMember.member = MemberModel.fromJson(
-              memberByReference.data() as Map<String, dynamic>);
-        }
-        final teamByReference = await teamMember.referenceTeam.get();
-        if (teamByReference.exists && teamByReference.data() != null) {
-          teamMember.team = TeamModel.fromJson(
-              teamByReference.data() as Map<String, dynamic>);
-        }
-      }));
-
-      filterListTeamMember = listTeamMember;
-      _streamController.sink.add(listTeamMember);
+      await fillMemberList();
     } catch (e) {
       throw 'Erro ao buscar membros/tios';
     }
@@ -100,6 +86,36 @@ class TeamMemberController extends ChangeNotifier {
     } catch (e) {
       rethrow;
     }
+  }
+
+  Future<List<TeamMemberModel>?> getMemberByTeamAndEncounter(
+      {required int sequentialEncounter, required TeamModel team}) async {
+    try {
+      listTeamMember = await _teamMemberService.getMemberByTeamAndEncounter(
+              sequentialEncounter: sequentialEncounter, team: team) ??
+          [];
+      await fillMemberList();
+      return listTeamMember;
+    } catch (e) {
+      throw 'Erro ao obter membros da equipe ${team.type.formattedName}: $e';
+    }
+  }
+
+  Future<void> fillMemberList() async {
+    await Future.wait(listTeamMember.map((teamMember) async {
+      final memberByReference = await teamMember.referenceMember.get();
+      if (memberByReference.exists && memberByReference.data() != null) {
+        teamMember.member = AbstractPersonModel.fromJson(
+            memberByReference.data() as Map<String, dynamic>);
+      }
+      final teamByReference = await teamMember.referenceTeam.get();
+      if (teamByReference.exists && teamByReference.data() != null) {
+        teamMember.team =
+            TeamModel.fromJson(teamByReference.data() as Map<String, dynamic>);
+      }
+    }));
+    filterListTeamMember = listTeamMember;
+    _streamController.sink.add(listTeamMember);
   }
 
   get actualMemberList => listTeamMember;
