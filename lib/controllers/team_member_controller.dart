@@ -15,7 +15,7 @@ class TeamMemberController extends ChangeNotifier {
   List<TeamMemberModel> filterListTeamMember = [];
 
   var _streamController = StreamController<List<TeamMemberModel>>();
-  Stream<List<TeamMemberModel>>? get stream => _streamController.stream;
+  Stream<List<TeamMemberModel>> get stream => _streamController.stream;
 
   void init({required int sequentialEncounter}) {
     getTeamMembers(sequentialEncounter: sequentialEncounter);
@@ -88,21 +88,22 @@ class TeamMemberController extends ChangeNotifier {
     }
   }
 
-  Future<List<TeamMemberModel>?> getMemberByTeamAndEncounter(
+  Future<List<TeamMemberModel>>? getMemberByTeamAndEncounter(
       {required int sequentialEncounter, required TeamModel team}) async {
     try {
-      listTeamMember = await _teamMemberService.getMemberByTeamAndEncounter(
+      final members = await _teamMemberService.getMemberByTeamAndEncounter(
               sequentialEncounter: sequentialEncounter, team: team) ??
           [];
-      await fillMemberList();
-      return listTeamMember;
+      await fillMemberList(members);
+      return members;
     } catch (e) {
       throw 'Erro ao obter membros da equipe ${team.type.formattedName}: $e';
     }
   }
 
-  Future<void> fillMemberList() async {
-    await Future.wait(listTeamMember.map((teamMember) async {
+  Future<void> fillMemberList([List<TeamMemberModel>? members]) async {
+    final list = members ?? listTeamMember;
+    await Future.wait(list.map((teamMember) async {
       final memberByReference = await teamMember.referenceMember.get();
       if (memberByReference.exists && memberByReference.data() != null) {
         teamMember.member = AbstractPersonModel.fromJson(
@@ -114,8 +115,10 @@ class TeamMemberController extends ChangeNotifier {
             TeamModel.fromJson(teamByReference.data() as Map<String, dynamic>);
       }
     }));
-    filterListTeamMember = listTeamMember;
-    _streamController.sink.add(listTeamMember);
+    if (members == null) {
+      filterListTeamMember = listTeamMember;
+      _streamController.sink.add(listTeamMember);
+    }
   }
 
   get actualMemberList => listTeamMember;

@@ -1,6 +1,5 @@
 import 'package:expansion_tile_list/expansion_tile_list.dart';
 import 'package:flutter/material.dart';
-import 'package:gestao_ejc/components/SnackBars/custom_snack_bar.dart';
 import 'package:gestao_ejc/components/buttons/custom_delete_button.dart';
 import 'package:gestao_ejc/components/buttons/custom_edit_button.dart';
 import 'package:gestao_ejc/components/forms/custom_team_form.dart';
@@ -27,10 +26,6 @@ class _TeamScreenState extends State<TeamScreen> {
   final TeamController _teamController = getIt<TeamController>();
   final TeamMemberController _teamMemberController =
       getIt<TeamMemberController>();
-
-  List<TeamModel> teams = [];
-  final Map<String, List<TeamMemberModel>> teamMembersMap = {};
-  final Set<String> loadingTeams = {};
 
   @override
   void initState() {
@@ -79,11 +74,10 @@ class _TeamScreenState extends State<TeamScreen> {
               child: Text('Erro ao carregar Equipes: ${snapshot.error}'));
         }
 
-        if (!snapshot.hasData || snapshot.data!.isEmpty) {
+        final teams = snapshot.data ?? [];
+        if (teams.isEmpty) {
           return const Center(child: Text('Nenhuma equipe encontrada'));
         }
-
-        teams = snapshot.data!;
 
         return ExpansionTileList(
           children: teams
@@ -100,11 +94,6 @@ class _TeamScreenState extends State<TeamScreen> {
       enableTrailingAnimation: false,
       iconColor: Colors.indigo,
       initiallyExpanded: false,
-      onExpansionChanged: (expanded) {
-        if (expanded && !teamMembersMap.containsKey(team.id)) {
-          _loadTeamMembers(team: team);
-        }
-      },
       title: Row(
         children: [
           Padding(
@@ -119,10 +108,11 @@ class _TeamScreenState extends State<TeamScreen> {
         children: [
           Tooltip(
             message:
-                'Adicionar membro/tios a equipe ${team.type.formattedName}',
+                'Adicionar membro/tios à equipe ${team.type.formattedName}',
             child: IconButton(
-                onPressed: () => _showTeamMemberForm(team: team),
-                icon: const Icon(Icons.person_add)),
+              onPressed: () => _showTeamMemberForm(team: team),
+              icon: const Icon(Icons.person_add),
+            ),
           ),
           CustomEditButton(
             form: CustomTeamForm(
@@ -133,66 +123,57 @@ class _TeamScreenState extends State<TeamScreen> {
         ],
       ),
       children: [
-        if (loadingTeams.contains(team.id))
-          const Padding(
-            padding: EdgeInsets.all(8.0),
-            child: CircularProgressIndicator(),
-          )
-        else if (teamMembersMap.containsKey(team.id))
-          ...teamMembersMap[team.id]!.map((teamMember) => ListTile(
-                title: Row(
-                  children: [
-                    Expanded(child: Text(teamMember.member.name)),
-                    CustomDeleteButton(
-                      alertMessage:
-                          'Remover ${teamMember.member.name} da equipe ${team.type.formattedName}?',
-                      deleteFunction: () =>
-                          _removeTeamMember(teamMember: teamMember, team: team),
-                    )
-                  ],
-                ),
-              ))
-        else
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-                'Nenhum membro encontrado na equipe ${team.type.formattedName}'),
-          ),
-      ],
-    );
-  }
-
-  void _loadTeamMembers({required TeamModel team}) async {
-    List<TeamMemberModel> members;
-    setState(() {
-      loadingTeams.add(team.id);
-      teamMembersMap.remove(team.id);
-    });
-
-    try {
-      members = await _teamMemberController.getMemberByTeamAndEncounter(
+        FutureBuilder<List<TeamMemberModel>>(
+          future: _teamMemberController.getMemberByTeamAndEncounter(
             sequentialEncounter: widget.encounter.sequential,
             team: team,
-          ) ??
-          [];
+          ),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Padding(
+                padding: EdgeInsets.all(8.0),
+                child: CircularProgressIndicator(),
+              );
+            }
 
-      setState(() {
-        if (members.isNotEmpty) {
-          teamMembersMap[team.id] = members;
-        }
-        loadingTeams.remove(team.id);
-      });
-    } catch (e) {
-      setState(() {
-        loadingTeams.remove(team.id);
-      });
-      CustomSnackBar.show(
-        context: context,
-        message:
-            'Erro ao carregar membros da equipe ${team.type.formattedName}: $e',
-        colorBar: Colors.red,
-      );
-    }
+            if (snapshot.hasError) {
+              return Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text('Erro ao carregar membros: ${snapshot.error}'),
+              );
+            }
+
+            final members = snapshot.data ?? [];
+
+            if (members.isEmpty) {
+              return Padding(
+                padding: const EdgeInsets.all(8.0),
+                child:
+                    Text('Nenhum membro na equipe ${team.type.formattedName}'),
+              );
+            }
+
+            return Column(
+              children: members
+                  .map((teamMember) => ListTile(
+                        title: Row(
+                          children: [
+                            Expanded(child: Text(teamMember.member.name)),
+                            CustomDeleteButton(
+                              alertMessage:
+                                  'Remover ${teamMember.member.name} da equipe ${team.type.formattedName}?',
+                              deleteFunction: () => _removeTeamMember(
+                                  teamMember: teamMember, team: team),
+                            ),
+                          ],
+                        ),
+                      ))
+                  .toList(),
+            );
+          },
+        ),
+      ],
+    );
   }
 
   void _showTeamForm(TeamModel? team) {
@@ -220,13 +201,12 @@ class _TeamScreenState extends State<TeamScreen> {
         );
       },
     );
-
-    _loadTeamMembers(team: team);
+    setState(() {});
   }
 
   Future _removeTeamMember(
       {required TeamMemberModel teamMember, required TeamModel team}) async {
     await _teamMemberController.deleteTeamMember(teamMemberModel: teamMember);
-    _loadTeamMembers(team: team);
+    setState(() {});
   }
 }
