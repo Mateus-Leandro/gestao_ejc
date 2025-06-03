@@ -94,6 +94,8 @@ class _CustomAnswerFormState extends State<CustomAnswerForm> {
                     ? 'Selecione a cor do círculo que responde a pergunta'
                     : '',
                 allowSelection: widget.editingAnswer == null,
+                encounterModel: widget.encounter,
+                allCircles: false,
               ),
             ],
           ),

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:gestao_ejc/enums/circle_color_enum.dart';
 import 'package:gestao_ejc/functions/function_int_to_roman.dart';
 import 'package:gestao_ejc/models/circle_model.dart';
 import 'package:gestao_ejc/services/circle_service.dart';
@@ -122,5 +123,13 @@ class CircleController extends ChangeNotifier {
     return listCircleModel.where((doc) {
       return doc.name.toLowerCase().contains(circleName.toLowerCase());
     }).toList();
+  }
+
+  List<CircleColorEnum> get circleColors {
+    return circles
+        .map((circle) => circle.color)
+        .toSet()
+        .toList()
+        .cast<CircleColorEnum>();
   }
 }
