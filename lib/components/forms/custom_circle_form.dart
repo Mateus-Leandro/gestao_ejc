@@ -193,7 +193,7 @@ class _CustomCircleFormState extends State<CustomCircleForm> {
             widget.editingCircle == null ? 'Selecione a cor do círculo' : '',
         allowSelection: widget.editingCircle == null,
         encounterModel: widget.encounter,
-        allCircles: true,
+        allCircles: widget.editingCircle == null,
       ),
       if (_colorSelectionError != null)
         Padding(
