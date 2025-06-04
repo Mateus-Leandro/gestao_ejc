@@ -111,7 +111,7 @@ class _TeamScreenState extends State<TeamScreen> {
                 'Adicionar membro/tios à equipe ${team.type.formattedName}',
             child: IconButton(
               onPressed: () => _showTeamMemberForm(team: team),
-              icon: const Icon(Icons.person_add),
+              icon: const Icon(Icons.add),
             ),
           ),
           CustomEditButton(
