@@ -5,6 +5,7 @@ import 'package:gestao_ejc/components/buttons/custom_edit_button.dart';
 import 'package:gestao_ejc/components/forms/custom_team_form.dart';
 import 'package:gestao_ejc/components/forms/custom_team_member_form.dart';
 import 'package:gestao_ejc/components/utils/custom_search_row.dart';
+import 'package:gestao_ejc/components/utils/utils.dart';
 import 'package:gestao_ejc/controllers/team_controller.dart';
 import 'package:gestao_ejc/controllers/team_member_controller.dart';
 import 'package:gestao_ejc/enums/team_type_enum.dart';
@@ -103,25 +104,58 @@ class _TeamScreenState extends State<TeamScreen> {
           Expanded(child: Text(team.type.formattedName)),
         ],
       ),
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Tooltip(
-            message:
-                'Adicionar membro/tios à equipe ${team.type.formattedName}',
-            child: IconButton(
-              onPressed: () => _showTeamMemberForm(team: team),
-              icon: const Icon(Icons.add),
+      trailing: Utils.isSmallScreen(context)
+          ? PopupMenuButton<String>(
+              icon: const Icon(Icons.more_vert),
+              onSelected: (value) {
+                if (value == 'incluir') {
+                  _showTeamMemberForm(team: team);
+                } else if (value == 'editar') {
+                  _showTeamForm(team);
+                }
+              },
+              itemBuilder: (context) => [
+                const PopupMenuItem<String>(
+                  value: 'incluir',
+                  child: Row(
+                    children: [
+                      Icon(Icons.add, color: Colors.green),
+                      SizedBox(width: 8),
+                      Text('Incluir membro'),
+                    ],
+                  ),
+                ),
+                const PopupMenuItem<String>(
+                  value: 'editar',
+                  child: Row(
+                    children: [
+                      Icon(Icons.edit, color: Colors.orange),
+                      SizedBox(width: 8),
+                      Text('Editar'),
+                    ],
+                  ),
+                ),
+              ],
+            )
+          : Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Tooltip(
+                  message:
+                      'Adicionar membro/tios à equipe ${team.type.formattedName}',
+                  child: IconButton(
+                    onPressed: () => _showTeamMemberForm(team: team),
+                    icon: const Icon(Icons.add),
+                  ),
+                ),
+                CustomEditButton(
+                  form: CustomTeamForm(
+                    teamEditing: team,
+                    encounter: widget.encounter,
+                  ),
+                ),
+              ],
             ),
-          ),
-          CustomEditButton(
-            form: CustomTeamForm(
-              teamEditing: team,
-              encounter: widget.encounter,
-            ),
-          ),
-        ],
-      ),
       children: [
         FutureBuilder<List<TeamMemberModel>>(
           future: _teamMemberController.getMemberByTeamAndEncounter(
