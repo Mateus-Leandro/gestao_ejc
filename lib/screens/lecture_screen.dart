@@ -6,6 +6,7 @@ import 'package:gestao_ejc/components/buttons/custom_edit_button.dart';
 import 'package:gestao_ejc/components/forms/custom_lecture_form.dart';
 import 'package:gestao_ejc/components/utils/custom_list_tile.dart';
 import 'package:gestao_ejc/components/utils/custom_search_row.dart';
+import 'package:gestao_ejc/components/utils/utils.dart';
 import 'package:gestao_ejc/controllers/lecture_controller.dart';
 import 'package:gestao_ejc/functions/function_date.dart';
 import 'package:gestao_ejc/models/encounter_model.dart';
@@ -136,10 +137,6 @@ class _LectureScreenState extends State<LectureScreen> {
   }
 
   Widget _buildTile(BuildContext ctx, LectureModel lecture) {
-    // Obtém o tamanho da tela atual para decisões de responsividade
-    final screenWidth = MediaQuery.of(ctx).size.width;
-    final isSmallScreen = screenWidth < 600;
-
     var speakerName = 'Carregando...', speakerPhone = '';
     final ref = lecture.referenceSpeaker;
     if (_speakersMap.containsKey(ref)) {
@@ -163,7 +160,7 @@ class _LectureScreenState extends State<LectureScreen> {
     final dur = '${h > 0 ? '$h h ' : ''}${m > 0 || h == 0 ? '$m min' : ''}';
 
     // Versão responsiva para telas menores
-    if (isSmallScreen) {
+    if (Utils.isSmallScreen(ctx)) {
       return CustomListTile(
         listTile: ListTile(
           title: Text(
@@ -287,12 +284,13 @@ class _LectureScreenState extends State<LectureScreen> {
       String startTime,
       String endTime,
       String duration) {
-    final screenWidth = MediaQuery.of(ctx).size.width;
-    final screenHeight = MediaQuery.of(ctx).size.height;
-
     // Calcula o tamanho do diálogo baseado no tamanho da tela
-    final dialogWidth = screenWidth * 0.9 < 400 ? screenWidth * 0.9 : 400.0;
-    final dialogHeight = screenHeight * 0.6 < 500 ? screenHeight * 0.6 : 500.0;
+    final dialogWidth = Utils.screenWidthSize(ctx) * 0.9 < 400
+        ? Utils.screenWidthSize(ctx) * 0.9
+        : 400.0;
+    final dialogHeight = Utils.screenHeightSize(ctx) * 0.6 < 500
+        ? Utils.screenHeightSize(ctx) * 0.6
+        : 500.0;
 
     showDialog(
       context: ctx,
