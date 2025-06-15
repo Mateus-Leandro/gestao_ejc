@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:gestao_ejc/enums/circle_color_enum.dart';
 import 'package:gestao_ejc/models/circle_member_model.dart';
 import 'package:gestao_ejc/models/circle_model.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
@@ -63,6 +64,34 @@ class CircleMemberService {
           .map((doc) =>
               CircleMemberModel.fromJson(doc.data() as Map<String, dynamic>))
           .toList();
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<CircleMemberModel?> getMemberCurrentCircle({
+    required int sequentialEncounter,
+    required DocumentReference referenceMember,
+  }) async {
+    try {
+      snapshot = await _firestore
+          .collection(collectionPath)
+          .where('sequentialEncounter', isEqualTo: sequentialEncounter)
+          .where(
+            'referenceMember',
+            isEqualTo: referenceMember,
+          )
+          .get();
+
+      if (snapshot.docs.isNotEmpty) {
+        return snapshot.docs
+            .map((doc) =>
+                CircleMemberModel.fromJson(doc.data() as Map<String, dynamic>))
+            .toList()
+            .first;
+      }
+
+      return null;
     } catch (e) {
       rethrow;
     }

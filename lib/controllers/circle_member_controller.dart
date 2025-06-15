@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gestao_ejc/enums/circle_color_enum.dart';
 import 'package:gestao_ejc/models/abstract_person_model.dart';
@@ -9,6 +10,7 @@ import 'package:gestao_ejc/services/circle_member_service.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
 
 class CircleMemberController extends ChangeNotifier {
+  final CircleMemberService _teamMemberService = getIt<CircleMemberService>();
   var _streamController = StreamController<List<CircleMemberModel>>();
   final CircleMemberService _circleMemberService = getIt<CircleMemberService>();
   Stream<List<CircleMemberModel>>? get stream => _streamController.stream;
@@ -87,6 +89,20 @@ class CircleMemberController extends ChangeNotifier {
     if (members == null) {
       filterListCircleMember = listCircleMember;
       _streamController.sink.add(listCircleMember);
+    }
+  }
+
+  Future<CircleMemberModel?> getMemberCurrentCircle({
+    required int sequentialEncounter,
+    required DocumentReference referenceMember,
+  }) async {
+    try {
+      return await _circleMemberService.getMemberCurrentCircle(
+        referenceMember: referenceMember,
+        sequentialEncounter: sequentialEncounter,
+      );
+    } catch (e) {
+      rethrow;
     }
   }
 

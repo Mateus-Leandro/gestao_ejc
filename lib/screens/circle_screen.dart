@@ -4,6 +4,7 @@ import 'package:gestao_ejc/components/SnackBars/custom_snack_bar.dart';
 import 'package:gestao_ejc/components/buttons/custom_delete_button.dart';
 import 'package:gestao_ejc/components/buttons/custom_edit_button.dart';
 import 'package:gestao_ejc/components/forms/custom_circle_form.dart';
+import 'package:gestao_ejc/components/forms/custom_circle_member_form.dart';
 import 'package:gestao_ejc/components/utils/custom_search_row.dart';
 import 'package:gestao_ejc/controllers/circle_controller.dart';
 import 'package:gestao_ejc/controllers/circle_member_controller.dart';
@@ -117,6 +118,14 @@ class _CircleScreenState extends State<CircleScreen> {
           if (_authService.actualUserModel?.manipulateAdministrator ??
               false) ...[
             Tooltip(
+              message:
+                  'Adicionar membro/tios ao círculo ${circle.color.circleName}',
+              child: IconButton(
+                onPressed: () => _showCircleMemberForm(circle: circle),
+                icon: const Icon(Icons.add),
+              ),
+            ),
+            Tooltip(
               message: 'Editar Círculo',
               child: CustomEditButton(
                 form: CustomCircleForm(
@@ -216,6 +225,20 @@ class _CircleScreenState extends State<CircleScreen> {
   Future _removeCircleMember({required CircleMemberModel circleMember}) async {
     await _circleMemberController.deleteCircleMember(
         circleMember: circleMember);
+    setState(() {});
+  }
+
+  void _showCircleMemberForm({required CircleModel circle}) async {
+    await showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return CustomCircleMemberForm(
+          encounter: widget.encounter,
+          linkedCircleColor: circle.color,
+        );
+      },
+    );
     setState(() {});
   }
 }
