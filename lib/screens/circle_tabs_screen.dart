@@ -17,8 +17,8 @@ class CircleTabsScreen extends StatelessWidget {
   final AppTheme appTheme = getIt<AppTheme>();
   final List<Tab> tabs = const [
     Tab(
-      icon: FaIcon(FontAwesomeIcons.pencil, color: Colors.black),
-      text: 'Cadastro',
+      icon: FaIcon(FontAwesomeIcons.peopleGroup, color: Colors.purple),
+      text: 'Membros',
     ),
     Tab(
       icon: FaIcon(FontAwesomeIcons.question, color: Colors.red),
