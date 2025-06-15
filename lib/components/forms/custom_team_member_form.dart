@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gestao_ejc/components/SnackBars/custom_snack_bar.dart';
-import 'package:gestao_ejc/components/alerts/custom_current_team_alert.dart';
+import 'package:gestao_ejc/components/alerts/custom_vinculation_alert.dart';
 import 'package:gestao_ejc/components/buttons/custom_cancel_button.dart';
 import 'package:gestao_ejc/components/buttons/custom_confirmation_button.dart';
 import 'package:gestao_ejc/components/drawers/custom_person_drawer.dart';
@@ -179,10 +179,11 @@ class _CustomTeamMemberFormState extends State<CustomTeamMemberForm> {
       if (currentTeamMember != null) {
         currentTeamMember.team = await _teamController.teamByReference(
             referenceTeam: currentTeamMember.referenceTeam);
-        confirmed = await showMemberAlreadyLinkedDialog(
+        confirmed = await showAlreadyLinkedDialog(
             context: context,
-            actualTeam: currentTeamMember.team.type.formattedName,
-            destinationTeam: selectedTeam.formattedName);
+            actualTeam:
+                'na equipe ${currentTeamMember.team.type.formattedName}',
+            destinationTeam: 'a equipe ${selectedTeam.formattedName}');
       }
 
       if (confirmed) {

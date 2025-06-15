@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:quickalert/quickalert.dart';
 
-Future<bool> showMemberAlreadyLinkedDialog({
+Future<bool> showAlreadyLinkedDialog({
   required BuildContext context,
   required String actualTeam,
   required String destinationTeam,
@@ -11,8 +11,8 @@ Future<bool> showMemberAlreadyLinkedDialog({
   await QuickAlert.show(
     context: context,
     type: QuickAlertType.warning,
-    title: 'O membro selecionado já está vinculado na equipe ${actualTeam}!',
-    text: 'Deseja deseja movê-lo para a equipe $destinationTeam?',
+    title: 'O membro selecionado já está vinculado ${actualTeam}!',
+    text: 'Deseja deseja movê-lo para $destinationTeam?',
     animType: QuickAlertAnimType.slideInUp,
     showCancelBtn: true,
     confirmBtnText: 'Sim',
