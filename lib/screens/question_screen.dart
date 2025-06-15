@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gestao_ejc/components/SnackBars/custom_snack_bar.dart';
 import 'package:gestao_ejc/components/buttons/custom_delete_button.dart';
 import 'package:gestao_ejc/components/buttons/custom_edit_button.dart';
@@ -128,7 +129,7 @@ class _QuestionScreenState extends State<QuestionScreen> {
                         question: question,
                       );
                     },
-                    icon: const Icon(Icons.question_answer)),
+                    icon: const FaIcon(FontAwesomeIcons.question)),
               ),
               Tooltip(
                 message: 'Editar Pergunta',
