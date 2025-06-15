@@ -1,39 +1,37 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:gestao_ejc/enums/circle_color_enum.dart';
+import 'package:gestao_ejc/models/abstract_person_model.dart';
+import 'package:gestao_ejc/models/circle_model.dart';
 
 class CircleMemberModel {
-  final String idCircleMember;
-  final String type;
+  final String id;
   final int sequentialEncounter;
-  final DocumentReference referenceDocMember;
-  final CircleColorEnum circleColor;
+  final DocumentReference referenceCircle;
+  final DocumentReference referenceMember;
+  late AbstractPersonModel member;
+  late CircleModel circle;
 
   CircleMemberModel({
-    required this.idCircleMember,
-    required this.type,
+    required this.id,
+    required this.referenceCircle,
     required this.sequentialEncounter,
-    required this.referenceDocMember,
-    required this.circleColor,
+    required this.referenceMember,
   });
 
   Map<String, dynamic> toJson() {
     return {
-      'idCircleMember': idCircleMember,
+      'id': id,
       'sequentialEncounter': sequentialEncounter,
-      'referenceDocMember': referenceDocMember,
-      'hexColorCircle': circleColor,
+      'referenceMember': referenceMember,
+      'referenceCircle': referenceCircle,
     };
   }
 
   factory CircleMemberModel.fromJson(Map<String, dynamic> map) {
     return CircleMemberModel(
-      idCircleMember: map['idCircleMember'],
-      type: map['type'],
+      id: map['id'],
       sequentialEncounter: map['sequentialEncounter'],
-      referenceDocMember: map['referenceDocMember'],
-      circleColor: CircleColorEnum.values.firstWhere(
-        (color) => color.colorHex == map['hexColorCircle'],
-      ),
+      referenceMember: map['referenceMember'],
+      referenceCircle: map['referenceCircle'],
     );
   }
 }

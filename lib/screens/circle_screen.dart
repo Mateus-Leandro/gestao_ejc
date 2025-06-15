@@ -1,12 +1,14 @@
+import 'package:expansion_tile_list/expansion_tile_list.dart';
 import 'package:flutter/material.dart';
 import 'package:gestao_ejc/components/SnackBars/custom_snack_bar.dart';
 import 'package:gestao_ejc/components/buttons/custom_delete_button.dart';
 import 'package:gestao_ejc/components/buttons/custom_edit_button.dart';
 import 'package:gestao_ejc/components/forms/custom_circle_form.dart';
-import 'package:gestao_ejc/components/utils/custom_list_tile.dart';
 import 'package:gestao_ejc/components/utils/custom_search_row.dart';
 import 'package:gestao_ejc/controllers/circle_controller.dart';
+import 'package:gestao_ejc/controllers/circle_member_controller.dart';
 import 'package:gestao_ejc/enums/circle_color_enum.dart';
+import 'package:gestao_ejc/models/circle_member_model.dart';
 import 'package:gestao_ejc/models/circle_model.dart';
 import 'package:gestao_ejc/models/encounter_model.dart';
 import 'package:gestao_ejc/services/auth_service.dart';
@@ -35,6 +37,8 @@ class _CircleScreenState extends State<CircleScreen> {
 
   TextEditingController circleNameController = TextEditingController();
   final CircleController _circleController = getIt<CircleController>();
+  final CircleMemberController _circleMemberController =
+      getIt<CircleMemberController>();
   final AuthService _authService = getIt<AuthService>();
   List<CircleModel> circles = [];
   @override
@@ -83,56 +87,105 @@ class _CircleScreenState extends State<CircleScreen> {
         }
 
         circles = snapshot.data!;
-        return ListView.builder(
-          itemCount: circles.length,
-          itemBuilder: (context, index) {
-            var circle = circles[index];
-            return _buildCircleTile(context, circle);
-          },
+        return ExpansionTileList(
+          children: circles
+              .map((circle) => _buildExpansionTileItem(context, circle))
+              .toList(),
         );
       },
     );
   }
 
-  Widget _buildCircleTile(BuildContext context, CircleModel circle) {
-    return CustomListTile(
-        listTile: ListTile(
-          title: Row(children: [
-            circle.color.iconColor,
-            Padding(
-              padding: const EdgeInsets.only(left: 10.0),
-              child: Text(
-                circle.color.circleName,
-              ),
-            ),
-          ]),
-          trailing: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (_authService.actualUserModel?.manipulateAdministrator ??
-                  false) ...[
-                Tooltip(
-                  message: 'Editar Círculo',
-                  child: CustomEditButton(
-                    form: CustomCircleForm(
-                      encounter: widget.encounter,
-                      editingCircle: circle,
-                      circles: circles,
-                    ),
-                  ),
-                ),
-                Tooltip(
-                  message: 'Excluir Círculo',
-                  child: CustomDeleteButton(
-                    alertMessage: 'Excluir Círculo',
-                    deleteFunction: () async => _deleteCircle(circle: circle),
-                  ),
-                ),
-              ],
-            ],
+  ExpansionTileItem _buildExpansionTileItem(
+      BuildContext context, CircleModel circle) {
+    return ExpansionTileItem(
+      enableTrailingAnimation: false,
+      iconColor: Colors.indigo,
+      initiallyExpanded: false,
+      title: Row(children: [
+        circle.color.iconColor,
+        Padding(
+          padding: const EdgeInsets.only(left: 10.0),
+          child: Text(
+            circle.color.circleName,
           ),
         ),
-        defaultBackgroundColor: Colors.white);
+      ]),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (_authService.actualUserModel?.manipulateAdministrator ??
+              false) ...[
+            Tooltip(
+              message: 'Editar Círculo',
+              child: CustomEditButton(
+                form: CustomCircleForm(
+                  encounter: widget.encounter,
+                  editingCircle: circle,
+                  circles: circles,
+                ),
+              ),
+            ),
+            Tooltip(
+              message: 'Excluir Círculo',
+              child: CustomDeleteButton(
+                alertMessage: 'Excluir Círculo',
+                deleteFunction: () async => _deleteCircle(circle: circle),
+              ),
+            ),
+          ],
+        ],
+      ),
+      children: [
+        FutureBuilder(
+            future: _circleMemberController.getMemberByCircleAndEncounter(
+              sequentialEncounter: widget.encounter.sequential,
+              circle: circle,
+            ),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: CircularProgressIndicator(),
+                );
+              }
+
+              if (snapshot.hasError) {
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text('Erro ao carregar membros: ${snapshot.error}'),
+                );
+              }
+
+              final members = snapshot.data ?? [];
+
+              if (members.isEmpty) {
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                      'Nenhum membro no círculo ${circle.color.circleName}'),
+                );
+              }
+              return Column(
+                children: members
+                    .map((circleMember) => ListTile(
+                          title: Row(
+                            children: [
+                              Expanded(child: Text(circleMember.member.name)),
+                              CustomDeleteButton(
+                                alertMessage:
+                                    'Remover ${circleMember.member.name} do círculo ${circle.color.circleName}?',
+                                deleteFunction: () => _removeCircleMember(
+                                    circleMember: circleMember),
+                              ),
+                            ],
+                          ),
+                        ))
+                    .toList(),
+              );
+            })
+      ],
+    );
   }
 
   void _showCircleForm(CircleModel? circleModel) {
@@ -158,5 +211,11 @@ class _CircleScreenState extends State<CircleScreen> {
         colorBar: Colors.red,
       );
     }
+  }
+
+  Future _removeCircleMember({required CircleMemberModel circleMember}) async {
+    await _circleMemberController.deleteCircleMember(
+        circleMember: circleMember);
+    setState(() {});
   }
 }
