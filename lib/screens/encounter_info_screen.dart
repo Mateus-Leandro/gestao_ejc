@@ -107,56 +107,53 @@ class _EncounterInfoScreenState extends State<EncounterInfoScreen> {
                     },
                     icon: Tooltip(
                       message: activeFields ? 'Selecionar Imagem Tema' : '',
-                      child: Opacity(
-                        opacity: !activeFields ? 0.5 : 1.0,
-                        child: Stack(
-                          alignment: Alignment.topRight,
-                          children: [
-                            ClipRRect(
-                                borderRadius: BorderRadius.circular(20),
-                                child: themeImage != null
-                                    ? Image.memory(
-                                        themeImage!,
-                                        height: 250,
-                                        width: 250,
-                                        fit: BoxFit.cover,
-                                      )
-                                    : const Card(
-                                        elevation: 5,
-                                        child: Padding(
-                                          padding: EdgeInsets.all(8.0),
-                                          child: Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              Icon(Icons.image,
-                                                  size: 50, color: Colors.grey),
-                                              SizedBox(height: 8),
-                                              Text(
-                                                'Selecionar Imagem Tema',
-                                                textAlign: TextAlign.center,
-                                              ),
-                                            ],
-                                          ),
+                      child: Stack(
+                        alignment: Alignment.topRight,
+                        children: [
+                          ClipRRect(
+                              borderRadius: BorderRadius.circular(20),
+                              child: themeImage != null
+                                  ? Image.memory(
+                                      themeImage!,
+                                      height: 250,
+                                      width: 250,
+                                      fit: BoxFit.cover,
+                                    )
+                                  : const Card(
+                                      elevation: 5,
+                                      child: Padding(
+                                        padding: EdgeInsets.all(8.0),
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Icon(Icons.image,
+                                                size: 50, color: Colors.grey),
+                                            SizedBox(height: 8),
+                                            Text(
+                                              'Selecionar Imagem Tema',
+                                              textAlign: TextAlign.center,
+                                            ),
+                                          ],
                                         ),
-                                      )),
-                            if (themeImage != null && activeFields) ...[
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: IconButton(
-                                  iconSize: 30,
-                                  icon: const Icon(Icons.close,
-                                      color: Colors.red),
-                                  onPressed: () {
-                                    setState(() {
-                                      themeImage = null;
-                                    });
-                                  },
-                                  tooltip: 'Remover Imagem',
-                                ),
+                                      ),
+                                    )),
+                          if (themeImage != null && activeFields) ...[
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: IconButton(
+                                iconSize: 30,
+                                icon: const Icon(Icons.close,
+                                    color: Colors.red),
+                                onPressed: () {
+                                  setState(() {
+                                    themeImage = null;
+                                  });
+                                },
+                                tooltip: 'Remover Imagem',
                               ),
-                            ]
-                          ],
-                        ),
+                            ),
+                          ]
+                        ],
                       ),
                     ),
                   )
