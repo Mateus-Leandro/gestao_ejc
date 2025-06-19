@@ -42,7 +42,6 @@ class _CustomColorDrawerState extends State<CustomColorDrawer> {
   @override
   void dispose() {
     super.dispose();
-    _circleController.dispose();
   }
 
   @override
