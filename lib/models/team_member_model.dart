@@ -1,20 +1,20 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:gestao_ejc/models/abstract_person_model.dart';
-import 'package:gestao_ejc/models/circle_model.dart';
+import 'package:gestao_ejc/models/team_model.dart';
 
-class CircleMemberModel {
+class TeamMemberModel {
   final String id;
   final int sequentialEncounter;
-  final DocumentReference referenceCircle;
   final DocumentReference referenceMember;
+  final DocumentReference referenceTeam;
   late AbstractPersonModel member;
-  late CircleModel circle;
+  late TeamModel team;
 
-  CircleMemberModel({
+  TeamMemberModel({
     required this.id,
-    required this.referenceCircle,
     required this.sequentialEncounter,
     required this.referenceMember,
+    required this.referenceTeam,
   });
 
   Map<String, dynamic> toJson() {
@@ -22,16 +22,16 @@ class CircleMemberModel {
       'id': id,
       'sequentialEncounter': sequentialEncounter,
       'referenceMember': referenceMember,
-      'referenceCircle': referenceCircle,
+      'referenceTeam': referenceTeam,
     };
   }
 
-  factory CircleMemberModel.fromJson(Map<String, dynamic> map) {
-    return CircleMemberModel(
+  factory TeamMemberModel.fromJson(Map<String, dynamic> map) {
+    return TeamMemberModel(
       id: map['id'],
       sequentialEncounter: map['sequentialEncounter'],
       referenceMember: map['referenceMember'],
-      referenceCircle: map['referenceCircle'],
+      referenceTeam: map['referenceTeam'],
     );
   }
 }

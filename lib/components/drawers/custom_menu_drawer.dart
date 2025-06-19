@@ -56,6 +56,12 @@ class CustomMenuDrawer extends StatelessWidget {
         'index': 5,
         'permission': authService.actualUserModel!.manipulateUsers
       },
+      {
+        'title': 'Palestrantes',
+        'route': '/speakers',
+        'index': 6,
+        'permission': authService.actualUserModel!.manipulateEncounter
+      }
     ];
 
     final List<Map<String, dynamic>> userOptions =

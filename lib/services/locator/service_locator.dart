@@ -8,9 +8,12 @@ import 'package:gestao_ejc/controllers/circle_member_controller.dart';
 import 'package:gestao_ejc/controllers/encounter_controller.dart';
 import 'package:gestao_ejc/controllers/financial_controller.dart';
 import 'package:gestao_ejc/controllers/financial_index_controller.dart';
+import 'package:gestao_ejc/controllers/lecture_controller.dart';
 import 'package:gestao_ejc/controllers/person_controller.dart';
 import 'package:gestao_ejc/controllers/question_controller.dart';
+import 'package:gestao_ejc/controllers/speaker_controller.dart';
 import 'package:gestao_ejc/controllers/team_controller.dart';
+import 'package:gestao_ejc/controllers/team_member_controller.dart';
 import 'package:gestao_ejc/controllers/user_controller.dart';
 import 'package:gestao_ejc/functions/function_call_email_app.dart';
 import 'package:gestao_ejc/functions/function_call_url.dart';
@@ -31,9 +34,12 @@ import 'package:gestao_ejc/services/encounter_service.dart';
 import 'package:gestao_ejc/services/financial_index_service.dart';
 import 'package:gestao_ejc/services/financial_service.dart';
 import 'package:gestao_ejc/services/firebase_storage_service.dart';
+import 'package:gestao_ejc/services/lecture_service.dart';
 import 'package:gestao_ejc/services/pdf_service.dart';
 import 'package:gestao_ejc/services/person_service.dart';
 import 'package:gestao_ejc/services/question_service.dart';
+import 'package:gestao_ejc/services/speaker_service.dart';
+import 'package:gestao_ejc/services/team_member_service.dart';
 import 'package:gestao_ejc/services/team_service.dart';
 import 'package:gestao_ejc/services/user_service.dart';
 import 'package:gestao_ejc/services/xlsx_service.dart';
@@ -59,6 +65,7 @@ void setupGetIt() {
   getIt.registerLazySingleton<FinancialController>(() => FinancialController());
   getIt.registerLazySingleton<FinancialIndexService>(
       () => FinancialIndexService());
+  getIt.registerLazySingleton<SpeakerService>(() => SpeakerService());
   getIt.registerLazySingleton<FinancialIndexController>(
       () => FinancialIndexController());
   getIt.registerLazySingleton<FunctionMaskDecimal>(() => FunctionMaskDecimal());
@@ -82,12 +89,18 @@ void setupGetIt() {
       () => CircleMemberController());
   getIt.registerLazySingleton<CircleMemberService>(() => CircleMemberService());
   getIt.registerLazySingleton<QuestionService>(() => QuestionService());
+  getIt.registerLazySingleton<SpeakerController>(() => SpeakerController());
   getIt.registerLazySingleton<QuestionController>(() => QuestionController());
   getIt.registerLazySingleton<AnswerController>(() => AnswerController());
   getIt.registerLazySingleton<AnswerService>(() => AnswerService());
   getIt.registerLazySingleton<TeamService>(() => TeamService());
+  getIt.registerLazySingleton<LectureService>(() => LectureService());
   getIt.registerLazySingleton<TeamController>(() => TeamController());
+  getIt.registerLazySingleton<LectureController>(() => LectureController());
   getIt.registerLazySingleton<PersonService>(() => PersonService());
   getIt.registerLazySingleton<PersonController>(() => PersonController());
   getIt.registerLazySingleton<AuthController>(() => AuthController());
+  getIt.registerLazySingleton<TeamMemberService>(() => TeamMemberService());
+  getIt.registerLazySingleton<TeamMemberController>(
+      () => TeamMemberController());
 }

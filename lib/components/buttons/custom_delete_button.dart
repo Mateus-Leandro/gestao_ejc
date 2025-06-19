@@ -26,7 +26,7 @@ class CustomDeleteButton extends StatelessWidget {
           context: context,
           type: QuickAlertType.error,
           title: alertMessage,
-          text: 'Atenção! Não será possível recuperá-lo após a exclusão!',
+          text: 'Atenção! Não será possível desfazer a operação!',
           animType: QuickAlertAnimType.slideInLeft,
           cancelBtnText: 'Cancelar',
           confirmBtnText: 'Excluir',

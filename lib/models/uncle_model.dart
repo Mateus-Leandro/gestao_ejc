@@ -1,8 +1,8 @@
-import 'package:gestao_ejc/enums/instrument_enum.dart';
-import 'package:gestao_ejc/models/abstract_person_model.dart';
+  import 'package:gestao_ejc/enums/instrument_enum.dart';
+  import 'package:gestao_ejc/models/abstract_person_model.dart';
 
-class UncleModel extends AbstractPersonModel {
-  final List<AbstractPersonModel> uncles;
+  class UncleModel extends AbstractPersonModel {
+    final List<AbstractPersonModel> uncles;
 
   UncleModel({
     required super.id,
@@ -19,10 +19,9 @@ class UncleModel extends AbstractPersonModel {
     super.cep,
     super.street,
     super.numberAdress,
-    super.apartment,
     super.district,
     super.city,
-    super.reference,
+    super.complement,
   });
 
   @override
@@ -42,10 +41,9 @@ class UncleModel extends AbstractPersonModel {
       'cep': cep,
       'street': street,
       'numberAdress': numberAdress,
-      'apartment': apartment,
       'district': district,
       'city': city,
-      'reference': reference,
+      'complement': complement,
     };
   }
 
@@ -66,14 +64,13 @@ class UncleModel extends AbstractPersonModel {
       cep: map['cep'] ?? '',
       street: map['street'] ?? '',
       numberAdress: map['numberAdress'] ?? '',
-      apartment: map['apartment'] ?? '',
       district: map['district'] ?? '',
       city: map['city'] ?? '',
       uncles: (map['uncles'] as List<dynamic>?)
               ?.map((e) => AbstractPersonModel.fromJson(e))
               .toList() ??
           [],
-      reference: map['reference'] ?? '',
+      complement: map['complement'] ?? '',
     );
   }
 }

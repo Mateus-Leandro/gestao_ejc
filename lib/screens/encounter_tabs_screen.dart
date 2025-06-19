@@ -1,11 +1,12 @@
-import 'package:flutter/material.dart';
 import 'package:buttons_tabbar/buttons_tabbar.dart';
+import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gestao_ejc/components/utils/custom_tab_bar.dart';
 import 'package:gestao_ejc/functions/function_int_to_roman.dart';
 import 'package:gestao_ejc/models/encounter_model.dart';
 import 'package:gestao_ejc/screens/circle_tabs_screen.dart';
 import 'package:gestao_ejc/screens/encounter_info_screen.dart';
+import 'package:gestao_ejc/screens/lecture_screen.dart';
 import 'package:gestao_ejc/screens/model_screen.dart';
 import 'package:gestao_ejc/screens/team_screen.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
@@ -65,7 +66,9 @@ class EncounterTabsScreen extends StatelessWidget {
                   _KeepAliveWrapper(
                     child: TeamScreen(encounter: encounterModel),
                   ),
-                  _KeepAliveWrapper(child: Container()),
+                  _KeepAliveWrapper(
+                    child: LectureScreen(encounter: encounterModel),
+                  ),
                 ],
               ),
               tabLenght: tabs.length,

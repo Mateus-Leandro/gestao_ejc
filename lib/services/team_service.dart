@@ -63,4 +63,30 @@ class TeamService extends ChangeNotifier {
       rethrow;
     }
   }
+
+  Future<DocumentReference?> referenceTeamByTypeAndEncounter(
+      {required TeamTypeEnum type, required int sequentialEncounter}) async {
+    try {
+      snapshot = await _firestore
+          .collection(collection)
+          .where('sequentialEncounter', isEqualTo: sequentialEncounter)
+          .where('type', isEqualTo: type.formattedName)
+          .get();
+      return snapshot.docs.isNotEmpty ? snapshot.docs.first.reference : null;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<TeamModel> teamByReference(
+      {required DocumentReference referenceTeam}) async {
+    try {
+      final teamByReference = await referenceTeam.get();
+      return TeamModel.fromJson(
+        teamByReference.data() as Map<String, dynamic>,
+      );
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

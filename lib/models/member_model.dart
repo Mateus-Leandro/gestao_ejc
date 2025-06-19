@@ -16,10 +16,9 @@ class MemberModel extends AbstractPersonModel {
     super.cep,
     super.street,
     super.numberAdress,
-    super.apartment,
     super.district,
     super.city,
-    super.reference,
+    super.complement,
   });
 
   @override
@@ -39,10 +38,9 @@ class MemberModel extends AbstractPersonModel {
       'cep': cep,
       'street': street,
       'numberAdress': numberAdress,
-      'apartment': apartment,
       'district': district,
       'city': city,
-      'reference': reference,
+      'complement': complement,
     };
   }
 
@@ -63,10 +61,9 @@ class MemberModel extends AbstractPersonModel {
       cep: map['cep'] ?? '',
       street: map['street'] ?? '',
       numberAdress: map['numberAdress'] ?? '',
-      apartment: map['apartment'] ?? '',
       district: map['district'] ?? '',
       city: map['city'] ?? '',
-      reference: map['reference'] ?? '',
+      complement: map['complement'] ?? '',
     );
   }
 }

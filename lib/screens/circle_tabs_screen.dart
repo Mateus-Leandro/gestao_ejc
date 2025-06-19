@@ -3,7 +3,6 @@ import 'package:buttons_tabbar/buttons_tabbar.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gestao_ejc/functions/function_int_to_roman.dart';
 import 'package:gestao_ejc/models/encounter_model.dart';
-import 'package:gestao_ejc/screens/circle_members_screen.dart';
 import 'package:gestao_ejc/screens/circle_screen.dart';
 import 'package:gestao_ejc/screens/question_screen.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
@@ -18,16 +17,12 @@ class CircleTabsScreen extends StatelessWidget {
   final AppTheme appTheme = getIt<AppTheme>();
   final List<Tab> tabs = const [
     Tab(
-      icon: FaIcon(FontAwesomeIcons.pencil, color: Colors.black),
-      text: 'Cadastro',
+      icon: FaIcon(FontAwesomeIcons.peopleGroup, color: Colors.purple),
+      text: 'Membros',
     ),
     Tab(
       icon: FaIcon(FontAwesomeIcons.question, color: Colors.red),
       text: 'Perguntas',
-    ),
-    Tab(
-      icon: FaIcon(FontAwesomeIcons.peopleLine, color: Colors.purple),
-      text: 'Membros',
     ),
   ];
 
@@ -52,7 +47,6 @@ class CircleTabsScreen extends StatelessWidget {
                   _KeepAliveWrapper(
                     child: QuestionScreen(encounter: encounterModel),
                   ),
-                  const _KeepAliveWrapper(child: CircleMembersScreen()),
                 ],
               ),
             ),

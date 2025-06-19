@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:gestao_ejc/enums/team_type_enum.dart';
 import 'package:gestao_ejc/functions/function_int_to_roman.dart';
@@ -38,9 +39,10 @@ class TeamController extends ChangeNotifier {
     }
   }
 
-  Future<void> saveTeam({required TeamModel team, required bool editingTeam}) async {
+  Future<void> saveTeam(
+      {required TeamModel team, required bool editingTeam}) async {
     try {
-      if(!editingTeam && await alreadyRegistered(team: team)){
+      if (!editingTeam && await alreadyRegistered(team: team)) {
         throw 'Equipe ${team.type.formattedName} já cadastrado(a) no encontro!';
       }
       await _teamService.saveTeam(team: team);
@@ -106,6 +108,25 @@ class TeamController extends ChangeNotifier {
       return await _teamService.alreadyRegistered(team: team);
     } catch (e) {
       rethrow;
+    }
+  }
+
+  Future<DocumentReference?> referenceTeamByTypeAndEncounter(
+      {required TeamTypeEnum type, required int sequentialEncounter}) async {
+    try {
+      return await _teamService.referenceTeamByTypeAndEncounter(
+          type: type, sequentialEncounter: sequentialEncounter);
+    } catch (e) {
+      throw 'Erro ao buscar referencia da equipe!';
+    }
+  }
+
+  Future<TeamModel> teamByReference(
+      {required DocumentReference referenceTeam}) async {
+    try {
+      return await _teamService.teamByReference(referenceTeam: referenceTeam);
+    } catch (e) {
+      throw 'Erro ao buscar equipe';
     }
   }
 }

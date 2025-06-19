@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:typed_data';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:gestao_ejc/enums/circle_color_enum.dart';
 import 'package:gestao_ejc/functions/function_int_to_roman.dart';
 import 'package:gestao_ejc/models/circle_model.dart';
 import 'package:gestao_ejc/services/circle_service.dart';
@@ -122,5 +124,34 @@ class CircleController extends ChangeNotifier {
     return listCircleModel.where((doc) {
       return doc.name.toLowerCase().contains(circleName.toLowerCase());
     }).toList();
+  }
+
+  List<CircleColorEnum> get circleColors {
+    return circles
+        .map((circle) => circle.color)
+        .toSet()
+        .toList()
+        .cast<CircleColorEnum>();
+  }
+
+  Future<DocumentReference?> referenceCircleByTypeAndEncounter(
+      {required CircleColorEnum circleColor,
+      required int sequentialEncounter}) async {
+    try {
+      return await _circleService.referenceCircleByTypeAndEncounter(
+          circle: circleColor, sequentialEncounter: sequentialEncounter);
+    } catch (e) {
+      throw 'Erro ao buscar referencia da equipe!';
+    }
+  }
+
+  Future<CircleModel> circleByReference(
+      {required DocumentReference referenceCircle}) async {
+    try {
+      return await _circleService.circleByReference(
+          referenceCircle: referenceCircle);
+    } catch (e) {
+      throw 'Erro ao buscar equipe';
+    }
   }
 }

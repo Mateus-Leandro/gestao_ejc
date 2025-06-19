@@ -1,14 +1,16 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:gestao_ejc/screens/encounter_screen.dart';
 import 'package:gestao_ejc/screens/financial_screen.dart';
 import 'package:gestao_ejc/screens/home_screen.dart';
 import 'package:gestao_ejc/screens/login_screen.dart';
 import 'package:gestao_ejc/screens/person_screen.dart';
+import 'package:gestao_ejc/screens/speakers_screen.dart';
 import 'package:gestao_ejc/screens/user_screen.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
+
 import 'firebase_options.dart';
 
 Future<void> main() async {
@@ -62,6 +64,7 @@ class MyApp extends StatelessWidget {
         '/financial': (context) => const FinancialScreen(),
         '/encounter': (context) => const EncounterScreen(),
         '/members': (context) => const PersonScreen(),
+        '/speakers': (context) => const SpeakerScreen(),
       },
     );
   }
