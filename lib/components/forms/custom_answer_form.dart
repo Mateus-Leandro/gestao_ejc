@@ -11,6 +11,7 @@ import 'package:gestao_ejc/models/answer_model.dart';
 import 'package:gestao_ejc/models/encounter_model.dart';
 import 'package:gestao_ejc/models/question_model.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
+import 'package:languagetool_textfield/languagetool_textfield.dart';
 import 'package:uuid/uuid.dart';
 
 class CustomAnswerForm extends StatefulWidget {
@@ -30,8 +31,8 @@ class CustomAnswerForm extends StatefulWidget {
 
 class _CustomAnswerFormState extends State<CustomAnswerForm> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _answerTextController = TextEditingController();
   final AnswerController _answerController = getIt<AnswerController>();
+  final _languageToolController = LanguageToolController();
   String? _colorSelectionError;
   bool _isLoadingSaveAnswer = false;
   CircleColorEnum? initialColor;
@@ -41,7 +42,7 @@ class _CustomAnswerFormState extends State<CustomAnswerForm> {
   void initState() {
     super.initState();
     if (widget.editingAnswer != null) {
-      _answerTextController.text = widget.editingAnswer!.answer;
+      _languageToolController.text = widget.editingAnswer!.answer;
       initialColor = widget.editingAnswer!.circleColor;
       selectedColor = initialColor;
     }
@@ -108,9 +109,9 @@ class _CustomAnswerFormState extends State<CustomAnswerForm> {
               ),
             ),
           ],
-          TextFormField(
-            controller: _answerTextController,
-            canRequestFocus: true,
+          LanguageToolTextField(
+            controller: _languageToolController,
+            language: 'pt-BR',
             keyboardType: TextInputType.multiline,
             maxLines: null,
             minLines: 5,
@@ -118,16 +119,10 @@ class _CustomAnswerFormState extends State<CustomAnswerForm> {
               hintText: 'Digite a resposta...',
               border: OutlineInputBorder(),
             ),
-            validator: (answerText) {
-              if (answerText == null || answerText.isEmpty) {
-                return 'Informe a resposta';
-              }
-              return null;
-            },
-            onFieldSubmitted: (_) {
+            onTextSubmitted: (_) {
               _saveAnswer();
             },
-          )
+          ),
         ],
       )
     ];
@@ -152,6 +147,10 @@ class _CustomAnswerFormState extends State<CustomAnswerForm> {
   }
 
   void _saveAnswer() async {
+    if (_languageToolController.text.trim().isEmpty) {
+      return;
+    }
+
     if (selectedColor == null) {
       setState(() {
         _colorSelectionError = 'Necessário informar a cor do círculo';
@@ -170,7 +169,7 @@ class _CustomAnswerFormState extends State<CustomAnswerForm> {
             referenceQuestion: FirebaseFirestore.instance
                 .collection('answers')
                 .doc(widget.question.id),
-            answer: _answerTextController.text.trim(),
+            answer: _languageToolController.text.trim(),
             circleColor: selectedColor!,
           );
           await _answerController.saveAnswer(
