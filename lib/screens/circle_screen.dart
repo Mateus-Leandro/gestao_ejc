@@ -30,12 +30,6 @@ class _CircleScreenState extends State<CircleScreen> {
     super.initState();
   }
 
-  @override
-  void dispose() {
-    _circleController.dispose();
-    super.dispose();
-  }
-
   TextEditingController circleNameController = TextEditingController();
   final CircleController _circleController = getIt<CircleController>();
   final CircleMemberController _circleMemberController =
@@ -127,12 +121,9 @@ class _CircleScreenState extends State<CircleScreen> {
             ),
             Tooltip(
               message: 'Editar Círculo',
-              child: CustomEditButton(
-                form: CustomCircleForm(
-                  encounter: widget.encounter,
-                  editingCircle: circle,
-                  circles: circles,
-                ),
+              child: IconButton(
+                onPressed: () => _showCircleForm(circle),
+                icon: const Icon(Icons.edit),
               ),
             ),
             Tooltip(
@@ -197,17 +188,19 @@ class _CircleScreenState extends State<CircleScreen> {
     );
   }
 
-  void _showCircleForm(CircleModel? circleModel) {
-    showDialog(
+  void _showCircleForm(CircleModel? circleModel) async {
+    await showDialog(
       barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
         return CustomCircleForm(
           encounter: widget.encounter,
           circles: circles,
+          editingCircle: circleModel,
         );
       },
     );
+    setState(() {});
   }
 
   Future<void> _deleteCircle({required CircleModel circle}) async {
