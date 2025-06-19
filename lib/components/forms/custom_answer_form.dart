@@ -111,8 +111,12 @@ class _CustomAnswerFormState extends State<CustomAnswerForm> {
           TextFormField(
             controller: _answerTextController,
             canRequestFocus: true,
+            keyboardType: TextInputType.multiline,
+            maxLines: null,
+            minLines: 5,
             decoration: const InputDecoration(
               hintText: 'Digite a resposta...',
+              border: OutlineInputBorder(),
             ),
             validator: (answerText) {
               if (answerText == null || answerText.isEmpty) {
