@@ -2,6 +2,7 @@ import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:flutter/material.dart';
 import 'package:gestao_ejc/functions/function_date.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 class CustomDatePicker extends StatefulWidget {
   final TextEditingController controller;
@@ -26,26 +27,35 @@ class CustomDatePicker extends StatefulWidget {
 class _CustomDatePickerState extends State<CustomDatePicker> {
   final FunctionDate functionDate = getIt<FunctionDate>();
 
+  final maskFormatter = MaskTextInputFormatter(
+    mask: '##/##/####',
+    filter: {"#": RegExp(r'[0-9]')},
+    type: MaskAutoCompletionType.lazy,
+  );
+
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: widget.active != false ? _openDatePickerDialog : null,
-      child: AbsorbPointer(
-        child: TextFormField(
-          controller: widget.controller,
-          decoration: InputDecoration(
-            labelText: widget.labelText,
-            suffixIcon: const Icon(Icons.calendar_today),
-          ),
-          validator: (value) {
-            if (value == null || value.isEmpty) {
-              return 'Necessário informar a data';
-            }
-            return null;
-          },
-          enabled: widget.active ?? true,
+    return TextFormField(
+      controller: widget.controller,
+      inputFormatters: [maskFormatter],
+      decoration: InputDecoration(
+        labelText: widget.labelText,
+        suffixIcon: IconButton(
+          icon: const Icon(Icons.calendar_today),
+          onPressed: widget.active != false ? _openDatePickerDialog : null,
         ),
       ),
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Necessário informar a data';
+        }
+        if (!RegExp(r'^\d{2}/\d{2}/\d{4}$').hasMatch(value)) {
+          return 'Data inválida';
+        }
+        return null;
+      },
+      keyboardType: TextInputType.number,
+      enabled: widget.active ?? true,
     );
   }
 
