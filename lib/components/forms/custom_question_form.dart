@@ -29,12 +29,15 @@ class CustomQuestionForm extends StatefulWidget {
 class _CustomQuestionFormState extends State<CustomQuestionForm> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _questionTextController = TextEditingController();
+  final FocusNode _questionFocusNode = FocusNode();
+
   final QuestionController _questionController = getIt<QuestionController>();
   final QuestionThemeController _questionThemeController =
       getIt<QuestionThemeController>();
+
   bool _isLoadingSaveQuestion = false;
-  QuestionThemeModel? _selectedTheme;
   bool _isLoadingThemes = false;
+  QuestionThemeModel? _selectedTheme;
 
   @override
   void initState() {
@@ -43,6 +46,13 @@ class _CustomQuestionFormState extends State<CustomQuestionForm> {
       _questionTextController.text = widget.editingQuestion!.question;
     }
     _loadThemes();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _questionTextController.dispose();
+    _questionFocusNode.dispose();
   }
 
   @override
@@ -60,14 +70,16 @@ class _CustomQuestionFormState extends State<CustomQuestionForm> {
     return [
       Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            _isLoadingThemes
-                ? const Center(
-                    child: CircularProgressIndicator(),
-                  )
-                : DropdownButton<QuestionThemeModel>(
+        child: _isLoadingThemes
+            ? const Center(child: CircularProgressIndicator())
+            : Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text(
+                    'Informe o Tema',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  DropdownButton<QuestionThemeModel>(
                     isExpanded: true,
                     value: _questionThemeController.allListThemes
                             .contains(_selectedTheme)
@@ -85,64 +97,66 @@ class _CustomQuestionFormState extends State<CustomQuestionForm> {
                       setState(() {
                         _selectedTheme = selected;
                       });
+                      FocusScope.of(context).requestFocus(_questionFocusNode);
                     },
                   ),
-            const SizedBox(height: 16),
-            TextFormField(
-              autofocus: true,
-              keyboardType: TextInputType.text,
-              controller: _questionTextController,
-              decoration: const InputDecoration(
-                hintText: 'Digite a nova pergunta...',
+                  const SizedBox(height: 16),
+                  TextFormField(
+                    focusNode: _questionFocusNode,
+                    keyboardType: TextInputType.text,
+                    controller: _questionTextController,
+                    decoration: const InputDecoration(
+                      hintText: 'Digite a nova pergunta...',
+                    ),
+                    validator: (questionText) {
+                      if (questionText == null || questionText.trim().isEmpty) {
+                        return 'Necessário informar a pergunta';
+                      }
+                      if (_selectedTheme == null) {
+                        return 'Selecione um tema';
+                      }
+                      return null;
+                    },
+                    onFieldSubmitted: (_) {
+                      _saveQuestion();
+                    },
+                  ),
+                ],
               ),
-              validator: (questionText) {
-                if (questionText == null || questionText.trim().isEmpty) {
-                  return 'Necessário informar a pergunta';
-                }
-                if (_selectedTheme == null) {
-                  return 'Selecione um tema';
-                }
-                return null;
-              },
-              onFieldSubmitted: (_) {
-                _saveQuestion();
-              },
-            ),
-          ],
-        ),
-      )
+      ),
     ];
   }
 
   _buildFormAction() {
+    if (_isLoadingSaveQuestion) {
+      return [
+        const Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Row(
+            children: [
+              CircularProgressIndicator(),
+              SizedBox(width: 12),
+              Text('Salvando pergunta, aguarde...'),
+            ],
+          ),
+        )
+      ];
+    }
+
     return [
-      if (_isLoadingSaveQuestion) ...[
-        const Text('Salvando pergunta, aguarde...'),
-        const CircularProgressIndicator()
-      ] else ...[
-        CustomCancelButton(
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        CustomConfirmationButton(
-          onPressed: () {
-            _saveQuestion();
-          },
-        ),
-      ]
+      CustomCancelButton(
+        onPressed: () => Navigator.of(context).pop(),
+      ),
+      CustomConfirmationButton(
+        onPressed: () {
+          _saveQuestion();
+        },
+      ),
     ];
   }
 
   void _saveQuestion() async {
     if (_formKey.currentState!.validate()) {
-      if (_selectedTheme == null) {
-        CustomSnackBar.show(
-          context: context,
-          message: 'Selecione um tema antes de salvar',
-          colorBar: Colors.red,
-        );
-        return;
-      }
-
       setState(() {
         _isLoadingSaveQuestion = true;
       });
@@ -152,10 +166,10 @@ class _CustomQuestionFormState extends State<CustomQuestionForm> {
             .collection('question_themes')
             .doc(_selectedTheme?.id);
 
-        QuestionModel question = QuestionModel(
+        final question = QuestionModel(
           id: widget.editingQuestion != null
               ? widget.editingQuestion!.id
-              : Uuid().v4(),
+              : const Uuid().v4(),
           question: _questionTextController.text.trim(),
           sequentialEncounter: widget.encounter.sequential,
           referenceTheme: referenceTheme,
@@ -182,6 +196,7 @@ class _CustomQuestionFormState extends State<CustomQuestionForm> {
       setState(() {
         _isLoadingThemes = true;
       });
+
       await _questionThemeController.getQuestionThemes(null);
 
       if (widget.editingQuestion?.theme != null) {

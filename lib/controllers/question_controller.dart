@@ -28,7 +28,7 @@ class QuestionController extends ChangeNotifier {
   Future<void> saveQuestion({required QuestionModel question}) async {
     try {
       await _questionService.saveQuestion(question: question);
-      getQuestions(sequentialEncounter: question.sequentialEncounter);
+      await getQuestions(sequentialEncounter: question.sequentialEncounter);
     } catch (e) {
       throw 'Erro ao salvar pergunta: $e';
     }
@@ -71,7 +71,7 @@ class QuestionController extends ChangeNotifier {
   }
 
   Future<void> fillThemeList() async {
-    Future.wait(listQuestion.map((question) async {
+    await Future.wait(listQuestion.map((question) async {
       final themeByReference = await question.referenceTheme?.get();
       if (themeByReference != null) {
         if (themeByReference.exists && themeByReference.data() != null) {

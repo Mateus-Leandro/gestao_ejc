@@ -4,13 +4,16 @@ import 'package:gestao_ejc/components/buttons/custom_cancel_button.dart';
 import 'package:gestao_ejc/components/buttons/custom_confirmation_button.dart';
 import 'package:gestao_ejc/components/forms/custom_model_form.dart';
 import 'package:gestao_ejc/controllers/question_theme_controller.dart';
+import 'package:gestao_ejc/models/encounter_model.dart';
 import 'package:gestao_ejc/models/question_theme_model.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
 import 'package:uuid/uuid.dart';
 
 class CustomQuestionThemeForm extends StatefulWidget {
+  final EncounterModel encounter;
   final QuestionThemeModel? editingQuestionTheme;
-  const CustomQuestionThemeForm({super.key, this.editingQuestionTheme});
+  const CustomQuestionThemeForm(
+      {super.key, this.editingQuestionTheme, required this.encounter});
 
   @override
   State<CustomQuestionThemeForm> createState() =>
@@ -100,7 +103,10 @@ class _CustomQuestionThemeFormState extends State<CustomQuestionThemeForm> {
           description: _questionThemeTextController.text.trim(),
         );
 
-        await _questionThemeController.saveQuestionTheme(questionTheme: theme);
+        await _questionThemeController.saveQuestionTheme(
+          questionTheme: theme,
+          sequentialEncounter: widget.encounter.sequential,
+        );
       } catch (e) {
         CustomSnackBar.show(
           context: context,
