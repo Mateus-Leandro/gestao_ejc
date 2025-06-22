@@ -122,7 +122,7 @@ class CircleController extends ChangeNotifier {
       {required List<CircleModel> listCircleModel,
       required String circleName}) {
     return listCircleModel.where((doc) {
-      return doc.name.toLowerCase().contains(circleName.toLowerCase());
+      return doc.color.name.toLowerCase().contains(circleName.toLowerCase());
     }).toList();
   }
 
