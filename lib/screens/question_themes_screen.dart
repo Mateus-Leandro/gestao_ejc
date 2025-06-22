@@ -45,11 +45,9 @@ class _QuestionThemesScreenState extends State<QuestionThemesScreen> {
             inputType: TextInputType.text,
             controller: questionThemeDescriptionController,
             messageTextField: 'Pesquisar Tema',
-            functionTextField: () => _quetionThemeController.getQuestionThemes(
-              questionThemeDescriptionController.text.trim().isEmpty
-                  ? null
-                  : questionThemeDescriptionController.text.trim(),
-            ),
+            functionTextField: () => _quetionThemeController.filterPerson(
+                themeDescription:
+                    questionThemeDescriptionController.text.trim()),
             iconButton: const Icon(Icons.add),
           ),
           Expanded(child: _buildQuestionThemeList(context))

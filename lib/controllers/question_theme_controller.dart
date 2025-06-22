@@ -11,6 +11,7 @@ class QuestionThemeController extends ChangeNotifier {
   final QuestionThemeService _questionThemeService =
       getIt<QuestionThemeService>();
   List<QuestionThemeModel> listThemes = [];
+  List<QuestionThemeModel> filteredListThemes = [];
 
   var _streamController = StreamController<List<QuestionThemeModel>>();
 
@@ -57,6 +58,22 @@ class QuestionThemeController extends ChangeNotifier {
       _questionController.init(sequentialEncounter: sequentialEncounter);
     } catch (e) {
       throw 'Erro ao deletar tema: $e';
+    }
+  }
+
+  void filterPerson({required String? themeDescription}) {
+    try {
+      themeDescription != null
+          ? filteredListThemes = listThemes
+              .where((theme) => theme.description
+                  .toLowerCase()
+                  .contains(themeDescription.toLowerCase()))
+              .toList()
+          : filteredListThemes = listThemes;
+
+      _streamController.sink.add(filteredListThemes);
+    } catch (e) {
+      throw 'Erro ao buscar themas';
     }
   }
 
