@@ -8,13 +8,13 @@ import 'package:gestao_ejc/services/question_theme_service.dart';
 class QuestionThemeController extends ChangeNotifier {
   final QuestionThemeService _questionThemeService =
       getIt<QuestionThemeService>();
+  List<QuestionThemeModel> listThemes = [];
 
-  var _streamController;
+  var _streamController = StreamController<List<QuestionThemeModel>>();
 
   Stream<List<QuestionThemeModel>>? get stream => _streamController.stream;
 
   void init() {
-    _streamController = StreamController<List<QuestionThemeModel>>();
     getQuestionThemes(null);
   }
 
@@ -36,9 +36,9 @@ class QuestionThemeController extends ChangeNotifier {
 
   Future<void> getQuestionThemes(String? themeDescription) async {
     try {
-      var response =
+      listThemes =
           await _questionThemeService.getQuestionThemes(themeDescription);
-      _streamController.sink.add(response);
+      _streamController.sink.add(listThemes);
     } catch (e) {
       throw 'Erro ao buscar tema : $e';
     }
@@ -53,4 +53,6 @@ class QuestionThemeController extends ChangeNotifier {
       throw 'Erro ao deletar tema: $e';
     }
   }
+
+  List<QuestionThemeModel> get allListThemes => listThemes;
 }
