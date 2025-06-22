@@ -10,6 +10,7 @@ class CustomDatePicker extends StatefulWidget {
   final DateTime? lowestDate;
   final DateTime? higherDate;
   final bool? active;
+  final bool? readOnly;
 
   const CustomDatePicker({
     super.key,
@@ -18,6 +19,7 @@ class CustomDatePicker extends StatefulWidget {
     this.lowestDate,
     this.higherDate,
     this.active,
+    this.readOnly,
   });
 
   @override
@@ -36,13 +38,16 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      readOnly: widget.readOnly ?? false,
       controller: widget.controller,
       inputFormatters: [maskFormatter],
       decoration: InputDecoration(
         labelText: widget.labelText,
         suffixIcon: IconButton(
           icon: const Icon(Icons.calendar_today),
-          onPressed: widget.active != false ? _openDatePickerDialog : null,
+          onPressed: widget.active != false && widget.readOnly != true
+              ? _openDatePickerDialog
+              : null,
         ),
       ),
       validator: (value) {

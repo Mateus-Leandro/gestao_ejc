@@ -22,11 +22,9 @@ import 'package:uuid/uuid.dart';
 
 class CustomPersonForm extends StatefulWidget {
   final AbstractPersonModel? editingPerson;
-
-  const CustomPersonForm({
-    super.key,
-    required this.editingPerson,
-  });
+  final bool? readOnly;
+  const CustomPersonForm(
+      {super.key, required this.editingPerson, this.readOnly});
 
   @override
   State<CustomPersonForm> createState() => _CustomPersonFormState();
@@ -131,9 +129,11 @@ class _CustomPersonFormState extends State<CustomPersonForm> {
   @override
   Widget build(BuildContext context) {
     return CustomModelForm(
-      title: widget.editingPerson != null
-          ? 'Editar ${_personType()}'
-          : 'Criar ${_personType()}',
+      title: widget.readOnly != true
+          ? (widget.editingPerson != null
+              ? 'Editar ${_personType()}'
+              : 'Criar ${_personType()}')
+          : 'Visualizar Membro',
       formKey: _formKey,
       formBody: _buildFormBody(),
       actions: _savingPerson
@@ -146,8 +146,11 @@ class _CustomPersonFormState extends State<CustomPersonForm> {
               )
             ]
           : [
-              CustomCancelButton(onPressed: () => Navigator.of(context).pop()),
-              CustomConfirmationButton(onPressed: () => _savePerson())
+              if (widget.readOnly != true) ...[
+                CustomCancelButton(
+                    onPressed: () => Navigator.of(context).pop()),
+                CustomConfirmationButton(onPressed: () => _savePerson())
+              ],
             ],
     );
   }
@@ -159,24 +162,29 @@ class _CustomPersonFormState extends State<CustomPersonForm> {
           Row(
             children: [
               Checkbox(
-                value: memberIsUncle,
-                onChanged: (value) {
-                  if (value != null) {
-                    setState(() {
-                      memberIsUncle = value;
-                    });
-                  }
-                },
-              ),
+                  value: memberIsUncle,
+                  onChanged: widget.readOnly != true
+                      ? (value) {
+                          if (value != null) {
+                            setState(() {
+                              memberIsUncle = value;
+                            });
+                          }
+                        }
+                      : null),
               const Text('É Tio?'),
             ],
           ),
           CustomPickFileButton(
             onPressed: () {
-              _pickPersonImage();
+              if (widget.readOnly != true) {
+                _pickPersonImage();
+              }
             },
             icon: Tooltip(
-              message: 'Selecionar Imagem do ${_personType()}',
+              message: widget.readOnly != true
+                  ? 'Selecionar Imagem do ${_personType()}'
+                  : '',
               child: Opacity(
                 opacity: 1.0,
                 child: Stack(
@@ -273,6 +281,7 @@ class _CustomPersonFormState extends State<CustomPersonForm> {
             ),
           ),
           TextFormField(
+            readOnly: widget.readOnly ?? false,
             keyboardType: TextInputType.number,
             controller: _cepController,
             inputFormatters: [cepMaskFormatter],
@@ -282,8 +291,11 @@ class _CustomPersonFormState extends State<CustomPersonForm> {
               suffixIcon: IconButton(
                 icon: const Icon(Icons.search),
                 onPressed: () async => {
-                  await _searchAdress(),
-                  _formKey.currentState!.validate(),
+                  if (widget.readOnly != true)
+                    {
+                      await _searchAdress(),
+                      _formKey.currentState!.validate(),
+                    }
                 },
               ),
             ),
@@ -325,6 +337,7 @@ class _CustomPersonFormState extends State<CustomPersonForm> {
               Flexible(
                 flex: 3,
                 child: TextFormField(
+                  readOnly: widget.readOnly ?? false,
                   keyboardType: TextInputType.number,
                   controller: _numberAdressController,
                   decoration: const InputDecoration(
@@ -335,6 +348,7 @@ class _CustomPersonFormState extends State<CustomPersonForm> {
             ],
           ),
           TextFormField(
+            readOnly: widget.readOnly ?? false,
             keyboardType: TextInputType.text,
             controller: _complementController,
             decoration: const InputDecoration(
@@ -387,6 +401,7 @@ class _CustomPersonFormState extends State<CustomPersonForm> {
           ),
         ),
         TextFormField(
+          readOnly: widget.readOnly ?? false,
           keyboardType: TextInputType.name,
           controller: nameController,
           decoration: const InputDecoration(
@@ -400,6 +415,7 @@ class _CustomPersonFormState extends State<CustomPersonForm> {
           },
         ),
         TextFormField(
+          readOnly: widget.readOnly ?? false,
           keyboardType: TextInputType.phone,
           controller: phoneController,
           inputFormatters: [phoneMaskFormatter],
@@ -409,6 +425,7 @@ class _CustomPersonFormState extends State<CustomPersonForm> {
           ),
         ),
         TextFormField(
+          readOnly: widget.readOnly ?? false,
           keyboardType: TextInputType.text,
           controller: instagramController,
           decoration: const InputDecoration(
@@ -416,11 +433,13 @@ class _CustomPersonFormState extends State<CustomPersonForm> {
           ),
         ),
         CustomDatePicker(
+          readOnly: widget.readOnly ?? false,
           controller: dateController,
           labelText: 'Data de nascimento',
           active: true,
         ),
         TextFormField(
+          readOnly: widget.readOnly ?? false,
           keyboardType: TextInputType.text,
           controller: ejcController,
           decoration: const InputDecoration(
@@ -429,6 +448,7 @@ class _CustomPersonFormState extends State<CustomPersonForm> {
         ),
         if (memberIsUncle) ...[
           TextFormField(
+            readOnly: widget.readOnly ?? false,
             keyboardType: TextInputType.text,
             controller: eccController,
             decoration: const InputDecoration(
@@ -447,6 +467,7 @@ class _CustomPersonFormState extends State<CustomPersonForm> {
               ),
             ),
             CustomInstrumentDrawer(
+              readOnly: widget.readOnly ?? false,
               instrumentController: instrumentController,
             ),
           ],

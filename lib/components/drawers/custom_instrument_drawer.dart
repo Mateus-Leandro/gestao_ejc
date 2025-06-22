@@ -4,9 +4,11 @@ import 'package:multi_dropdown/multi_dropdown.dart';
 
 class CustomInstrumentDrawer extends StatefulWidget {
   final MultiSelectController<InstrumentEnum> instrumentController;
+  final bool? readOnly;
   const CustomInstrumentDrawer({
     super.key,
     required this.instrumentController,
+    this.readOnly,
   });
 
   @override
@@ -14,33 +16,29 @@ class CustomInstrumentDrawer extends StatefulWidget {
 }
 
 class _CustomInstrumentDrawerState extends State<CustomInstrumentDrawer> {
-  String? colorName;
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
-    return MultiDropdown<InstrumentEnum>(
-      controller: widget.instrumentController,
-      fieldDecoration: const FieldDecoration(
-        hintText: 'Eu sei...',
-        hintStyle: TextStyle(
-          fontSize: 16,
+    return AbsorbPointer(
+      absorbing: widget.readOnly == true,
+      child: MultiDropdown<InstrumentEnum>(
+        controller: widget.instrumentController,
+        fieldDecoration: const FieldDecoration(
+          hintText: 'Eu sei...',
+          hintStyle: TextStyle(
+            fontSize: 16,
+          ),
         ),
-      ),
-      items: widget.instrumentController.items.toList(),
-      dropdownDecoration: DropdownDecoration(
-        borderRadius: BorderRadius.circular(5),
-      ),
-      dropdownItemDecoration: const DropdownItemDecoration(
-        selectedBackgroundColor: Colors.green,
-      ),
-      chipDecoration: const ChipDecoration(
-        labelStyle: TextStyle(
-          fontSize: 16,
+        items: widget.instrumentController.items.toList(),
+        dropdownDecoration: DropdownDecoration(
+          borderRadius: BorderRadius.circular(5),
+        ),
+        dropdownItemDecoration: const DropdownItemDecoration(
+          selectedBackgroundColor: Colors.green,
+        ),
+        chipDecoration: const ChipDecoration(
+          labelStyle: TextStyle(
+            fontSize: 16,
+          ),
         ),
       ),
     );
