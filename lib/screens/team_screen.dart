@@ -2,6 +2,7 @@ import 'package:expansion_tile_list/expansion_tile_list.dart';
 import 'package:flutter/material.dart';
 import 'package:gestao_ejc/components/buttons/custom_delete_button.dart';
 import 'package:gestao_ejc/components/buttons/custom_edit_button.dart';
+import 'package:gestao_ejc/components/buttons/custom_info_person_button.dart';
 import 'package:gestao_ejc/components/forms/custom_team_form.dart';
 import 'package:gestao_ejc/components/forms/custom_team_member_form.dart';
 import 'package:gestao_ejc/components/utils/custom_search_row.dart';
@@ -192,6 +193,7 @@ class _TeamScreenState extends State<TeamScreen> {
                   .map((teamMember) => ListTile(
                         title: Row(
                           children: [
+                            CustomInfoPersonButton(person: teamMember.member),
                             Expanded(child: Text(teamMember.member.name)),
                             CustomDeleteButton(
                               alertMessage:

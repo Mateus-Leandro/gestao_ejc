@@ -2,7 +2,7 @@ import 'package:expansion_tile_list/expansion_tile_list.dart';
 import 'package:flutter/material.dart';
 import 'package:gestao_ejc/components/SnackBars/custom_snack_bar.dart';
 import 'package:gestao_ejc/components/buttons/custom_delete_button.dart';
-import 'package:gestao_ejc/components/buttons/custom_edit_button.dart';
+import 'package:gestao_ejc/components/buttons/custom_info_person_button.dart';
 import 'package:gestao_ejc/components/forms/custom_circle_form.dart';
 import 'package:gestao_ejc/components/forms/custom_circle_member_form.dart';
 import 'package:gestao_ejc/components/utils/custom_search_row.dart';
@@ -171,6 +171,9 @@ class _CircleScreenState extends State<CircleScreen> {
                     .map((circleMember) => ListTile(
                           title: Row(
                             children: [
+                              CustomInfoPersonButton(
+                                person: circleMember.member,
+                              ),
                               Expanded(child: Text(circleMember.member.name)),
                               CustomDeleteButton(
                                 alertMessage:
