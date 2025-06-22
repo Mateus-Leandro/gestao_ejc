@@ -5,6 +5,7 @@ import 'package:gestao_ejc/functions/function_int_to_roman.dart';
 import 'package:gestao_ejc/models/encounter_model.dart';
 import 'package:gestao_ejc/screens/circle_screen.dart';
 import 'package:gestao_ejc/screens/question_screen.dart';
+import 'package:gestao_ejc/screens/question_themes_screen.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
 import 'package:gestao_ejc/theme/app_theme.dart';
 
@@ -23,6 +24,10 @@ class CircleTabsScreen extends StatelessWidget {
     Tab(
       icon: FaIcon(FontAwesomeIcons.question, color: Colors.red),
       text: 'Perguntas',
+    ),
+    Tab(
+      icon: FaIcon(Icons.lightbulb_outline, color: Colors.yellow),
+      text: 'Temas',
     ),
   ];
 
@@ -46,6 +51,9 @@ class CircleTabsScreen extends StatelessWidget {
                   ),
                   _KeepAliveWrapper(
                     child: QuestionScreen(encounter: encounterModel),
+                  ),
+                  const _KeepAliveWrapper(
+                    child: QuestionThemesScreen(),
                   ),
                 ],
               ),

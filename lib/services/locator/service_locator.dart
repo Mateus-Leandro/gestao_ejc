@@ -11,6 +11,7 @@ import 'package:gestao_ejc/controllers/financial_index_controller.dart';
 import 'package:gestao_ejc/controllers/lecture_controller.dart';
 import 'package:gestao_ejc/controllers/person_controller.dart';
 import 'package:gestao_ejc/controllers/question_controller.dart';
+import 'package:gestao_ejc/controllers/question_theme_controller.dart';
 import 'package:gestao_ejc/controllers/speaker_controller.dart';
 import 'package:gestao_ejc/controllers/team_controller.dart';
 import 'package:gestao_ejc/controllers/team_member_controller.dart';
@@ -38,6 +39,7 @@ import 'package:gestao_ejc/services/lecture_service.dart';
 import 'package:gestao_ejc/services/pdf_service.dart';
 import 'package:gestao_ejc/services/person_service.dart';
 import 'package:gestao_ejc/services/question_service.dart';
+import 'package:gestao_ejc/services/question_theme_service.dart';
 import 'package:gestao_ejc/services/speaker_service.dart';
 import 'package:gestao_ejc/services/team_member_service.dart';
 import 'package:gestao_ejc/services/team_service.dart';
@@ -103,4 +105,8 @@ void setupGetIt() {
   getIt.registerLazySingleton<TeamMemberService>(() => TeamMemberService());
   getIt.registerLazySingleton<TeamMemberController>(
       () => TeamMemberController());
+  getIt.registerLazySingleton<QuestionThemeService>(
+      () => QuestionThemeService());
+  getIt.registerLazySingleton<QuestionThemeController>(
+      () => QuestionThemeController());
 }
