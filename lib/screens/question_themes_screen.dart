@@ -5,12 +5,14 @@ import 'package:gestao_ejc/components/forms/custom_question_theme_form.dart';
 import 'package:gestao_ejc/components/utils/custom_list_tile.dart';
 import 'package:gestao_ejc/components/utils/custom_search_row.dart';
 import 'package:gestao_ejc/controllers/question_theme_controller.dart';
+import 'package:gestao_ejc/models/encounter_model.dart';
 import 'package:gestao_ejc/models/question_theme_model.dart';
 import 'package:gestao_ejc/services/auth_service.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
 
 class QuestionThemesScreen extends StatefulWidget {
-  const QuestionThemesScreen({super.key});
+  final EncounterModel encounter;
+  const QuestionThemesScreen({super.key, required this.encounter});
 
   @override
   State<QuestionThemesScreen> createState() => _QuestionThemesScreenState();
@@ -100,14 +102,17 @@ class _QuestionThemesScreenState extends State<QuestionThemesScreen> {
                   child: CustomEditButton(
                     form: CustomQuestionThemeForm(
                       editingQuestionTheme: theme,
+                      encounter: widget.encounter,
                     ),
                   ),
                 ),
                 Tooltip(
                   message: 'Excluir Tema',
                   child: CustomDeleteButton(
-                    deleteFunction: () => _quetionThemeController
-                        .deleteQuestion(questionTheme: theme),
+                    deleteFunction: () =>
+                        _quetionThemeController.deleteQuestionTheme(
+                            questionTheme: theme,
+                            sequentialEncounter: widget.encounter.sequential),
                     alertMessage:
                         'Deletar tema ${theme.description.toLowerCase()} ?',
                   ),
@@ -123,7 +128,10 @@ class _QuestionThemesScreenState extends State<QuestionThemesScreen> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return CustomQuestionThemeForm(editingQuestionTheme: questionTheme);
+        return CustomQuestionThemeForm(
+          editingQuestionTheme: questionTheme,
+          encounter: widget.encounter,
+        );
       },
     );
   }

@@ -1,11 +1,13 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:gestao_ejc/controllers/question_controller.dart';
 import 'package:gestao_ejc/models/question_theme_model.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
 import 'package:gestao_ejc/services/question_theme_service.dart';
 
 class QuestionThemeController extends ChangeNotifier {
+  final QuestionController _questionController = getIt<QuestionController>();
   final QuestionThemeService _questionThemeService =
       getIt<QuestionThemeService>();
   List<QuestionThemeModel> listThemes = [];
@@ -25,10 +27,12 @@ class QuestionThemeController extends ChangeNotifier {
   }
 
   Future<void> saveQuestionTheme(
-      {required QuestionThemeModel questionTheme}) async {
+      {required QuestionThemeModel questionTheme,
+      required int sequentialEncounter}) async {
     try {
       await _questionThemeService.saveQuestionTheme(question: questionTheme);
       getQuestionThemes(null);
+      _questionController.init(sequentialEncounter: sequentialEncounter);
     } catch (e) {
       throw 'Erro ao salvar tema: $e';
     }
@@ -44,11 +48,13 @@ class QuestionThemeController extends ChangeNotifier {
     }
   }
 
-  Future<void> deleteQuestion(
-      {required QuestionThemeModel questionTheme}) async {
+  Future<void> deleteQuestionTheme(
+      {required QuestionThemeModel questionTheme,
+      required int sequentialEncounter}) async {
     try {
       await _questionThemeService.deleteQuestionTheme(question: questionTheme);
       getQuestionThemes(null);
+      _questionController.init(sequentialEncounter: sequentialEncounter);
     } catch (e) {
       throw 'Erro ao deletar tema: $e';
     }

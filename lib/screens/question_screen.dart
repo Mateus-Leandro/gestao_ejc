@@ -96,11 +96,48 @@ class _QuestionScreenState extends State<QuestionScreen> {
         }
 
         questions = snapshot.data!;
+
+        final byTheme = <String, List<QuestionModel>>{};
+        for (var q in questions) {
+          final themeName = q.theme?.description ?? 'Sem Tema';
+          byTheme.putIfAbsent(themeName, () => []).add(q);
+        }
+
+        final themes = byTheme.keys.toList()..sort();
+
         return ListView.builder(
-          itemCount: questions.length,
+          itemCount: themes.length,
           itemBuilder: (context, index) {
-            var question = questions[index];
-            return _buildQuestionTile(context, question, index);
+            final theme = themes[index];
+            final themeQuestions = byTheme[theme]!;
+
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                  child: Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).primaryColor,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    padding: const EdgeInsets.all(8),
+                    child: Text(
+                      theme,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+                ...themeQuestions
+                    .map((q) => _buildQuestionTile(context, q, index)),
+              ],
+            );
           },
         );
       },

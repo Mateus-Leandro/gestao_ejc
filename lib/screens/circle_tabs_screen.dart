@@ -52,8 +52,8 @@ class CircleTabsScreen extends StatelessWidget {
                   _KeepAliveWrapper(
                     child: QuestionScreen(encounter: encounterModel),
                   ),
-                  const _KeepAliveWrapper(
-                    child: QuestionThemesScreen(),
+                  _KeepAliveWrapper(
+                    child: QuestionThemesScreen(encounter: encounterModel),
                   ),
                 ],
               ),
