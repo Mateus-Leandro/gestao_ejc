@@ -7,15 +7,20 @@ import 'package:gestao_ejc/components/buttons/custom_confirmation_button.dart';
 import 'package:gestao_ejc/components/drawers/custom_person_drawer.dart';
 import 'package:gestao_ejc/components/drawers/custom_team_type_drawer.dart';
 import 'package:gestao_ejc/components/forms/custom_model_form.dart';
+import 'package:gestao_ejc/controllers/circle_controller.dart';
+import 'package:gestao_ejc/controllers/circle_member_controller.dart';
 import 'package:gestao_ejc/controllers/person_controller.dart';
 import 'package:gestao_ejc/controllers/team_controller.dart';
 import 'package:gestao_ejc/controllers/team_member_controller.dart';
 import 'package:gestao_ejc/enums/team_type_enum.dart';
 import 'package:gestao_ejc/models/abstract_person_model.dart';
+import 'package:gestao_ejc/models/circle_member_model.dart';
 import 'package:gestao_ejc/models/encounter_model.dart';
 import 'package:gestao_ejc/models/team_member_model.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
 import 'package:multi_dropdown/multi_dropdown.dart';
+import 'package:quickalert/models/quickalert_type.dart';
+import 'package:quickalert/widgets/quickalert_dialog.dart';
 import 'package:uuid/uuid.dart';
 
 class CustomTeamMemberForm extends StatefulWidget {
@@ -44,6 +49,9 @@ class _CustomTeamMemberFormState extends State<CustomTeamMemberForm> {
   final TeamController _teamController = getIt<TeamController>();
   final TeamMemberController _teamMemberController =
       getIt<TeamMemberController>();
+  final CircleMemberController _circleMemberController =
+      getIt<CircleMemberController>();
+  final CircleController _circleController = getIt<CircleController>();
   bool _loadingMembers = false;
   bool _isLoadingSaveTeamMember = false;
   List<AbstractPersonModel> _listPersons = [];
@@ -156,8 +164,35 @@ class _CustomTeamMemberFormState extends State<CustomTeamMemberForm> {
     try {
       AbstractPersonModel person =
           _personControllerDrawer.selectedItems.first.value;
+
       final DocumentReference referenceMember =
           FirebaseFirestore.instance.collection('persons').doc(person.id);
+
+      CircleMemberModel? currentCircleMember =
+          await _circleMemberController.getMemberCurrentCircle(
+              referenceMember: referenceMember,
+              sequentialEncounter: widget.encounter.sequential);
+
+      if (currentCircleMember != null) {
+        currentCircleMember.circle = await _circleController.circleByReference(
+            referenceCircle: currentCircleMember.referenceCircle);
+
+        await QuickAlert.show(
+          context: context,
+          type: QuickAlertType.error,
+          title: 'O membro selecionado já está em um círculo do encontro',
+          text:
+              'Membro já vinculado ao círculo ${currentCircleMember.circle.color.name.toLowerCase()}.',
+          confirmBtnText: 'OK',
+          confirmBtnColor: Colors.green,
+        );
+
+        setState(() {
+          _isLoadingSaveTeamMember = false;
+        });
+        return;
+      }
+
       final DocumentReference? referenceTeam =
           await _teamController.referenceTeamByTypeAndEncounter(
               sequentialEncounter: widget.encounter.sequential,
