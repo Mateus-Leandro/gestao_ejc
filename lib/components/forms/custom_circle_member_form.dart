@@ -10,12 +10,18 @@ import 'package:gestao_ejc/components/forms/custom_model_form.dart';
 import 'package:gestao_ejc/controllers/circle_controller.dart';
 import 'package:gestao_ejc/controllers/circle_member_controller.dart';
 import 'package:gestao_ejc/controllers/person_controller.dart';
+import 'package:gestao_ejc/controllers/team_controller.dart';
+import 'package:gestao_ejc/controllers/team_member_controller.dart';
 import 'package:gestao_ejc/enums/circle_color_enum.dart';
+import 'package:gestao_ejc/enums/team_type_enum.dart';
 import 'package:gestao_ejc/models/abstract_person_model.dart';
 import 'package:gestao_ejc/models/circle_member_model.dart';
 import 'package:gestao_ejc/models/encounter_model.dart';
+import 'package:gestao_ejc/models/team_member_model.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
 import 'package:multi_dropdown/multi_dropdown.dart';
+import 'package:quickalert/models/quickalert_type.dart';
+import 'package:quickalert/widgets/quickalert_dialog.dart';
 import 'package:uuid/uuid.dart';
 
 class CustomCircleMemberForm extends StatefulWidget {
@@ -42,6 +48,9 @@ class _CustomCircleMemberFormState extends State<CustomCircleMemberForm> {
   final CircleMemberController _circleMemberController =
       getIt<CircleMemberController>();
   final CircleController _circleController = getIt<CircleController>();
+  final TeamMemberController _teamMemberController =
+      getIt<TeamMemberController>();
+  final TeamController _teamController = getIt<TeamController>();
   bool _loadingMembers = false;
   bool _isLoadingSaveCircleMember = false;
   List<AbstractPersonModel> _listPersons = [];
@@ -154,6 +163,32 @@ class _CustomCircleMemberFormState extends State<CustomCircleMemberForm> {
           _personControllerDrawer.selectedItems.first.value;
       final DocumentReference referenceMember =
           FirebaseFirestore.instance.collection('persons').doc(person.id);
+
+      TeamMemberModel? currentTeamMember =
+          await _teamMemberController.getMemberCurrentTeam(
+              referenceMember: referenceMember,
+              sequentialEncounter: widget.encounter.sequential);
+
+      if (currentTeamMember != null) {
+        currentTeamMember.team = await _teamController.teamByReference(
+            referenceTeam: currentTeamMember.referenceTeam);
+
+        await QuickAlert.show(
+          context: context,
+          type: QuickAlertType.error,
+          title: 'O membro selecionado já está em uma equipe do encontro',
+          text:
+              'Membro já vinculado na equipe ${currentTeamMember.team.type.formattedName.toLowerCase()}.',
+          confirmBtnText: 'OK',
+          confirmBtnColor: Colors.green,
+        );
+
+        setState(() {
+          _isLoadingSaveCircleMember = false;
+        });
+        return;
+      }
+
       final DocumentReference? referenceCircle =
           await _circleController.referenceCircleByTypeAndEncounter(
               sequentialEncounter: widget.encounter.sequential,
