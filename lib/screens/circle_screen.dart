@@ -174,7 +174,19 @@ class _CircleScreenState extends State<CircleScreen> {
                               CustomInfoPersonButton(
                                 person: circleMember.member,
                               ),
-                              Expanded(child: Text(circleMember.member.name)),
+                              Expanded(
+                                child: Text(
+                                  circleMember.member.name,
+                                  style: TextStyle(
+                                    fontWeight: circleMember.circulist
+                                        ? FontWeight.bold
+                                        : FontWeight.normal,
+                                    color: circleMember.circulist
+                                        ? Colors.indigo
+                                        : Colors.black,
+                                  ),
+                                ),
+                              ),
                               CustomDeleteButton(
                                 alertMessage:
                                     'Remover ${circleMember.member.name} do círculo ${circle.color.circleName}?',

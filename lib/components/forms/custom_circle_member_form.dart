@@ -53,6 +53,7 @@ class _CustomCircleMemberFormState extends State<CustomCircleMemberForm> {
   final TeamController _teamController = getIt<TeamController>();
   bool _loadingMembers = false;
   bool _isLoadingSaveCircleMember = false;
+  bool _circuilist = false;
   List<AbstractPersonModel> _listPersons = [];
   CircleColorEnum selectedCircleColor = CircleColorEnum.amarelo;
 
@@ -107,6 +108,19 @@ class _CustomCircleMemberFormState extends State<CustomCircleMemberForm> {
                   ),
                 ],
               ),
+            ),
+            Row(
+              children: [
+                Checkbox(
+                    value: _circuilist,
+                    onChanged: (bool? value) {
+                      setState(() {
+                        _circuilist = value ?? false;
+                      });
+                    }),
+                const Text('Encontreiro Círculista',
+                    style: TextStyle(fontSize: 16)),
+              ],
             ),
           ],
         ),
@@ -203,6 +217,7 @@ class _CustomCircleMemberFormState extends State<CustomCircleMemberForm> {
           id: currentCircleMember != null
               ? currentCircleMember.id
               : const Uuid().v4(),
+          circulist: _circuilist,
           sequentialEncounter: widget.encounter.sequential,
           referenceMember: referenceMember,
           referenceCircle: referenceCircle!);

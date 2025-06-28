@@ -194,7 +194,18 @@ class _TeamScreenState extends State<TeamScreen> {
                         title: Row(
                           children: [
                             CustomInfoPersonButton(person: teamMember.member),
-                            Expanded(child: Text(teamMember.member.name)),
+                            Expanded(
+                                child: Text(
+                              teamMember.member.name,
+                              style: TextStyle(
+                                fontWeight: teamMember.leader
+                                    ? FontWeight.bold
+                                    : FontWeight.normal,
+                                color: teamMember.leader
+                                    ? Colors.indigo
+                                    : Colors.black,
+                              ),
+                            )),
                             CustomDeleteButton(
                               alertMessage:
                                   'Remover ${teamMember.member.name} da equipe ${team.type.formattedName}?',
