@@ -5,6 +5,7 @@ import 'package:gestao_ejc/models/circle_model.dart';
 class CircleMemberModel {
   final String id;
   final int sequentialEncounter;
+  final bool circulist;
   final DocumentReference referenceCircle;
   final DocumentReference referenceMember;
   late AbstractPersonModel member;
@@ -12,6 +13,7 @@ class CircleMemberModel {
 
   CircleMemberModel({
     required this.id,
+    required this.circulist,
     required this.referenceCircle,
     required this.sequentialEncounter,
     required this.referenceMember,
@@ -20,6 +22,7 @@ class CircleMemberModel {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
+      'circulist': circulist,
       'sequentialEncounter': sequentialEncounter,
       'referenceMember': referenceMember,
       'referenceCircle': referenceCircle,
@@ -29,6 +32,7 @@ class CircleMemberModel {
   factory CircleMemberModel.fromJson(Map<String, dynamic> map) {
     return CircleMemberModel(
       id: map['id'],
+      circulist: map['circulist'] ?? false,
       sequentialEncounter: map['sequentialEncounter'],
       referenceMember: map['referenceMember'],
       referenceCircle: map['referenceCircle'],
