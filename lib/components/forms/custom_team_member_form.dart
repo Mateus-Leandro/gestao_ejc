@@ -56,6 +56,7 @@ class _CustomTeamMemberFormState extends State<CustomTeamMemberForm> {
   bool _isLoadingSaveTeamMember = false;
   List<AbstractPersonModel> _listPersons = [];
   TeamTypeEnum selectedTeam = TeamTypeEnum.apoioEAcolhida;
+  bool _leader = false;
 
   @override
   void initState() {
@@ -110,6 +111,21 @@ class _CustomTeamMemberFormState extends State<CustomTeamMemberForm> {
                   ),
                 ],
               ),
+            ),
+            Row(
+              children: [
+                Checkbox(
+                    value: _leader,
+                    onChanged: (bool? value) {
+                      setState(() {
+                        _leader = value ?? false;
+                      });
+                    }),
+                const Text(
+                  'Dirigente da Equipe?',
+                  style: TextStyle(fontSize: 16),
+                ),
+              ],
             ),
           ],
         ),
@@ -207,6 +223,7 @@ class _CustomTeamMemberFormState extends State<CustomTeamMemberForm> {
           id: currentTeamMember != null
               ? currentTeamMember.id
               : const Uuid().v4(),
+          leader: _leader,
           sequentialEncounter: widget.encounter.sequential,
           referenceMember: referenceMember,
           referenceTeam: referenceTeam!);

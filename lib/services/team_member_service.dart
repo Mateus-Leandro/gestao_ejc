@@ -25,6 +25,7 @@ class TeamMemberService {
       snapshot = await _firestore
           .collection(collectionPath)
           .where('sequentialEncounter', isEqualTo: sequentialEncounter)
+          .orderBy('leader', descending: true)
           .get();
       return snapshot.docs
           .map(
@@ -73,8 +74,10 @@ class TeamMemberService {
     }
   }
 
-  Future<List<TeamMemberModel>?> getMemberByTeamAndEncounter(
-      {required int sequentialEncounter, required TeamModel team}) async {
+  Future<List<TeamMemberModel>?> getMemberByTeamAndEncounter({
+    required int sequentialEncounter,
+    required TeamModel team,
+  }) async {
     try {
       final teamReference =
           FirebaseFirestore.instance.collection("teams").doc(team.id);
@@ -82,7 +85,9 @@ class TeamMemberService {
           .collection(collectionPath)
           .where('sequentialEncounter', isEqualTo: sequentialEncounter)
           .where('referenceTeam', isEqualTo: teamReference)
+          .orderBy('leader', descending: true)
           .get();
+
       return snapshot.docs
           .map((doc) =>
               TeamMemberModel.fromJson(doc.data() as Map<String, dynamic>))

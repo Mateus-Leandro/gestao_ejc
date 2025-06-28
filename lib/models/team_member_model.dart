@@ -5,6 +5,7 @@ import 'package:gestao_ejc/models/team_model.dart';
 class TeamMemberModel {
   final String id;
   final int sequentialEncounter;
+  final bool leader;
   final DocumentReference referenceMember;
   final DocumentReference referenceTeam;
   late AbstractPersonModel member;
@@ -12,6 +13,7 @@ class TeamMemberModel {
 
   TeamMemberModel({
     required this.id,
+    required this.leader,
     required this.sequentialEncounter,
     required this.referenceMember,
     required this.referenceTeam,
@@ -20,6 +22,7 @@ class TeamMemberModel {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
+      'leader': leader,
       'sequentialEncounter': sequentialEncounter,
       'referenceMember': referenceMember,
       'referenceTeam': referenceTeam,
@@ -29,6 +32,7 @@ class TeamMemberModel {
   factory TeamMemberModel.fromJson(Map<String, dynamic> map) {
     return TeamMemberModel(
       id: map['id'],
+      leader: map['leader'] ?? false,
       sequentialEncounter: map['sequentialEncounter'],
       referenceMember: map['referenceMember'],
       referenceTeam: map['referenceTeam'],
