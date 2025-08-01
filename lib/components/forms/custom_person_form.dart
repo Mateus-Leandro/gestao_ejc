@@ -312,12 +312,12 @@ class _CustomPersonFormState extends State<CustomPersonForm> {
                 }),
               ]
             },
-            validator: (cepValue) {
-              if (invalidCep || (cepValue == null || cepValue.isEmpty)) {
-                return 'Cep inválido!';
-              }
-              return null;
-            },
+            // validator: (cepValue) {
+            //   if (invalidCep || (cepValue == null || cepValue.isEmpty)) {
+            //     return 'Cep inválido!';
+            //   }
+            //   return null;
+            // },
           ),
           Row(
             mainAxisSize: MainAxisSize.min,
