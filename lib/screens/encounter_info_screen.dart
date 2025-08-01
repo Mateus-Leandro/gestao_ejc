@@ -5,6 +5,7 @@ import 'package:gestao_ejc/components/buttons/custom_cancel_button.dart';
 import 'package:gestao_ejc/components/buttons/custom_confirmation_button.dart';
 import 'package:gestao_ejc/components/buttons/custom_icon_button.dart';
 import 'package:gestao_ejc/components/buttons/custom_pick_file_button.dart';
+import 'package:gestao_ejc/components/forms/custom_export_quadrant_form.dart';
 import 'package:gestao_ejc/components/pickers/custom_date_picker.dart';
 import 'package:gestao_ejc/controllers/encounter_controller.dart';
 import 'package:gestao_ejc/functions/function_call_url.dart';
@@ -142,8 +143,8 @@ class _EncounterInfoScreenState extends State<EncounterInfoScreen> {
                               padding: const EdgeInsets.all(8.0),
                               child: IconButton(
                                 iconSize: 30,
-                                icon: const Icon(Icons.close,
-                                    color: Colors.red),
+                                icon:
+                                    const Icon(Icons.close, color: Colors.red),
                                 onPressed: () {
                                   setState(() {
                                     themeImage = null;
@@ -171,6 +172,13 @@ class _EncounterInfoScreenState extends State<EncounterInfoScreen> {
                         _activeFields();
                       },
                       icon: const Icon(Icons.edit),
+                    ),
+                    CustomIconButton(
+                      message: 'Exportar Quadrante',
+                      function: () {
+                        _showExportQuadrantForm();
+                      },
+                      icon: const Icon(Icons.picture_as_pdf_outlined),
                     ),
                   ] else ...[
                     CustomCancelButton(
@@ -402,5 +410,17 @@ class _EncounterInfoScreenState extends State<EncounterInfoScreen> {
     setState(() {
       _isLoading = false;
     });
+  }
+
+  void _showExportQuadrantForm() async {
+    await showDialog(
+      barrierDismissible: true,
+      context: context,
+      builder: (BuildContext context) {
+        return CustomExportQuadrantForm(
+          encounter: widget.encounterModel,
+        );
+      },
+    );
   }
 }

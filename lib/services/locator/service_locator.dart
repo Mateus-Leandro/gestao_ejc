@@ -36,7 +36,7 @@ import 'package:gestao_ejc/services/financial_index_service.dart';
 import 'package:gestao_ejc/services/financial_service.dart';
 import 'package:gestao_ejc/services/firebase_storage_service.dart';
 import 'package:gestao_ejc/services/lecture_service.dart';
-import 'package:gestao_ejc/services/pdf_service.dart';
+import 'package:gestao_ejc/reports/financial_reports.dart';
 import 'package:gestao_ejc/services/person_service.dart';
 import 'package:gestao_ejc/services/question_service.dart';
 import 'package:gestao_ejc/services/question_theme_service.dart';
@@ -74,7 +74,7 @@ void setupGetIt() {
   getIt.registerLazySingleton<FunctionDecimalPlace>(
       () => FunctionDecimalPlace());
   getIt.registerLazySingleton<FunctionReports>(() => FunctionReports());
-  getIt.registerLazySingleton<PdfService>(() => PdfService());
+  getIt.registerLazySingleton<FinancialReports>(() => FinancialReports());
   getIt.registerLazySingleton<XlsxService>(() => XlsxService());
   getIt.registerLazySingleton<EncounterService>(() => EncounterService());
   getIt.registerLazySingleton<EncounterController>(() => EncounterController());

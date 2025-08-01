@@ -122,7 +122,7 @@ class _CustomTeamMemberFormState extends State<CustomTeamMemberForm> {
                       });
                     }),
                 const Text(
-                  'Dirigente da Equipe?',
+                  'Coordenador da Equipe?',
                   style: TextStyle(fontSize: 16),
                 ),
               ],

@@ -8,7 +8,7 @@ import 'package:gestao_ejc/functions/function_date.dart';
 import 'package:gestao_ejc/models/financial_model.dart';
 import 'package:gestao_ejc/services/financial_service.dart';
 import 'package:gestao_ejc/services/locator/service_locator.dart';
-import 'package:gestao_ejc/services/pdf_service.dart';
+import 'package:gestao_ejc/reports/financial_reports.dart';
 import 'package:gestao_ejc/services/xlsx_service.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
@@ -123,7 +123,7 @@ class _CustomFinancialReportFormState extends State<CustomFinancialReportForm> {
 
   Future<void> generateDoc(
       {required List<DateTime> dates, required String typeExport}) async {
-    final PdfService pdfService = getIt<PdfService>();
+    final FinancialReports pdfService = getIt<FinancialReports>();
     final XlsxService xlsxService = getIt<XlsxService>();
     List<FinancialModel> docs = [];
     try {

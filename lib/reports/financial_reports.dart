@@ -7,7 +7,7 @@ import 'package:gestao_ejc/services/locator/service_locator.dart';
 import 'package:gestao_ejc/services/user_service.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
 
-class PdfService {
+class FinancialReports {
   final FunctionDate functionDate = getIt<FunctionDate>();
   final FunctionMaskDecimal functionMaskDecimal = FunctionMaskDecimal();
   final UserService userService = getIt<UserService>();

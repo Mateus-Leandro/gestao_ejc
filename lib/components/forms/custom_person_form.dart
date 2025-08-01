@@ -312,12 +312,12 @@ class _CustomPersonFormState extends State<CustomPersonForm> {
                 }),
               ]
             },
-            validator: (cepValue) {
-              if (invalidCep || (cepValue == null || cepValue.isEmpty)) {
-                return 'Cep inválido!';
-              }
-              return null;
-            },
+            // validator: (cepValue) {
+            //   if (invalidCep || (cepValue == null || cepValue.isEmpty)) {
+            //     return 'Cep inválido!';
+            //   }
+            //   return null;
+            // },
           ),
           Row(
             mainAxisSize: MainAxisSize.min,
@@ -497,7 +497,7 @@ class _CustomPersonFormState extends State<CustomPersonForm> {
         birthday: _birthdayDateController1.text,
         phone: _phoneController1.text,
         instagram: _instagramController1.text.trim(),
-        eccAccomplished: _ejcAccomplishedController1.text.trim(),
+        eccAccomplished: _eccAccomplishedController1.text.trim(),
         ejcAccomplished: _ejcAccomplishedController1.text.trim(),
         instruments: _instrumentController1.selectedItems
             .map((instrument) => instrument.value)
@@ -523,7 +523,7 @@ class _CustomPersonFormState extends State<CustomPersonForm> {
             birthday: _birthdayDateController2.text,
             phone: _phoneController2.text,
             instagram: _instagramController2.text.trim(),
-            eccAccomplished: _ejcAccomplishedController2.text.trim(),
+            eccAccomplished: _eccAccomplishedController2.text.trim(),
             ejcAccomplished: _ejcAccomplishedController2.text.trim(),
             instruments: _instrumentController2.selectedItems
                 .map((instrument) => instrument.value)
